@@ -7,7 +7,7 @@
     </v-card>
     </v-row>
     <v-row style="justify-content: center;">
-      <v-btn ref="openCamera" @click="startCamera(),getPrediction()" class="mt-5" color="green">Open Camera</v-btn>
+      <v-btn ref="openCamera" @click="getPrediction()" class="mt-5" color="green">Open Camera</v-btn>
       <v-btn @click="stopCamera()" class="mt-5 ml-5" color="red">Close Camera</v-btn>
     </v-row>
     <v-row style="justify-content: center;">
@@ -28,12 +28,14 @@
  
   // const model = await tf.loadGraphModel('https://firebasestorage.googleapis.com/v0/b/islandsigns-99848.appspot.com/o/saved_model%2Fmodel.json?alt=media&token=769a6fba-996b-4418-a0f8-b85e94b87d11')
   // console.log(model)
-  console.log("Hello, world!")
+  // console.log("Hello, world!")
   const msg = ref("")
+  const numpy = ref(10)
 
   function getPrediction() {
-    const path = 'http://127.0.0.1:5000/';
-      axios.get(path)
+    const path = 'http://127.0.0.1:5000/'
+    let foo = numpy.value
+      axios.post(path, {foo})
         .then((res) => {
           msg.value = res.data;
         })
