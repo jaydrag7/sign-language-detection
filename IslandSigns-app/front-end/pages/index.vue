@@ -3,15 +3,24 @@
     <v-row style="justify-content: center;">
       <v-card class="rounded-lg"> 
       <video width="500" height="" ref="video" autoplay muted></video>
-      <canvas id="screenshot" v-show="false"></canvas>
     </v-card>
     </v-row>
     <v-row style="justify-content: center;">
-      <v-btn ref="openCamera" @click="getPrediction()" class="mt-5" color="green">Open Camera</v-btn>
+      <canvas ref="screenshot" v-show="false"></canvas>
+
+    </v-row>
+    <v-row style="justify-content: center;">
+      <v-btn ref="openCamera" @click="startCamera(),cameraEnabled=!cameraEnabled" class="mt-5" color="green">Open Camera</v-btn>
       <v-btn @click="stopCamera()" class="mt-5 ml-5" color="red">Close Camera</v-btn>
     </v-row>
     <v-row style="justify-content: center;">
-      <span>{{ msg }}</span>
+    <v-container style="justify-content: center;">
+      <v-card-text>
+        <span>{{ msg }}</span>
+
+
+      </v-card-text>
+    </v-container>
     </v-row>
   </v-container>
 </template>
@@ -32,10 +41,9 @@
   const msg = ref("")
   const numpy = ref(10)
 
-  function getPrediction() {
+  async function getPrediction(frame) {
     const path = 'http://127.0.0.1:5000/'
-    let foo = numpy.value
-      axios.post(path, {foo})
+      await axios.post(path, {frame})
         .then((res) => {
           msg.value = res.data;
         })
@@ -48,68 +56,75 @@
   const video = ref(null)
   const openCamera = ref(null)
   const stream = ref(null)
-  // const modelFile = ref(new ArrayBuffer(0))
-  // const sessionBackend = ref('wasm')
-  // const sessionRunning = ref(false)
-  // const modelLoadingError = ref(false)
-  // // const session = ref(InferenceSession)
-  // const cpuSession = ref(InferenceSession)
-  // const webcamEnabled = ref(false)
-  // const videoOrigWidth = ref(0)
-  // const videoOrigHeight = ref(0)
-  // const inferenceTime = ref(0)
-
-  // const MODEL_FILEPATH_DEV = ref("/public/CustomModel.onnx")
-  // const options = {
-  //   executionProviders: ['wasm'], 
-  //   graphOptimizationLevel: 'all',
-  //   logLevel: 'debug'
-  // }
-
-  // const session = await ort.InferenceSession.create(MODEL_FILEPATH_DEV.value,options)
-  // console.log(session)
+  const screenshot = ref(null)
+  const cameraEnabled = ref(false)
 
   async function startCamera() {
     try {
-      // webcamEnabled.value = true
-      stream.value = await navigator.mediaDevices.getUserMedia({ 
+      if(cameraEnabled){
+        stream.value = await navigator.mediaDevices.getUserMedia({ 
         video:{facingMode:'environment'},
         audio:false
        })
-      video.value.srcObject = stream.value
-      //Lodaing model
-      // const response = await fetch(MODEL_FILEPATH_DEV.value)
-      // modelFile.value = await response.arrayBuffer();
-      // console.log(modelFile.value)
+      const liveFeed = video.value
+      liveFeed.srcObject = stream.value
+      //Make sure the video is loaded before starting to capture frames
+      await new Promise((resolve) => {
+        liveFeed.onloadedmetadata = () => resolve()
+      })
 
-      //Initializing session
-      // sessionRunning.value = false
-      // modelLoadingError.value = false
-      // if(sessionBackend.value === 'wasm'){
-      //   //Create inference session
-      //   cpuSession.value = await InferenceSession.create(modelFile.value, {executionProviders: ['wasm']})
-      //   console.log(cpuSession.value)
-      //   //warmup session
+          setTimeout(() => {
+      // Start capturing frames
+      captureAndSendFrames(liveFeed,liveFeed.videoWidth,liveFeed.videoHeight);
+    }, 3000);
 
-      //   //live feed
-      //   // while(webcamEnabled.value){
-      //   //   const ctx = capture()
-      //   //   await runModel(ctx)
-      //   //   await new Promise<>((resolve) =>
-      //   //     requestAnimationFrame(() => resolve())
-      //   //   );
-      //   // }
+      //Sending them to the backend
+      // captureAndSendFrames(liveFeed,liveFeed.videoWidth,liveFeed.videoHeight)
+      // console.log(liveFeed.videoWidth,liveFeed.videoHeight)
 
-
-      // }
+      }
 
     } catch (error) {
       console.error('Error accessing the camera:', error);
     }
-  };
+  }
+
+  async function captureAndSendFrames(feed,streamWidth,streamHeight){
+    const canvas = screenshot.value
+    const context = canvas.getContext('2d')
+    const fps = 60
+    console.log(feed)
+
+    //Set canvas dimensions
+    canvas.width = streamWidth
+    canvas.height = streamHeight
+    console.log(canvas.width,canvas.height)
+
+      //Draw current frame
+      context.drawImage(feed,0,0,canvas.width,canvas.height)
+      
+
+      //Get image data from the canvas
+      const imageData = context.getImageData(0,0,canvas.width,canvas.height)
+      console.log(imageData)
+      context.putImageData(imageData, 0, 0);
+      if (imageData.data.some(value => value !== 0)) {
+        // Send the image to the backend
+        const base64Image = canvas.toDataURL('image/png')
+        console.log(base64Image)
+        await getPrediction(base64Image)
+        setTimeout(startCamera,1000/fps)
+
+      }else{
+        setTimeout(startCamera,1000/fps)
+      }
+
+
+  }
 
   async function stopCamera(){
     if (stream.value) {
+      cameraEnabled.value = false
       const tracks = stream.value.getTracks();
       tracks.forEach(track => track.stop());
       video.value.srcObject = null;
@@ -117,88 +132,4 @@
     }
   }
 
-  // function capture(){
-  //   const size = Math.min(videoOrigWidth.value, videoOrigHeight.value);
-  //   const centerHeight = videoOrigHeight.value / 2;
-  //   const beginHeight = centerHeight - size / 2;
-  //   const centerWidth = videoOrigWidth.value / 2;
-  //   const beginWidth = centerWidth - size / 2;
-
-  //   const canvas = document.getElementById("screenshot")
-  //   if (canvas instanceof HTMLCanvasElement) {
-  //       canvas.width = Math.min(
-  //       video.value.width,
-  //       video.value.height
-  //     )
-  //     canvas.height = Math.min(
-  //       video.value.width,
-  //       video.value.height
-  //     )
-
-  //     const context = canvas.getContext("2d");
-  //     context.drawImage(
-  //     video.value,
-  //     beginWidth,
-  //     beginHeight,
-  //     size,
-  //     size,
-  //     0,
-  //     0,
-  //     canvas.width,
-  //     canvas.height
-  //   );
-  //   return context;
-
-  //   }
-
-  // }
-
-  // async function runModel(ctx){
-  //   const data = preprocess(ctx)
-  //   let outputTensor = Tensor
-  //   [outputTensor,inferenceTime.value] = await predict(cpuSession.value, data)
-
-  // }
-
-  // function preprocess(ctx){
-  //   const imageData = ctx.getImageData(
-  //     0,
-  //     0,
-  //     ctx.canvas.width,
-  //     ctx.canvas.height
-  //   )
-  //   const { data, width, height } = imageData
-  //   const dataTensor = ndarray(new Float32Array(data), [width, height, 4]);
-  //   const dataProcessedTensor = ndarray(new Float32Array(width * height * 3), [
-  //     1,
-  //     3,
-  //     width,
-  //     height,
-  //   ])
-
-  //   ops.assign(
-  //     dataProcessedTensor.pick(0, 0, null, null),
-  //     dataTensor.pick(null, null, 0)
-  //   )
-  //   ops.assign(
-  //     dataProcessedTensor.pick(0, 1, null, null),
-  //     dataTensor.pick(null, null, 1)
-  //   )
-  //   ops.assign(
-  //     dataProcessedTensor.pick(0, 2, null, null),
-  //     dataTensor.pick(null, null, 2)
-  //   )
-  //   const tensor = new Tensor("float32", new Float32Array(width * height * 3), [
-  //     1,
-  //     3,
-  //     width,
-  //     height,
-  //   ]);
-  //   (tensor.data).set(dataProcessedTensor.data);
-  //   return tensor
-  // }
-
-  // async function predict(model,tensor){
-  //   console.log(model.inputNames[0])
-  // }
 </script>

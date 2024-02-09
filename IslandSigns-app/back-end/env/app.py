@@ -2,7 +2,9 @@ import json
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from ultralytics import YOLO
-import cv2
+import base64
+from PIL import Image
+from io import BytesIO
 
 
 # instantiate the app
@@ -17,10 +19,24 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 @app.route('/', methods=['POST'])
 def ping_pong():
     try:
-        foo = request.json['foo']
-        output = foo**2
+        frame = request.json['frame']
+        customModel = YOLO("CustomModel.pt")
+        base64_frame = str(frame).split(',')[1]
+        binary_data = base64.b64decode(base64_frame)
+        image = Image.open(BytesIO(binary_data))
+        image.save('decoded_image.png')
+        output = customModel('decoded_image.png')
+        arr =[]
+        for detection in output[0]: # Loop over each detection in the first image of the batch
+
+            class_index = detection.boxes # Get the class index of the detection
+            class_name = detection.names  # Get the name of the detection
+            
+            tensor_idx = class_index.cls
+            conf_score = class_index.conf
+            arr.append(class_name[ tensor_idx.item()])
         result={
-            'value':output
+            'value':arr
         }
         return jsonify(result)
     except Exception as e:
