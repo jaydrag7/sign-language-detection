@@ -76,7 +76,7 @@
           setTimeout(() => {
       // Start capturing frames
       captureAndSendFrames(liveFeed,liveFeed.videoWidth,liveFeed.videoHeight);
-    }, 3000);
+    }, 1000);
 
       //Sending them to the backend
       // captureAndSendFrames(liveFeed,liveFeed.videoWidth,liveFeed.videoHeight)
@@ -113,10 +113,10 @@
         const base64Image = canvas.toDataURL('image/png')
         console.log(base64Image)
         await getPrediction(base64Image)
-        setTimeout(startCamera,1000/fps)
+        setTimeout(startCamera,fps/1000)
 
       }else{
-        setTimeout(startCamera,1000/fps)
+        stopCamera()
       }
 
 

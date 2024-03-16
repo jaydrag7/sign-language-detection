@@ -8,9 +8,9 @@
 #     └── coco8  ← downloads here (1 MB)
 
 # Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
-path: C:\Users\HP\OneDrive\Documents\object-detection\sign-language-detection\datasets # dataset root dir
-train: C:\Users\HP\OneDrive\Documents\object-detection\sign-language-detection\datasets\images # train images (relative to 'path') 4 images
-val: C:\Users\HP\OneDrive\Documents\object-detection\sign-language-detection\datasets\images # val images (relative to 'path') 4 images
+path: /content/datasets # dataset root dir
+train: /content/datasets/images # train images (relative to 'path') 4 images
+val: /content/datasets/images # val images (relative to 'path') 4 images
 test: # test images (optional)
 
 # Classes
@@ -30,7 +30,43 @@ names:
   12: pulled pork
   13: hamburger
   14: cavity
-  15: hello
-  16: iloveyou
-  17: thankyou
-
+  15: one
+  16: two
+  17: three
+  18: four
+  19: five
+  20: six
+  21: seven
+  22: eight
+  23: nine
+  24: ten
+  25: hundred
+  26: thousand
+  27: A
+  28: B
+  29: C
+  30: comma
+  31: D
+  32: point
+  33: E
+  34: F
+  35: G
+  36: H
+  37: I
+  38: J
+  39: K
+  40: L
+  41: M
+  42: N
+  43: O
+  44: P
+  45: Q
+  46: R
+  47: S
+  48: T
+  49: U
+  50: V
+  51: W
+  52: X
+  53: Y
+  54: Z
