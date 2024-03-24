@@ -25,19 +25,9 @@
   </v-container>
 </template>
 <script setup>
-  // import * as ort from "onnxruntime-web"
   import {ref,onMounted} from 'vue'
   import axios from 'axios'
-  // import { Tensor, InferenceSession } from "onnxruntime-web" 
-  // import * as ort from "onnxruntime-web"
-  // import ndarray from "ndarray"
-  // import ops from "ndarray-ops" 
-  import * as tf from "@tensorflow/tfjs"
-  import Predictions from '~/components/predictions.vue';
  
-  // const model = await tf.loadGraphModel('https://firebasestorage.googleapis.com/v0/b/islandsigns-99848.appspot.com/o/saved_model%2Fmodel.json?alt=media&token=769a6fba-996b-4418-a0f8-b85e94b87d11')
-  // console.log(model)
-  // console.log("Hello, world!")
   const msg = ref("")
   const numpy = ref(10)
 
@@ -76,7 +66,7 @@
           setTimeout(() => {
       // Start capturing frames
       captureAndSendFrames(liveFeed,liveFeed.videoWidth,liveFeed.videoHeight);
-    }, 3000);
+    }, 1000);
 
       //Sending them to the backend
       // captureAndSendFrames(liveFeed,liveFeed.videoWidth,liveFeed.videoHeight)
@@ -113,10 +103,10 @@
         const base64Image = canvas.toDataURL('image/png')
         console.log(base64Image)
         await getPrediction(base64Image)
-        setTimeout(startCamera,1000/fps)
+        setTimeout(startCamera,fps/1000)
 
       }else{
-        setTimeout(startCamera,1000/fps)
+        stopCamera()
       }
 
 
