@@ -47,17 +47,18 @@
                         >
                             <v-container
                                 class="mt-2"
+                                style="justify-content: center;"
                             >
                             <v-row>
                                 <v-card-text
-                                    class="text-h4 text-red"
+                                    class="text-h4 text-red text-center"
                                 >
                                     Warning!
                                 </v-card-text>
                             </v-row>
                             <v-row>
                                 <v-card-text
-                                    class="text-h6"
+                                    class="text-h6 text-center"
                                 >
                                     Are you sure you want to end the session?
                                 </v-card-text>
@@ -89,12 +90,49 @@
                         src="IslandSigns-logo.png"
                     />
                 </v-toolbar>
+                <v-container
+                    style="justify-content: center;"
+                >
+                <v-row                        
+                style="display: flex; justify-content: space-between;"                   
+                >
+                        <v-card 
+                            subtitle="Customer" 
+                            width="150" 
+                            color="white" 
+                            class="rounded-xl rounded-ts-0"
+                        >
+                            <v-card-text>
+                                Hi!
+                            </v-card-text>
+
+                        </v-card>
+                        
+
+                </v-row>
+                <v-row justify="end">
+                    <v-card 
+                            subtitle="Teller" 
+                            width="150" 
+                            color="green" 
+                            class="rounded-xl rounded-be-0"
+                        >
+                            <v-card-text>
+                                Hi, how can I help you today!
+                            </v-card-text>
+
+                        </v-card>
+
+                </v-row>
+                
+
+
+                </v-container>
                 <v-row 
                     justify-lg="center"
                 >
                     <v-container
                     class="chat-container"
-
                     >
                         <v-row class="ml-3">
                            <v-textarea

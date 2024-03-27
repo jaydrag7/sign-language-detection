@@ -20,12 +20,12 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 def ping_pong():
     try:
         frame = request.json['frame']
-        customModel = YOLO("CustomModel.pt")
+        customModel = YOLO("CustomModel_v1.pt")
         base64_frame = str(frame).split(',')[1]
         binary_data = base64.b64decode(base64_frame)
         image = Image.open(BytesIO(binary_data))
-        image.save('decoded_image.png')
-        output = customModel('decoded_image.png')
+        image.save('decoded_image.jpeg')
+        output = customModel('decoded_image.jpeg')
         arr =[]
         for detection in output[0]: # Loop over each detection in the first image of the batch
 
