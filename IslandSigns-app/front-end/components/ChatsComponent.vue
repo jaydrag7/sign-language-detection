@@ -124,6 +124,21 @@
                         </v-card>
 
                 </v-row>
+                <v-row v-if="isnewMsg" justify="end">
+                    <v-card 
+                            subtitle="Teller" 
+                            width="150" 
+                            color="green" 
+                            class="rounded-xl rounded-be-0"
+                        >
+                            <v-card-text>
+                                {{newMsg}}
+                            </v-card-text>
+
+                        </v-card>
+
+                </v-row>
+
                 
 
 
@@ -134,19 +149,45 @@
                     <v-container
                     class="chat-container"
                     >
+                        <v-row justify="end">
+                            <v-card v-if="cameraEnabled" height="220" class="rounded-xl mb-2"> 
+                                <v-row>
+                                    <video height="200" ref="video" autoplay muted></video>
+                                    <canvas ref="screenshot" v-show="false"></canvas>
+                                </v-row>
+                                <v-row justify="center">
+                                    <v-btn
+                                        @click="cameraEnabled=false,closeCamera()"
+                                        append-icon="mdi-close"
+                                        variant='tonal'
+                                        color='red'
+                                        width="250"
+                                    >
+                                        Close
+                                    </v-btn>
+                                </v-row>
+                        
+                                   
+                            </v-card>
+                        </v-row>
                         <v-row class="ml-3">
                            <v-textarea
+                                v-model="msg"
                                 rows="1"
                                 auto-grow
                                 label="Type a message"
                                 variant="solo"
-                                
                                 class="mr-1"
                                 append-inner-icon="mdi-send"
+                                @click:append-inner="sendMessage()"
                             >
                             </v-textarea>
                             <v-btn icon="mdi-microphone" variant="text"/>
-                            <v-btn icon="mdi-camera" variant="text"/>
+                            <v-btn 
+                                @click="cameraEnabled=!cameraEnabled,openCamera()" 
+                                icon="mdi-camera" 
+                                variant="text"
+                            />
                         </v-row>
 
 
@@ -163,6 +204,52 @@
 
     const closeDialog = ref(false)
     const closeWarningDialog = ref(false)
+    const stream = ref(null)
+    const screenshot = ref(null)
+    const cameraEnabled = ref(false)
+    const video = ref(null)
+    const msg = ref('')
+    const isnewMsg = ref(false)
+    const newMsg = ref('')
+
+    async function openCamera() {
+    try {
+      if(cameraEnabled){
+          stream.value = await navigator.mediaDevices.getUserMedia({ 
+          video:{facingMode:'environment'},
+          audio:false
+        })
+        const liveFeed = video.value
+        liveFeed.srcObject = stream.value
+        //Make sure the video is loaded before starting to capture frames
+        await new Promise((resolve) => {
+          liveFeed.onloadedmetadata = () => resolve()
+        })
+
+      }
+
+    } catch (error) {
+      console.error('Error accessing the camera:', error);
+    }
+  }
+
+  async function closeCamera(){
+    if (stream.value) {
+      cameraEnabled.value = false
+      const tracks = stream.value.getTracks();
+      tracks.forEach(track => track.stop());
+      video.value.srcObject = null;
+      stream.value = null;
+    }
+  }
+
+  function sendMessage(){
+    isnewMsg.value = true
+    newMsg.value = msg.value
+    console.log(newMsg)
+  }
+
+
 
 </script>
 <style>

@@ -3,11 +3,9 @@
     <v-row style="justify-content: center;">
       <v-card class="rounded-lg"> 
       <video width="500" height="" ref="video" autoplay muted></video>
-    </v-card>
-    </v-row>
-    <v-row style="justify-content: center;">
       <canvas ref="screenshot" v-show="false"></canvas>
 
+    </v-card>
     </v-row>
     <v-row style="justify-content: center;">
       <v-btn ref="openCamera" @click="startCamera(),cameraEnabled=!cameraEnabled" class="mt-5" color="green">Open Camera</v-btn>
@@ -16,7 +14,7 @@
     <v-row style="justify-content: center;">
     <v-container style="justify-content: center;">
       <v-card-text>
-        <span>{{ msg }}</span>
+        <span>{{ msg.predictions }}</span>
 
 
       </v-card-text>
