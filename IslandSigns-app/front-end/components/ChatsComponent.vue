@@ -92,62 +92,34 @@
                 </v-toolbar>
                 <v-container
                     style="justify-content: center;"
+                    v-for="(role,i) in msgObj['roles']"
+
                 >
-                <v-row                        
-                style="display: flex; justify-content: space-between;"                   
+                <v-row
+                    :style="{ display: 'flex', justifyContent: role === 'Customer' ? 'space-between' : 'flex-end' }"
+                    class="mt-0"
                 >
                         <v-card 
-                            subtitle="Customer" 
+                            :subtitle="role === 'Customer' ? 'Customer' : 'Teller'" 
                             width="150" 
-                            color="white" 
-                            class="rounded-xl rounded-ts-0"
+                            :color="role === 'Customer' ? 'white' : 'green'" 
+                            :class="['rounded-xl', role === 'Customer' ? 'rounded-ts-0' : 'rounded-be-0']" 
+                                                 
                         >
                             <v-card-text>
-                                Hi!
+                                {{ msgObj['messages'][i] }}
                             </v-card-text>
 
                         </v-card>
                         
 
                 </v-row>
-                <v-row justify="end">
-                    <v-card 
-                            subtitle="Teller" 
-                            width="150" 
-                            color="green" 
-                            class="rounded-xl rounded-be-0"
-                        >
-                            <v-card-text>
-                                Hi, how can I help you today!
-                            </v-card-text>
-
-                        </v-card>
-
-                </v-row>
-                <v-row v-if="isnewMsg" justify="end">
-                    <v-card 
-                            subtitle="Teller" 
-                            width="150" 
-                            color="green" 
-                            class="rounded-xl rounded-be-0"
-                        >
-                            <v-card-text>
-                                {{newMsg}}
-                            </v-card-text>
-
-                        </v-card>
-
-                </v-row>
-
-                
-
-
                 </v-container>
                 <v-row 
                     justify-lg="center"
                 >
                     <v-container
-                    class="chat-container"
+                    class="chat-container mt-10"
                     >
                         <v-row justify="end">
                             <v-card v-if="cameraEnabled" height="220" class="rounded-xl mb-2"> 
@@ -175,17 +147,19 @@
                                 v-model="msg"
                                 rows="1"
                                 auto-grow
-                                label="Type a message"
+                                :label="label"
                                 variant="solo"
                                 class="mr-1"
                                 append-inner-icon="mdi-send"
+                                prepend-inner-icon="mdi-swap-vertical"
                                 @click:append-inner="sendMessage()"
+                                @click:prepend-inner="swapRoles()"
                             >
                             </v-textarea>
                             <v-btn icon="mdi-microphone" variant="text"/>
                             <v-btn 
                                 @click="cameraEnabled=!cameraEnabled,openCamera()" 
-                                icon="mdi-camera" 
+                                icon="mdi-video" 
                                 variant="text"
                             />
                         </v-row>
@@ -201,6 +175,8 @@
     </v-row>
 </template>
 <script setup>
+    import axios from 'axios'
+
 
     const closeDialog = ref(false)
     const closeWarningDialog = ref(false)
@@ -208,9 +184,23 @@
     const screenshot = ref(null)
     const cameraEnabled = ref(false)
     const video = ref(null)
+    const tellerMsg = ref('')
+    const customerObj = ref({})
     const msg = ref('')
+    const role = ref('Teller')
+    const label = ref('Send message as Teller')
+    const msgObj = ref({
+        'roles': [],
+        'messages': []
+    })
+
     const isnewMsg = ref(false)
-    const newMsg = ref('')
+    const isnewCustomerMsg = ref(false)
+
+    const newTellerMsg = ref([])
+    const tellerMsgThread = ref([])
+    const customerMsgThread = ref([])
+
 
     async function openCamera() {
     try {
@@ -225,6 +215,10 @@
         await new Promise((resolve) => {
           liveFeed.onloadedmetadata = () => resolve()
         })
+
+        //Start capturing frames
+        captureAndSendFrames(liveFeed,liveFeed.videoWidth,liveFeed.videoHeight);  
+
 
       }
 
@@ -243,11 +237,107 @@
     }
   }
 
-  function sendMessage(){
-    isnewMsg.value = true
-    newMsg.value = msg.value
-    console.log(newMsg)
+  async function getPrediction(frame) {
+    const path = 'http://127.0.0.1:5000/'
+      await axios.post(path, {frame})
+        .then((res) => {
+          customerObj.value = res.data;
+          let s = {}
+          s = customerObj.value
+          msg.value = s['speaker']
+          console.log(s['speaker'])
+        })
+        .catch((error) => {
+
+          console.error(error);
+        })
   }
+
+
+  async function captureAndSendFrames(feed,streamWidth,streamHeight){
+    const canvas = screenshot.value
+    const context = canvas.getContext('2d')
+    const fps = 60
+
+    //Set canvas dimensions
+    canvas.width = streamWidth
+    canvas.height = streamHeight
+
+    async function captureFrame(){
+            //Draw current frame
+            context.drawImage(feed,0,0,canvas.width,canvas.height)
+      
+
+      //Get image data from the canvas
+      const imageData = context.getImageData(0,0,canvas.width,canvas.height)
+      context.putImageData(imageData, 0, 0);
+      if (imageData.data.some(value => value !== 0)) {
+        // Send the image to the backend
+        const base64Image = canvas.toDataURL('image/jpeg')
+        if(cameraEnabled){
+          await getPrediction(base64Image)
+        // Request next frame
+        setTimeout(requestAnimationFrame(captureFrame),1000)
+
+
+        }
+
+      }
+        else{
+        closeCamera()
+        return
+      }
+    }
+
+    await captureFrame()
+
+
+
+  }
+
+  function swapRoles(){
+    switch(role.value){
+        case 'Teller':
+            role.value = 'Customer'
+            label.value = `Send message as ${role.value}`
+            break
+        case 'Customer':
+            role.value = 'Teller'
+            label.value = `Send message as ${role.value}`
+            break
+    }
+    console.log(role.value)
+
+  }
+
+  function sendMessage(){
+    let roleArr = msgObj.value['roles']
+    let messageArr = msgObj.value['messages']
+    roleArr.push(role.value)
+    messageArr.push(msg.value)
+    msgObj.value['roles'] = roleArr
+    msgObj.value['messages'] = messageArr
+    console.log(msgObj.value)
+
+  }
+  function sendTellerMessage(){
+    isnewMsg.value = true
+    tellerMsgThread.value.push(tellerMsg.value)
+    newTellerMsg.value = tellerMsgThread.value
+
+    console.log(tellerMsgThread.value)
+  }
+
+  function sendCustomerMessage(){
+    let cMsg = {}
+    isnewCustomerMsg.value = true
+    cMsg = customerMsg.value
+    customerMsgThread.value.push(cMsg['Speaker'])
+    msg = cMsg['Speaker']
+
+    console.log(customerMsgThread.value)
+  }
+
 
 
 
@@ -259,7 +349,7 @@
         margin:0 auto
     }
     .chat-container{
-        position:fixed;
+        position:relative;
         bottom: 0;
         z-index: 1;
         width: 100%

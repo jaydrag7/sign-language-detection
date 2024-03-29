@@ -38,6 +38,7 @@ def ping_pong():
             arr.append(class_name[ tensor_idx.item()])
             conf_scores.append(conf_score)
         result={
+            'speaker': 'customer',
             'predictions':arr,
             'conf_scores':conf_scores
 
