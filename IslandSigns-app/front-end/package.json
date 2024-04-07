@@ -10,14 +10,15 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "css-loader": "^7.0.0",
     "eslint": "^8.56.0",
     "eslint-plugin-vue": "^9.21.1",
     "nuxt": "^3.9.3",
     "vite-plugin-vuetify": "^2.0.1",
     "vue": "^3.4.14",
-    "vue-router": "^4.2.5",
+    "vue-router": "^4.3.0",
     "vuetify": "^3.5.1",
-    "webpack": "^5.90.0",
+    "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
@@ -25,10 +26,14 @@
     "@tensorflow/tfjs": "^4.17.0",
     "@tensorflow/tfjs-converter": "^4.17.0",
     "axios": "^1.6.7",
+    "bootstrap": "^5.3.3",
+    "bootstrap-vue": "^2.23.1",
+    "firebase": "^10.10.0",
     "ndarray": "^1.0.19",
     "ndarray-ops": "^1.2.2",
     "onnxruntime-web": "^1.14.0",
     "opencvjs": "^1.0.1",
-    "sass": "^1.70.0"
+    "sass": "^1.70.0",
+    "vue-advanced-chat": "^2.0.11"
   }
 }
