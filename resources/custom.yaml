@@ -8,9 +8,9 @@
 #     └── coco8  ← downloads here (1 MB)
 
 # Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
-path: /content/datasets # dataset root dir
-train: /content/datasets/images # train images (relative to 'path') 4 images
-val: /content/datasets/images # val images (relative to 'path') 4 images
+path: /kaggle/input/alphabet/datasets/datasets # dataset root dir
+train: /kaggle/input/alphabet/datasets/datasets/images # train images (relative to 'path') 4 images
+val: /kaggle/input/alphabet/datasets/datasets/images # val images (relative to 'path') 4 images
 test: # test images (optional)
 
 # Classes
@@ -41,13 +41,3 @@ names:
   23: X
   24: Y
   25: Z
-  26: afternoon
-  27: comma
-  28: evening
-  29: good
-  30: hi
-  31: morning
-  32: noon
-  33: point
-  34: thank you
-  35: you are welcome

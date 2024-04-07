@@ -11,7 +11,7 @@
             <template v-slot:activator="{props}">
                 <v-btn
                     :style="{textTransform:'none'}"
-                    @click="closeDialog=!closeDialog"
+                    @click="closeDialog=!closeDialog,user.getMessageThread()"
                     v-bind="props"
                     vatiant="text"
                     append-icon="mdi-location-enter"
@@ -22,7 +22,8 @@
                 </v-btn>
             </template>
             <v-card
-                color="grey-lighten-2"
+                fluid="true"
+                color="grey-lighten-4"
             >
                 <v-toolbar
                     color="white"
@@ -43,22 +44,29 @@
                             </v-btn>
                         </template>
                         <v-card
-                            class="warning-card"
+                            class="warning-card rounded-xl"
+                            width="250"
                         >
                             <v-container
                                 class="mt-2"
                                 style="justify-content: center;"
                             >
                             <v-row>
+                                <v-img
+                                    src="caution.png"
+                                    height="30"
+                                    class="mt-2"
+                                />
                                 <v-card-text
-                                    class="text-h4 text-red text-center"
+                                    class="text-h4 text-red"
                                 >
                                     Warning!
                                 </v-card-text>
                             </v-row>
                             <v-row>
                                 <v-card-text
-                                    class="text-h6 text-center"
+                                    class="text-body-1 text-center"
+                                    style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"
                                 >
                                     Are you sure you want to end the session?
                                 </v-card-text>
@@ -69,12 +77,16 @@
                                 <v-btn
                                     color="green"
                                     class="mr-5"
+                                    variant="outlined"
+                                    rounded
                                     @click="closeDialog=false;closeWarningDialog=false"
                                 >
                                     Yes
                                 </v-btn>
                                 <v-btn
                                     color="red"
+                                    variant="outlined"
+                                    rounded
                                     @click="closeWarningDialog=!closeWarningDialog"
                                 >
                                     No
@@ -91,8 +103,10 @@
                     />
                 </v-toolbar>
                 <v-container
+                    v-if="user.roles"
                     style="justify-content: center;"
-                    v-for="(role,i) in msgObj['roles']"
+                    v-for="(role,i) in user.roles"
+                    class="message-threads"
 
                 >
                 <v-row
@@ -102,12 +116,12 @@
                         <v-card 
                             :subtitle="role === 'Customer' ? 'Customer' : 'Teller'" 
                             width="150" 
-                            :color="role === 'Customer' ? 'white' : 'green'" 
+                            :color="role === 'Customer' ? 'white' : '#d1f4cc'" 
                             :class="['rounded-xl', role === 'Customer' ? 'rounded-ts-0' : 'rounded-be-0']" 
                                                  
                         >
                             <v-card-text>
-                                {{ msgObj['messages'][i] }}
+                                {{ user.messages[i] }}
                             </v-card-text>
 
                         </v-card>
@@ -119,7 +133,7 @@
                     justify-lg="center"
                 >
                     <v-container
-                    class="chat-container mt-10"
+                        class="mt-10" :class="{'threadActive': active, 'threadNotActive': !active}"                    
                     >
                         <v-row justify="end">
                             <v-card v-if="cameraEnabled" height="220" class="rounded-xl mb-2"> 
@@ -149,19 +163,31 @@
                                 auto-grow
                                 :label="label"
                                 variant="solo"
-                                class="mr-1"
+                                class="mr-1 footer"
                                 append-inner-icon="mdi-send"
                                 prepend-inner-icon="mdi-swap-vertical"
                                 @click:append-inner="sendMessage()"
                                 @click:prepend-inner="swapRoles()"
-                            >
-                            </v-textarea>
-                            <v-btn icon="mdi-microphone" variant="text"/>
+                            />
+                            <v-btn icon variant="text">
+                                <v-icon icon="mdi-microphone"/>
+                                <v-tooltip
+                                    activator="parent"
+                                    location="top"
+                                >Record Audio</v-tooltip>
+
+                            </v-btn>
                             <v-btn 
                                 @click="cameraEnabled=!cameraEnabled,openCamera()" 
-                                icon="mdi-video" 
+                                icon
                                 variant="text"
-                            />
+                            >
+                                <v-icon icon="mdi-video"/>
+                                <v-tooltip
+                                    activator="parent"
+                                    location="top"
+                                >Record JSL</v-tooltip>
+                            </v-btn>
                         </v-row>
 
 
@@ -176,8 +202,13 @@
 </template>
 <script setup>
     import axios from 'axios'
+    import {useUserProfile} from '~/store/store'
+    import { ref, onMounted } from 'vue'
+    import { db } from "@/utils/firebase";
+    import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
 
 
+    const user = useUserProfile()    
     const closeDialog = ref(false)
     const closeWarningDialog = ref(false)
     const stream = ref(null)
@@ -185,7 +216,6 @@
     const cameraEnabled = ref(false)
     const video = ref(null)
     const tellerMsg = ref('')
-    const customerObj = ref({})
     const msg = ref('')
     const role = ref('Teller')
     const label = ref('Send message as Teller')
@@ -193,13 +223,34 @@
         'roles': [],
         'messages': []
     })
+    const active = ref(false)
 
-    const isnewMsg = ref(false)
-    const isnewCustomerMsg = ref(false)
+    const threadRef = dbRef(db, '/users/')
+    onChildAdded(threadRef, (snapshot) => {
+        const newMessage = snapshot.val()
+         user.roles = newMessage['roles']
+         user.messages = newMessage['messages']
 
-    const newTellerMsg = ref([])
-    const tellerMsgThread = ref([])
-    const customerMsgThread = ref([])
+        console.log('New message received:', user.messages);
+    })            
+
+    onChildChanged(threadRef, (snapshot) => {
+        const updatedMessage = snapshot.val()
+        user.roles = updatedMessage['roles']
+        user.messages = updatedMessage['messages']
+
+
+        // updatedMessage['roles'].forEach(role => {
+        //     user.roles.push(role)
+        // })
+
+        // updatedMessage['messages'].forEach(message => {
+        //     user.messages.push(message)
+        // })
+
+        console.log('Updated message received:', updatedMessage);
+    })          
+
 
 
     async function openCamera() {
@@ -217,7 +268,7 @@
         })
 
         //Start capturing frames
-        captureAndSendFrames(liveFeed,liveFeed.videoWidth,liveFeed.videoHeight);  
+        captureAndSendFrames(liveFeed,liveFeed.videoWidth,liveFeed.videoHeight)
 
 
       }
@@ -226,7 +277,7 @@
       console.error('Error accessing the camera:', error);
     }
   }
-
+   
   async function closeCamera(){
     if (stream.value) {
       cameraEnabled.value = false
@@ -237,27 +288,38 @@
     }
   }
 
+  const customerObj=ref({})
+
   async function getPrediction(frame) {
-    const path = 'http://127.0.0.1:5000/'
-      await axios.post(path, {frame})
+    const path = 'http://127.0.0.1:5000/predict'
+    if(cameraEnabled.value){
+        await axios.post(path,{frame})
+
         .then((res) => {
-          customerObj.value = res.data;
-          let s = {}
-          s = customerObj.value
-          msg.value = s['speaker']
-          console.log(s['speaker'])
+            if(res.data['predictions'].length !=0){
+                let custMsg = []
+                role.value = 'Teller'
+                swapRoles()
+                custMsg = res.data['predictions']
+                msg.value = custMsg[0]
+                console.log(res.data)
+
+            }
         })
         .catch((error) => {
 
           console.error(error);
         })
+
+        
+    }
   }
 
 
   async function captureAndSendFrames(feed,streamWidth,streamHeight){
     const canvas = screenshot.value
     const context = canvas.getContext('2d')
-    const fps = 60
+    const fps = 30
 
     //Set canvas dimensions
     canvas.width = streamWidth
@@ -273,11 +335,11 @@
       context.putImageData(imageData, 0, 0);
       if (imageData.data.some(value => value !== 0)) {
         // Send the image to the backend
-        const base64Image = canvas.toDataURL('image/jpeg')
+        const base64Image = canvas.toDataURL('image/png')
         if(cameraEnabled){
-          await getPrediction(base64Image)
-        // Request next frame
-        setTimeout(requestAnimationFrame(captureFrame),1000)
+            await getPrediction(base64Image)
+            // Request next frame
+            requestAnimationFrame(captureFrame)
 
 
         }
@@ -310,48 +372,41 @@
 
   }
 
-  function sendMessage(){
-    let roleArr = msgObj.value['roles']
-    let messageArr = msgObj.value['messages']
-    roleArr.push(role.value)
-    messageArr.push(msg.value)
-    msgObj.value['roles'] = roleArr
-    msgObj.value['messages'] = messageArr
-    console.log(msgObj.value)
+  async function sendMessage(){
+    // let roleArr = msgObj.value['roles']
+    // let messageArr = msgObj.value['messages']
+    // roleArr.push(role.value)
+    // messageArr.push(msg.value)
+    // msgObj.value['roles'] = roleArr
+    // msgObj.value['messages'] = messageArr
+    await user.sendMessage(role.value,msg.value)
+    let arr = user.msgThread['messages']
+    if(arr.length >= 5){
+        active.value = true
 
+
+    }
   }
-  function sendTellerMessage(){
-    isnewMsg.value = true
-    tellerMsgThread.value.push(tellerMsg.value)
-    newTellerMsg.value = tellerMsgThread.value
-
-    console.log(tellerMsgThread.value)
-  }
-
-  function sendCustomerMessage(){
-    let cMsg = {}
-    isnewCustomerMsg.value = true
-    cMsg = customerMsg.value
-    customerMsgThread.value.push(cMsg['Speaker'])
-    msg = cMsg['Speaker']
-
-    console.log(customerMsgThread.value)
-  }
-
-
-
-
 </script>
 <style>
+    .footer{
+        width:40%;
+    }
     .warning-card{
         width: 70%;
         height: auto;
         margin:0 auto
     }
-    .chat-container{
+    .threadNotActive{
+        position:fixed;
+        bottom: 0;
+        width: 100%;
+    }
+    .threadActive{
         position:relative;
         bottom: 0;
-        z-index: 1;
-        width: 100%
+        width: 100%;
     }
+
+
 </style>
