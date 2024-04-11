@@ -1,0 +1,153 @@
+{
+  "categories": [
+    {
+      "id": 0,
+      "name": "A"
+    },
+    {
+      "id": 1,
+      "name": "B"
+    },
+    {
+      "id": 2,
+      "name": "C"
+    },
+    {
+      "id": 3,
+      "name": "D"
+    },
+    {
+      "id": 4,
+      "name": "E"
+    },
+    {
+      "id": 5,
+      "name": "F"
+    },
+    {
+      "id": 6,
+      "name": "G"
+    },
+    {
+      "id": 7,
+      "name": "H"
+    },
+    {
+      "id": 8,
+      "name": "I"
+    },
+    {
+      "id": 9,
+      "name": "J"
+    },
+    {
+      "id": 10,
+      "name": "K"
+    },
+    {
+      "id": 11,
+      "name": "L"
+    },
+    {
+      "id": 12,
+      "name": "M"
+    },
+    {
+      "id": 13,
+      "name": "N"
+    },
+    {
+      "id": 14,
+      "name": "O"
+    },
+    {
+      "id": 15,
+      "name": "P"
+    },
+    {
+      "id": 16,
+      "name": "Q"
+    },
+    {
+      "id": 17,
+      "name": "R"
+    },
+    {
+      "id": 18,
+      "name": "S"
+    },
+    {
+      "id": 19,
+      "name": "T"
+    },
+    {
+      "id": 20,
+      "name": "U"
+    },
+    {
+      "id": 21,
+      "name": "V"
+    },
+    {
+      "id": 22,
+      "name": "W"
+    },
+    {
+      "id": 23,
+      "name": "X"
+    },
+    {
+      "id": 24,
+      "name": "Y"
+    },
+    {
+      "id": 25,
+      "name": "Z"
+    },
+    {
+      "id": 26,
+      "name": "afternoon"
+    },
+    {
+      "id": 27,
+      "name": "comma"
+    },
+    {
+      "id": 28,
+      "name": "evening"
+    },
+    {
+      "id": 29,
+      "name": "good"
+    },
+    {
+      "id": 30,
+      "name": "hi"
+    },
+    {
+      "id": 31,
+      "name": "morning"
+    },
+    {
+      "id": 32,
+      "name": "noon"
+    },
+    {
+      "id": 33,
+      "name": "point"
+    },
+    {
+      "id": 34,
+      "name": "thank you"
+    },
+    {
+      "id": 35,
+      "name": "you are welcome"
+    }
+  ],
+  "info": {
+    "year": 2024,
+    "version": "1.0",
+    "contributor": "Label Studio"
+  }
+}
