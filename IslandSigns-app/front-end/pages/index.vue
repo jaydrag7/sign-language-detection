@@ -25,21 +25,10 @@
   </v-container>
 </template>
 <script setup>
-  // import * as ort from "onnxruntime-web"
   import {ref,onMounted} from 'vue'
   import axios from 'axios'
-  // import { Tensor, InferenceSession } from "onnxruntime-web" 
-  // import * as ort from "onnxruntime-web"
-  // import ndarray from "ndarray"
-  // import ops from "ndarray-ops" 
-  import * as tf from "@tensorflow/tfjs"
-  import Predictions from '~/components/predictions.vue';
  
-  // const model = await tf.loadGraphModel('https://firebasestorage.googleapis.com/v0/b/islandsigns-99848.appspot.com/o/saved_model%2Fmodel.json?alt=media&token=769a6fba-996b-4418-a0f8-b85e94b87d11')
-  // console.log(model)
-  // console.log("Hello, world!")
   const msg = ref("")
-  const numpy = ref(10)
 
   async function getPrediction(frame) {
     const path = 'http://127.0.0.1:5000/'
@@ -62,26 +51,19 @@
   async function startCamera() {
     try {
       if(cameraEnabled){
-        stream.value = await navigator.mediaDevices.getUserMedia({ 
-        video:{facingMode:'environment'},
-        audio:false
-       })
-      const liveFeed = video.value
-      liveFeed.srcObject = stream.value
-      //Make sure the video is loaded before starting to capture frames
-      await new Promise((resolve) => {
-        liveFeed.onloadedmetadata = () => resolve()
-      })
+          stream.value = await navigator.mediaDevices.getUserMedia({ 
+          video:{facingMode:'environment'},
+          audio:false
+        })
+        const liveFeed = video.value
+        liveFeed.srcObject = stream.value
+        //Make sure the video is loaded before starting to capture frames
+        await new Promise((resolve) => {
+          liveFeed.onloadedmetadata = () => resolve()
+        })
 
-          setTimeout(() => {
-      // Start capturing frames
-      captureAndSendFrames(liveFeed,liveFeed.videoWidth,liveFeed.videoHeight);
-    }, 3000);
-
-      //Sending them to the backend
-      // captureAndSendFrames(liveFeed,liveFeed.videoWidth,liveFeed.videoHeight)
-      // console.log(liveFeed.videoWidth,liveFeed.videoHeight)
-
+        //Start capturing frames
+        captureAndSendFrames(liveFeed,liveFeed.videoWidth,liveFeed.videoHeight);  
       }
 
     } catch (error) {
@@ -93,31 +75,40 @@
     const canvas = screenshot.value
     const context = canvas.getContext('2d')
     const fps = 60
-    console.log(feed)
 
     //Set canvas dimensions
     canvas.width = streamWidth
     canvas.height = streamHeight
-    console.log(canvas.width,canvas.height)
 
-      //Draw current frame
-      context.drawImage(feed,0,0,canvas.width,canvas.height)
+    async function captureFrame(){
+            //Draw current frame
+            context.drawImage(feed,0,0,canvas.width,canvas.height)
       
 
       //Get image data from the canvas
       const imageData = context.getImageData(0,0,canvas.width,canvas.height)
-      console.log(imageData)
       context.putImageData(imageData, 0, 0);
       if (imageData.data.some(value => value !== 0)) {
         // Send the image to the backend
-        const base64Image = canvas.toDataURL('image/png')
+        const base64Image = canvas.toDataURL('image/jpeg')
         console.log(base64Image)
-        await getPrediction(base64Image)
-        setTimeout(startCamera,1000/fps)
+        if(cameraEnabled){
+          await getPrediction(base64Image)
+        // Request next frame
+        setTimeout(requestAnimationFrame(captureFrame),1000)
 
-      }else{
-        setTimeout(startCamera,1000/fps)
+
+        }
+
       }
+        else{
+        stopCamera()
+        return
+      }
+    }
+
+    await captureFrame()
+
 
 
   }
