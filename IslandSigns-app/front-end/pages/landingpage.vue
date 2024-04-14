@@ -59,7 +59,7 @@
                   <v-btn block color="green" @click="handleLogin">Login</v-btn>
                 </div>
                 <div class="register-btn">
-                  <v-btn block color="green" @click="handleRegister">Register</v-btn>
+                  <router-link :to="{ path: '/register' }"><v-btn block color="green">Register</v-btn></router-link>
                 </div>
               
             </v-container>
@@ -112,6 +112,7 @@
   
   <script>
   import { ref } from 'vue';
+  
 
   export default {
     setup() {
@@ -125,7 +126,7 @@
       // Handle register button click
       const handleRegister = () => {
         // Implement your register logic here
-
+        router.push({ path: 'register' })
         console.log('Register clicked');
       };
 

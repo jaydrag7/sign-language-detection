@@ -56,28 +56,29 @@
 
 import { ref } from 'vue';
 
-const bankname = ref("")
-const bankbranch = ref("")
-const tsnum = ref("")
-const password = ref("")
-
-
-function saveDatabase(){
-
-}
-
-function passwordsMatch() {
-    return this.formData.password === this.confirmPassword;
-}
-
-function registerUser() {
-    if (passwordsMatch()) {
-      // logic
-      console.log('Registration successful');
-    } else {
-      console.error('Passwords do not match');
+export default {
+  data() {
+    return {
+      formData: {
+        bankname: '',
+        bankbranch: '',
+        tsnum: '',
+        password: ''
+      },
+      confirmPassword: ''
+    };
+  },
+  methods: {
+    registerUser() {
+      // Logic to register the user
+    },
+    passwordsMatch() {
+      return this.formData.password === this.confirmPassword;
     }
-}
+  }
+};
+
+
 
 </script>
 
