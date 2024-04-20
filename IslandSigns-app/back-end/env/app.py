@@ -14,33 +14,40 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+customModel = YOLO("best.pt")
 
-# sanity check route
-@app.route('/', methods=['POST'])
-def ping_pong():
-    try:
-        frame = request.json['frame']
-        customModel = YOLO("CustomModel_v1.pt")
-        base64_frame = str(frame).split(',')[1]
-        binary_data = base64.b64decode(base64_frame)
-        image = Image.open(BytesIO(binary_data))
-        image.save('decoded_image.jpeg')
-        output = customModel('decoded_image.jpeg')
-        arr =[]
-        for detection in output[0]: # Loop over each detection in the first image of the batch
+@app.route('/predict', methods=['POST'])
+def predict():
+    if request.method == 'POST':
+        try:
+            frame = request.json['frame']
+            base64_frame = str(frame).split(',')[1]
+            binary_data = base64.b64decode(base64_frame)
+            image = Image.open(BytesIO(binary_data))
+            image.save('decoded_image.png')
+            output = customModel('decoded_image.png')
+            arr =[]
+            conf_scores = []
+            for detection in output[0]: # Loop over each detection in the first image of the batch
 
-            class_index = detection.boxes # Get the class index of the detection
-            class_name = detection.names  # Get the name of the detection
-            
-            tensor_idx = class_index.cls
-            conf_score = class_index.conf
-            arr.append(class_name[ tensor_idx.item()])
-        result={
-            'value':arr
-        }
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({'error':str(e)})
+                class_index = detection.boxes # Get the class index of the detection
+                class_name = detection.names  # Get the name of the detection
+                
+                tensor_idx = class_index.cls
+                conf_score = class_index.conf
+                if conf_score>=0.45:
+                    arr.append(class_name[ tensor_idx.item()])
+                    # conf_scores.append(type(conf_score))
+                    # return jsonify(arr)
+                
+            result={
+                'predictions':arr
+            }
+            return jsonify(result)
+        except Exception as e:
+            return jsonify({'error':str(e)})
+    else:
+        return jsonify({'error': 'Method not allowed'})
     # customModel = YOLO("CustomModel.pt")
     # class_indxs = []
     # classes_detected= []
