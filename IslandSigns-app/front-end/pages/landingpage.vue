@@ -10,12 +10,11 @@
         <header>
           <v-app-bar app flat color="#e2dfdf">
             <img src="~/assets/IslandSignslogo.png" alt="Island Signs Logo" max-width="60px" class="hdimg-logo">
-      
+            <p></p>
             <h4>IslandSigns - Jamaican Sign Language Translator</h4>
             <v-spacer></v-spacer>
             <v-btn text to="/">Home</v-btn>
-            <v-btn text to="/about">About</v-btn>
-            <v-btn text to="/contact">Contact</v-btn>
+            
           </v-app-bar>
         </header>
 
@@ -56,7 +55,7 @@
            
             <v-container fluid class="con-btn">
                 <div class="login-btn">
-                  <v-btn block color="green" @click="handleLogin">Login</v-btn>
+                  <router-link :to="{ path: '/login' }"><v-btn block color="green" @click="handleLogin">Login</v-btn></router-link>
                 </div>
                 <div class="register-btn">
                   <router-link :to="{ path: '/register' }"><v-btn block color="green">Register</v-btn></router-link>
@@ -68,16 +67,18 @@
          <section class="how-to" justify-content="center">
             <v-container fluid class="how-one">
               <h2>How to Use</h2>
-              <ul>
-                <li>Start a Session</li>
-                <li>Begin your conversation and our app will do the rest.</li>
-              </ul>
+              <br>
+              
+              <div class="use"><div class="start">1</div> Start a Session</div>
+              <div class="use"><div class="start">2</div> Begin your conversation and our app will do the rest.</div>
+             
             </v-container>
           </section>
 
           <section class="about" justify-content="center">
             <v-container fluid class="about-one" >
-              <h2>About</h2>
+              <h2 class="text-center">About</h2>
+              <br>
               <p>
                 IslandSigns serves as a pivotal communication solution between the deaf or hard-of-hearing community and hearing individuals when making banking transactions in Jamaica.
               </p>
@@ -94,14 +95,15 @@
         <footer>
           <v-container fluid class="pa-0">
             <v-row justify="center">
-              <v-col cols="12" class="text-center text-caption grey--text">&copy; 2024 ISLANDSIGNS</v-col>
+              
               <v-col cols="12" class="mt-4">
                 <v-row justify="center">
                   <img src="~/assets/insta.png" alt="Insta Logo" width="50px">
                   <img src="~/assets/twit.png" alt="Twitter Logo" width="50px">
-                  <img src="~/assets/fb.png" alt="Facebook Logo" width="50px">
+                  <img src="~/assets/fb1.png" alt="Facebook Logo" width="50px">
                 </v-row>
               </v-col>
+              <v-col cols="12" class="text-center text-caption grey--text">&copy; 2024 ISLANDSIGNS</v-col>
             </v-row>
           </v-container>
         </footer>
@@ -160,6 +162,7 @@
 
   .hdimg-logo{
     width: 75px;
+    margin-right: 20px;
   }
   
   nav ul {
@@ -324,6 +327,20 @@
     max-width: 80%;
   }
 
+  .start{
+    background-color: rgb(215, 255, 155);
+    width: 30px;
+
+    border-radius: 100%;
+    text-align: center;
+    margin-right: 10px;
+  }
+
+  .use{
+    display: flex;
+    padding: 10px;
+  }
+
 
 
   
@@ -331,6 +348,7 @@
   footer {
     background-color: #7c7c7c;
     color: #fff;
+    font-size: 20px;
     padding: 1rem;
     text-align: center;
   }
@@ -345,6 +363,7 @@
   footer img{
     width: 50px;
     height: auto;
+    margin: 7px;
 
   }
   </style>

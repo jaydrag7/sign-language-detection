@@ -7,7 +7,7 @@
   <v-container style="justify-content: center; width: 700px" class="mt-5">
 
     <div class="r-container">
-    <v-btn class="back-btn"> ← Back</v-btn>
+      <router-link :to="{ path: '/landingpage' }"><v-btn class="back-btn"> ← Back</v-btn></router-link>
 
     <div class="register-page">
       <div class="logo-img">
