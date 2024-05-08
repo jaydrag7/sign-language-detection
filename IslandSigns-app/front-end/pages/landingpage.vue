@@ -242,7 +242,8 @@
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    padding: 4rem 0;
+    /*padding: 4rem 0;*/
+    padding: 10px;
   }
   
   .language-option{

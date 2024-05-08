@@ -52,32 +52,23 @@
   
 </template>
 
-<script>
-
+<script setup>
 import { ref } from 'vue';
+import {useUserProfile} from '~/store/store';
 
-export default {
-  data() {
-    return {
-      formData: {
-        bankname: '',
-        bankbranch: '',
-        tsnum: '',
-        password: ''
-      },
-      confirmPassword: ''
-    };
-  },
-  methods: {
-    registerUser() {
-      // Logic to register the user
-    },
-    passwordsMatch() {
-      return this.formData.password === this.confirmPassword;
-    }
-  }
+const bankName = ref('');
+const bankBranch = ref('');
+const tellerStationNumber = ref('');
+const passcode = ref('');
+const user= useUserProfile()
+const goBack = () => {
+  //go back function
 };
-
+async function submitForm() {
+  
+  await user.signIn(bankName.value,bankBranch.value,tellerStationNumber.value,passcode.value)
+  
+};
 
 
 </script>
