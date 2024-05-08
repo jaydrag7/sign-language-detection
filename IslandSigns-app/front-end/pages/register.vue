@@ -7,7 +7,9 @@
   <v-container style="justify-content: center; width: 700px" class="mt-5">
 
     <div class="r-container">
-      <router-link :to="{ path: '/landingpage' }"><v-btn class="back-btn"> ← Back</v-btn></router-link>
+      <router-link :to="{ path: '/landingpage' }">
+      <v-btn class="back-btn"> ← Back</v-btn>
+    </router-link>
 
     <div class="register-page">
       <div class="logo-img">
@@ -18,32 +20,32 @@
       <br>
       <p></p>
 
-      <v-form @submit.prevent="registerUser">
+      <v-form >
         <v-row>
           <v-col cols="12"  class="form-group">
             <v-label for="bankname">Bank Name</v-label>
-            <v-text-field id="bankname" v-model="formData.bankname" required></v-text-field>
+            <v-text-field v-model="formData.bankName" required></v-text-field>
           </v-col>
           <v-col cols="12" class="form-group">
             <v-label for="bankbranch">Bank Branch</v-label>
-            <v-text-field id="bankbranch" v-model="formData.bankbranch" required></v-text-field>
+            <v-text-field v-model="formData.bankBranch" required></v-text-field>
           </v-col>
           <v-col cols="12" class="form-group">
             <v-label for="tsnum">Teller Station Number</v-label>
-            <v-text-field id="tsnum" v-model="formData.tsnum" required></v-text-field>
+            <v-text-field v-model="formData.tellerStationNumber" required></v-text-field>
           </v-col>
           <v-col cols="12" class="form-group">
             <v-label for="password">Passcode</v-label>
-            <v-text-field type="password" id="password" v-model="formData.password" required></v-text-field>
+            <v-text-field type="password" v-model="formData.passcode" required></v-text-field>
           </v-col>
           <v-col cols="12" class="form-group">
-            <v-label for="confirmPassword">Confirm Passcode</v-label>
+            <!--<v-label for="confirmPassword">Confirm Passcode</v-label>
             <v-text-field type="password" id="confirmPassword" v-model="confirmPassword" required></v-text-field>
-            <span v-if="passwordsMatch === false" class="error">Passwords do not match</span>
+            <span v-if="passwordsMatch === false" class="error">Passwords do not match</span>-->
           </v-col>
         </v-row>
         <div class="s-btn">
-          <v-btn type="submit" :disabled="passwordsMatch === false">Register</v-btn>
+          <v-btn type="submit" @click="submitForm">Register</v-btn>
         </div>
       </v-form>
     </div>
@@ -56,19 +58,31 @@
 import { ref } from 'vue';
 import {useUserProfile} from '~/store/store';
 
-const bankName = ref('');
-const bankBranch = ref('');
-const tellerStationNumber = ref('');
-const passcode = ref('');
 const user= useUserProfile()
+const formData= {
+  bankName : "",
+  bankBranch: "",
+  tellerStationNumber : "",
+  passcode : "",
+
+}
+
+
 const goBack = () => {
   //go back function
 };
 async function submitForm() {
   
-  await user.signIn(bankName.value,bankBranch.value,tellerStationNumber.value,passcode.value)
+  await user.register(formData)
   
 };
+
+/*const checkPass=()=>{
+  if (formData.passcode== confirmPassword){
+
+  }
+}
+*/
 
 
 </script>
