@@ -14,7 +14,7 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-customModel = YOLO("best.pt")
+customModel = YOLO("CustomModel_v8.pt")
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -35,11 +35,9 @@ def predict():
                 
                 tensor_idx = class_index.cls
                 conf_score = class_index.conf
-                if conf_score>=0.45:
-                    arr.append(class_name[ tensor_idx.item()])
-                    # conf_scores.append(type(conf_score))
-                    # return jsonify(arr)
-                
+                arr.append(class_name[ tensor_idx.item()])
+                # conf_scores.append(type(conf_score))
+            
             result={
                 'predictions':arr
             }

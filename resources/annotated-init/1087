@@ -1,0 +1,68 @@
+{
+  "id": 1087,
+  "created_username": " jonmarcyoungjy7@gmail.com, 1",
+  "created_ago": "0\u00a0minutes",
+  "completed_by": {
+    "id": 1,
+    "first_name": "",
+    "last_name": "",
+    "email": "jonmarcyoungjy7@gmail.com"
+  },
+  "task": {
+    "id": 2269,
+    "data": {
+      "localhost": "/data/local-files/?d=images-init%5CMorning_0108.jpg"
+    },
+    "meta": {},
+    "created_at": "2024-04-13T20:08:37.915754Z",
+    "updated_at": "2024-04-13T20:08:37.915754Z",
+    "is_labeled": true,
+    "overlap": 1,
+    "inner_id": 663,
+    "total_annotations": 1,
+    "cancelled_annotations": 0,
+    "total_predictions": 0,
+    "comment_count": 0,
+    "unresolved_comment_count": 0,
+    "last_comment_updated_at": null,
+    "project": 2,
+    "updated_by": null,
+    "file_upload": null,
+    "comment_authors": []
+  },
+  "result": [
+    {
+      "original_width": 5184,
+      "original_height": 3456,
+      "image_rotation": 0,
+      "value": {
+        "x": 32.362459546925564,
+        "y": 15.776699029126215,
+        "width": 17.47572815533981,
+        "height": 67.23300970873785,
+        "rotation": 0,
+        "rectanglelabels": [
+          "morning"
+        ]
+      },
+      "id": "tnvEEq3dkD",
+      "from_name": "label",
+      "to_name": "image",
+      "type": "rectanglelabels",
+      "origin": "manual"
+    }
+  ],
+  "was_cancelled": false,
+  "ground_truth": false,
+  "created_at": "2024-04-13T20:59:07.415314Z",
+  "updated_at": "2024-04-13T20:59:07.415314Z",
+  "draft_created_at": null,
+  "lead_time": 15.05,
+  "import_id": null,
+  "last_action": null,
+  "project": 2,
+  "updated_by": 1,
+  "parent_prediction": null,
+  "parent_annotation": null,
+  "last_created_by": null
+}

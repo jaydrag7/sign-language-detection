@@ -52,18 +52,16 @@
                                 style="justify-content: center;"
                             >
                             <v-row>
-                                <v-img
-                                    src="caution.png"
-                                    height="30"
-                                    class="mt-2"
-                                />
                                 <v-card-text
-                                    class="text-h4 text-red"
+                                    class="text-h4 text-red text-center"
                                 >
                                     Warning!
                                 </v-card-text>
                             </v-row>
                             <v-row>
+                                <span>
+                                    ___________________________
+                                </span>
                                 <v-card-text
                                     class="text-body-1 text-center"
                                     style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"
@@ -115,10 +113,10 @@
                 >
                         <v-card 
                             :subtitle="role === 'Customer' ? 'Customer' : 'Teller'" 
-                            width="150" 
+                            width="200" 
                             :color="role === 'Customer' ? 'white' : '#d1f4cc'" 
                             :class="['rounded-xl', role === 'Customer' ? 'rounded-ts-0' : 'rounded-be-0']" 
-                                                 
+                            elevation="2"                    
                         >
                             <v-card-text>
                                 {{ user.messages[i] }}
@@ -136,7 +134,7 @@
                         class="mt-10" :class="{'threadActive': active, 'threadNotActive': !active}"                    
                     >
                         <v-row justify="end">
-                            <v-card v-if="cameraEnabled" height="220" class="rounded-xl mb-2"> 
+                            <v-card v-if="cameraEnabled" height="220" class="rounded-xl mb-2 mr-3"> 
                                 <v-row>
                                     <video height="200" ref="video" autoplay muted></video>
                                     <canvas ref="screenshot" v-show="false"></canvas>
@@ -156,8 +154,18 @@
                                    
                             </v-card>
                         </v-row>
-                        <v-row class="ml-3">
-                           <v-textarea
+                        <v-row class="ml-1 mr-1">
+                        <v-card
+                            color="grey-lighten-2"
+                            style="width: 100%;"
+                            class="rounded-lg"
+                            height="100"
+                            variant="flat"
+                        >
+                        <v-row
+                            class="mt-0 pa-5"
+                        >
+                            <v-textarea
                                 v-model="msg"
                                 rows="1"
                                 auto-grow
@@ -188,9 +196,11 @@
                                     location="top"
                                 >Record JSL</v-tooltip>
                             </v-btn>
+
+
                         </v-row>
-
-
+                        </v-card>
+                        </v-row>
                     </v-container>
 
                     
@@ -206,6 +216,7 @@
     import { ref, onMounted } from 'vue'
     import { db } from "@/utils/firebase";
     import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
+    import messageSound from '~/public/bubble-sound.mp3'
 
 
     const user = useUserProfile()    
@@ -224,6 +235,12 @@
         'messages': []
     })
     const active = ref(false)
+
+    // const audio = new Audio(messageSound)
+
+    // const playMessageSound = () =>{
+    //     audio.play()
+    // }
 
     const threadRef = dbRef(db, '/users/')
     onChildAdded(threadRef, (snapshot) => {
@@ -301,7 +318,7 @@
                 role.value = 'Teller'
                 swapRoles()
                 custMsg = res.data['predictions']
-                msg.value = custMsg[0]
+                msg.value =msg.value +" "+ custMsg[0]
                 console.log(res.data)
 
             }
