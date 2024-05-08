@@ -1,0 +1,68 @@
+{
+  "id": 1230,
+  "created_username": " jonmarcyoungjy7@gmail.com, 1",
+  "created_ago": "0\u00a0minutes",
+  "completed_by": {
+    "id": 1,
+    "first_name": "",
+    "last_name": "",
+    "email": "jonmarcyoungjy7@gmail.com"
+  },
+  "task": {
+    "id": 2363,
+    "data": {
+      "localhost": "/data/local-files/?d=images-init%5CWelcome_0101.jpg"
+    },
+    "meta": {},
+    "created_at": "2024-04-13T20:08:43.694882Z",
+    "updated_at": "2024-04-13T20:08:43.694882Z",
+    "is_labeled": true,
+    "overlap": 1,
+    "inner_id": 757,
+    "total_annotations": 1,
+    "cancelled_annotations": 0,
+    "total_predictions": 0,
+    "comment_count": 0,
+    "unresolved_comment_count": 0,
+    "last_comment_updated_at": null,
+    "project": 2,
+    "updated_by": null,
+    "file_upload": null,
+    "comment_authors": []
+  },
+  "result": [
+    {
+      "original_width": 5184,
+      "original_height": 3456,
+      "image_rotation": 0,
+      "value": {
+        "x": 27.669902912621374,
+        "y": 64.80582524271847,
+        "width": 17.152103559870564,
+        "height": 12.864077669902871,
+        "rotation": 0,
+        "rectanglelabels": [
+          "welcome"
+        ]
+      },
+      "id": "NT4Ghc10a4",
+      "from_name": "label",
+      "to_name": "image",
+      "type": "rectanglelabels",
+      "origin": "manual"
+    }
+  ],
+  "was_cancelled": false,
+  "ground_truth": false,
+  "created_at": "2024-04-13T22:27:56.993939Z",
+  "updated_at": "2024-04-13T22:27:56.993939Z",
+  "draft_created_at": "2024-04-13T22:27:54.525215Z",
+  "lead_time": 18.927,
+  "import_id": null,
+  "last_action": null,
+  "project": 2,
+  "updated_by": 1,
+  "parent_prediction": null,
+  "parent_annotation": null,
+  "last_created_by": null
+}

@@ -1,0 +1,88 @@
+{
+  "id": 1235,
+  "created_username": " jonmarcyoungjy7@gmail.com, 1",
+  "created_ago": "0\u00a0minutes",
+  "completed_by": {
+    "id": 1,
+    "first_name": "",
+    "last_name": "",
+    "email": "jonmarcyoungjy7@gmail.com"
+  },
+  "task": {
+    "id": 2368,
+    "data": {
+      "localhost": "/data/local-files/?d=images-init%5CWelcome_0106.jpg"
+    },
+    "meta": {},
+    "created_at": "2024-04-13T20:08:44.026554Z",
+    "updated_at": "2024-04-13T20:08:44.026554Z",
+    "is_labeled": true,
+    "overlap": 1,
+    "inner_id": 762,
+    "total_annotations": 1,
+    "cancelled_annotations": 0,
+    "total_predictions": 0,
+    "comment_count": 0,
+    "unresolved_comment_count": 0,
+    "last_comment_updated_at": null,
+    "project": 2,
+    "updated_by": null,
+    "file_upload": null,
+    "comment_authors": []
+  },
+  "result": [
+    {
+      "original_width": 5184,
+      "original_height": 3456,
+      "image_rotation": 0,
+      "value": {
+        "x": 106.95792880258898,
+        "y": 67.23300970873787,
+        "width": 6.957928802588981,
+        "height": 7.28155339805825,
+        "rotation": 0,
+        "rectanglelabels": [
+          "welcome"
+        ]
+      },
+      "id": "ax-EM8orTl",
+      "from_name": "label",
+      "to_name": "image",
+      "type": "rectanglelabels",
+      "origin": "manual"
+    },
+    {
+      "original_width": 5184,
+      "original_height": 3456,
+      "image_rotation": 0,
+      "value": {
+        "x": 39.15857605177994,
+        "y": 65.53398058252428,
+        "width": 12.297734627831709,
+        "height": 14.320388349514559,
+        "rotation": 0,
+        "rectanglelabels": [
+          "welcome"
+        ]
+      },
+      "id": "hP0atO5LXJ",
+      "from_name": "label",
+      "to_name": "image",
+      "type": "rectanglelabels",
+      "origin": "manual"
+    }
+  ],
+  "was_cancelled": false,
+  "ground_truth": false,
+  "created_at": "2024-04-13T22:29:58.094622Z",
+  "updated_at": "2024-04-13T22:29:58.094622Z",
+  "draft_created_at": "2024-04-13T22:29:46.667737Z",
+  "lead_time": 21.037,
+  "import_id": null,
+  "last_action": null,
+  "project": 2,
+  "updated_by": 1,
+  "parent_prediction": null,
+  "parent_annotation": null,
+  "last_created_by": null
+}

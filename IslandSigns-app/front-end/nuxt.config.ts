@@ -10,14 +10,8 @@ export default defineNuxtConfig({
   build: {
       transpile: ["vuetify"]
   },
+
   modules: [
     '@pinia/nuxt'
-  ],
-
-
-  
+  ]
 })
-
-
-
-

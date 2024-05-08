@@ -27,15 +27,12 @@
     "@tensorflow/tfjs": "^4.17.0",
     "@tensorflow/tfjs-converter": "^4.17.0",
     "axios": "^1.6.7",
-    "bootstrap": "^5.3.3",
-    "bootstrap-vue": "^2.23.1",
-    "firebase": "^10.11.1",
+    "firebase": "^10.10.0",
     "ndarray": "^1.0.19",
     "ndarray-ops": "^1.2.2",
     "onnxruntime-web": "^1.14.0",
     "opencvjs": "^1.0.1",
     "pinia": "^2.1.7",
-    "sass": "^1.70.0",
-    "vue-advanced-chat": "^2.0.11"
+    "sass": "^1.70.0"
   }
 }

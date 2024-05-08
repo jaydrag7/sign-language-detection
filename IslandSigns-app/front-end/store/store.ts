@@ -11,7 +11,6 @@ interface UserProfile{
     roles:String[],
     messages:String[]
 }
-
 export const useUserProfile = defineStore('userprofiles',{
     state:():UserProfile => ({
         bankName: "",
@@ -30,21 +29,6 @@ export const useUserProfile = defineStore('userprofiles',{
 
     },
     actions:{
-        async register(bankName: String, branchID: Number, tellerStation:Number,passcode: String){
-            try{
-                const data=await get(child(ref(db),"users"))
-                if(data.exists()){
-                    const users=Object.values(data.val())
-                    console.log(users)
-                }
-                // const updates: any={}
-                // updates[/users/${bankName}/${branchID}/${tellerStation}/${passcode}]=this.msgThread
-
-            }
-            catch(error){
-                console.log(error)
-            }
-        },
         async sendMessage(role:String,msg:String){
             try{
                 const updates: any={}
@@ -58,7 +42,7 @@ export const useUserProfile = defineStore('userprofiles',{
                     'roles': this.roles,
                     'messages':this.messages
                 }
-                updates['/users/chat/']=this.msgThread
+                updates[`/users/chat/`]=this.msgThread
                 return await update(ref(db),updates)
             }
             catch(error){
@@ -69,7 +53,7 @@ export const useUserProfile = defineStore('userprofiles',{
         async getMessageThread(){
             try{
                 const threadRef = ref(db)
-                const data = await get(child(threadRef,'/users/'))
+                const data = await get(child(threadRef,`/users/`))
                 if(data.exists()){
                     let prevThread: any={}    
                     prevThread = data.val()
@@ -77,7 +61,7 @@ export const useUserProfile = defineStore('userprofiles',{
                     // this.messages.concat(prevThread['chat']['messages'])
                     console.log(this.messages)
                 }
-                // get(child(threadRef, users/)).then((snapshot) => {
+                // get(child(threadRef, `users/`)).then((snapshot) => {
                 //     if (snapshot.exists()) {
                 //         let prevThread: any={}    
                 //         prevThread = snapshot.val()                  
