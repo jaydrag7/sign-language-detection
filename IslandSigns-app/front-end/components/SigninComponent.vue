@@ -19,6 +19,11 @@
         <label for="passcode"><b>Passcode</b></label>
         <v-text-field id="passcode" label="Passcode" v-model="passcode" type="password"></v-text-field>
       </div>
+      <div>
+        <v-card-text v-if="errormsg" class="text-red">
+          {{response }}
+        </v-card-text>
+      </div>
       <v-btn @click=submitForm class="submit-button">Sign In</v-btn>
     </form>
   </div>
@@ -33,16 +38,24 @@ const bankBranch = ref('');
 const tellerStationNumber = ref('');
 const passcode = ref('');
 const user= useUserProfile()
+const route =useRouter()
 const goBack = () => {
-  //go back function
+  route.push("/homePage")
 };
+const errormsg=ref(false)
+const response=ref("")
 async function submitForm() {
   
-  await user.signIn(bankName.value,bankBranch.value,tellerStationNumber.value,passcode.value)
+  response.value = await user.signIn(bankName.value,bankBranch.value,tellerStationNumber.value,passcode.value)
+  if (response.value!="Password match"){
+    errormsg.value=true
+
+  }
+  else{
+    route.push("/chatsPage")
+  }
   
 };
-
-
 
 
 </script>
