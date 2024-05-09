@@ -1,0 +1,4 @@
+<template>
+ <SigninComponent/>
+</template>
+

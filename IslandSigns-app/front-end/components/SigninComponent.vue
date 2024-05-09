@@ -1,0 +1,124 @@
+<template>
+  <div id="app">
+   <v-btn class="back-button" @click="goBack">← Back</v-btn>
+    <h1 class="header">Sign In</h1>
+    <form @submit.prevent="submitForm" class="signup-form">
+      <div class="form-group">
+        <label for="bankName"><b>Bank Name</b></label> 
+        <v-text-field id="bankName" label="Bank Name" v-model="bankName"></v-text-field>
+      </div>
+      <div class="form-group">
+        <label for="bankBranch"><b>Bank Branch</b></label>
+        <v-text-field id="bankBranch" label="Bank Branch" v-model="bankBranch"></v-text-field>
+      </div>
+      <div class="form-group">
+        <label for="tellerStationNumber"><b>Teller Station Number</b></label>
+        <v-text-field id="tellerStationNumber" label="Teller Station Number" v-model="tellerStationNumber"></v-text-field>
+      </div>
+      <div class="form-group">
+        <label for="passcode"><b>Passcode</b></label>
+        <v-text-field id="passcode" label="Passcode" v-model="passcode" type="password"></v-text-field>
+      </div>
+      <v-btn @click=submitForm class="submit-button">Sign In</v-btn>
+    </form>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import {useUserProfile} from '~/store/store';
+
+const bankName = ref('');
+const bankBranch = ref('');
+const tellerStationNumber = ref('');
+const passcode = ref('');
+const user= useUserProfile()
+const goBack = () => {
+  //go back function
+};
+async function submitForm() {
+  
+  await user.signIn(bankName.value,bankBranch.value,tellerStationNumber.value,passcode.value)
+  
+};
+
+
+
+
+</script>
+
+<style scoped>
+#app {
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.header {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.back-button {
+  top: 120px;
+  right: 250px;
+  background-color: #61be61;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 5px 15px;
+  cursor: pointer;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back-button:hover {
+  background-color: #008000;
+}
+
+.sign-in-image {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  margin-bottom: 3px;
+}
+
+.signup-form {
+  width: 330px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+}
+
+.form-group {
+  margin-bottom: 1em;
+}
+
+.submit-button {
+  width: 50%; 
+  left:70px;
+  padding: 10px;
+  background-color: #61be61; 
+  color: white;
+  border: none;
+  border-radius: 50px; 
+  cursor: pointer;
+  margin-top: 20px; 
+  display: flex;
+  justify-content: center;
+}
+
+.submit-button:hover {
+  background-color: #008000;
+}
+</style>
+
+
