@@ -3,5 +3,5 @@
 
 </template>
 <script setup>
-import ChatsComponent from '~/components/ChatsComponent'
+    import ChatsComponent from '~/components/ChatsComponent'
 </script>
