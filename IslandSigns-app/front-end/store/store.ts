@@ -77,5 +77,12 @@ export const useUserProfile = defineStore('userprofiles',{
                 console.error(error)
             }
         },
+        async createSession(){
+            const updates: any={} 
+            updates[`/users/sessions/isActive`] = false
+            await update(ref(db),updates)
+            return true
+        }
+
     }
 })
