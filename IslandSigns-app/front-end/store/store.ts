@@ -29,6 +29,34 @@ export const useUserProfile = defineStore('userprofiles',{
 
     },
     actions:{
+        async signIn(bankName: String,branchID: Number,tellerStation:Number,passcode: String){
+            try{
+                const data=await get(child(ref(db),`users/${bankName}/${branchID}/${tellerStation}`))
+                if(data.exists()){
+                    const pass=Object.values(data.val())
+    
+                    console.log(pass)
+                    if(pass[0]==passcode){
+                        return "Password match"
+                    
+                    }
+                    else{
+                        return "Invalid user credentials"
+                    }
+                   
+                }
+                else{
+                    return "User is not registered"
+                }
+
+                // const updates: any={}
+                // updates[`/users/${bankName}/${branchID}/${tellerStation}/${passcode}`]=this.msgThread
+
+            }
+            catch(error){
+                console.log(error)
+            }
+        },
         async sendMessage(role:String,msg:String){
             try{
                 const updates: any={}
