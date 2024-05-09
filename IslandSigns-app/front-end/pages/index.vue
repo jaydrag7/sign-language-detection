@@ -58,7 +58,7 @@
            
             <v-container fluid class="con-btn">
                 <div class="login-btn">
-                <v-btn block color="green">Login</v-btn>
+                <v-btn @click="goToSignIn" block color="green">Login</v-btn>
                 </div>
                 <div class="register-btn">
                   <v-btn @click="goToRegister" block color="green">Register</v-btn>
@@ -125,6 +125,11 @@
     // Implement your register logic here
     route.push( '/register' )
   };
+  const goToSignIn = () => {
+    // Implement your register logic here
+    route.push( '/SigninPage' )
+  };
+
 
 </script>
 

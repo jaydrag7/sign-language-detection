@@ -52,7 +52,7 @@ async function submitForm() {
 
   }
   else{
-    route.push("/chatsPage")
+    route.push("/homePage")
   }
   
 };
