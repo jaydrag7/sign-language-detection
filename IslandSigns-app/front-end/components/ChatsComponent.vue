@@ -52,8 +52,13 @@
                                 style="justify-content: center;"
                             >
                             <v-row>
+                                <v-img
+                                    src="caution.png"
+                                    height="30"
+                                    class="mt-2"
+                                />
                                 <v-card-text
-                                    class="text-h4 text-red text-center"
+                                    class="text-h4 text-red"
                                 >
                                     Warning!
                                 </v-card-text>
@@ -105,7 +110,6 @@
                     style="justify-content: center;"
                     v-for="(role,i) in user.roles"
                     class="message-threads"
-
                 >
                 <v-row
                     :style="{ display: 'flex', justifyContent: role === 'Customer' ? 'space-between' : 'flex-end' }"
@@ -409,21 +413,18 @@
     .footer{
         width:40%;
     }
+    .footer{
+        width:40%;
+    }
     .warning-card{
         width: 70%;
         height: auto;
         margin:0 auto
     }
-    .threadNotActive{
-        position:fixed;
-        bottom: 0;
-        width: 100%;
-    }
+
     .threadActive{
         position:relative;
         bottom: 0;
         width: 100%;
     }
-
-
 </style>
