@@ -11,7 +11,7 @@
     
         <div class="register-page">
           <div class="logo-img">
-            <img src="~/assets/IslandSignslogo.png" alt="Island Signs Logo">
+            <img src="IslandSignslogo.png" alt="Island Signs Logo">
           </div>
     
           <h2><b>Login</b></h2>

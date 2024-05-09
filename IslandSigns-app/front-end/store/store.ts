@@ -80,10 +80,7 @@ export const useUserProfile = defineStore('userprofiles',{
         async register(data: object){
             try{
                 const updates:any={}
-                updates[`users/`]={
-                    bankName: data.bankName,
-                    bankID: data.bankBranch,
-                    banktsnum: data.tellerStationNumber,
+                updates[`users/${data.bankName}/${ data.bankBranch}/${data.tellerStationNumber}/`]={
                     bankTellerPasscode: data.passcode
                 }
                 return await update(ref(db),updates)

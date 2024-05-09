@@ -7,13 +7,13 @@
   <v-container style="justify-content: center; width: 700px" class="mt-5">
 
     <div class="r-container">
-      <router-link :to="{ path: '/landingpage' }">
+      <router-link :to="{ path: '/' }">
       <v-btn class="back-btn"> ← Back</v-btn>
     </router-link>
 
     <div class="register-page">
       <div class="logo-img">
-        <img src="~/assets/IslandSignslogo.png" alt="Island Signs Logo">
+        <v-img src="IslandSigns-logo.png" alt="Island Signs Logo"/>
       </div>
 
       <h2><b>Register</b></h2>
@@ -23,20 +23,20 @@
       <v-form >
         <v-row>
           <v-col cols="12"  class="form-group">
-            <v-label for="bankname">Bank Name</v-label>
-            <v-text-field v-model="formData.bankName" required></v-text-field>
+            <v-label>Bank Name</v-label>
+            <v-text-field v-model="bankName" required></v-text-field>
           </v-col>
           <v-col cols="12" class="form-group">
-            <v-label for="bankbranch">Bank Branch</v-label>
-            <v-text-field v-model="formData.bankBranch" required></v-text-field>
+            <v-label>Bank Branch</v-label>
+            <v-text-field v-model="bankBranch" required></v-text-field>
           </v-col>
           <v-col cols="12" class="form-group">
-            <v-label for="tsnum">Teller Station Number</v-label>
-            <v-text-field v-model="formData.tellerStationNumber" required></v-text-field>
+            <v-label>Teller Station Number</v-label>
+            <v-text-field v-model="tellerStationNumber" required></v-text-field>
           </v-col>
           <v-col cols="12" class="form-group">
-            <v-label for="password">Passcode</v-label>
-            <v-text-field type="password" v-model="formData.passcode" required></v-text-field>
+            <v-label>Passcode</v-label>
+            <v-text-field type="password" v-model="passcode" required></v-text-field>
           </v-col>
           <v-col cols="12" class="form-group">
             <!--<v-label for="confirmPassword">Confirm Passcode</v-label>
@@ -45,7 +45,7 @@
           </v-col>
         </v-row>
         <div class="s-btn">
-          <v-btn type="submit" @click="submitForm">Register</v-btn>
+          <v-btn @click="submitForm">Register</v-btn>
         </div>
       </v-form>
     </div>
@@ -55,35 +55,35 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import {useUserProfile} from '~/store/store';
+  import { ref } from 'vue';
+  import {useUserProfile} from '~/store/store';
 
-const user= useUserProfile()
-const formData= {
-  bankName : "",
-  bankBranch: "",
-  tellerStationNumber : "",
-  passcode : "",
+  const user= useUserProfile()
+  const route = useRouter()
+  const bankName = ref('')
+  const bankBranch = ref('')
+  const tellerStationNumber = ref('')
+  const passcode = ref('')
+  const formData= ref({
+    bankName : '',
+    bankBranch: '',
+    tellerStationNumber : '',
+    passcode : '',
 
-}
+  })
 
 
-const goBack = () => {
-  //go back function
-};
-async function submitForm() {
-  
-  await user.register(formData)
-  
-};
+  async function submitForm() {
+    formData.bankName = bankName.value
+    formData.bankBranch = bankBranch.value
+    formData.tellerStationNumber = tellerStationNumber.value
+    formData.passcode = passcode.value
+    
+    await user.register(formData)
+    // route.push('/')
 
-/*const checkPass=()=>{
-  if (formData.passcode== confirmPassword){
-
-  }
-}
-*/
-
+    
+  };
 
 </script>
 
@@ -146,15 +146,15 @@ button:disabled {
 }
 
 
-img{
+/* img{
   height: auto;
   width: 90px;
-}
+} */
 
-.logo-img{
+/* .logo-img{
   display: flex;
   flex-direction: row;
-}
+} */
 
 .back-btn{
   border-radius: 20px;
@@ -164,7 +164,4 @@ img{
 form{
   width: 300px;
 }
-
-
-
 </style>
