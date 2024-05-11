@@ -1,7 +1,7 @@
 <template>
     <v-row
         style="justify-content: center;"
-        class="pa-0 mt-5"
+        class="mt-3"
     >
         <v-dialog
             v-model="closeDialog"
@@ -11,11 +11,12 @@
             <template v-slot:activator="{props}">
                 <v-btn
                     :style="{textTransform:'none'}"
-                    @click="closeDialog=!closeDialog,user.getMessageThread()"
+                    @click="closeDialog=!closeDialog"
                     v-bind="props"
-                    vatiant="text"
-                    append-icon="mdi-location-enter"
+                    variant="flat"
+                    prepend-icon="mdi-location-enter"
                     color="green-lighten-1"
+                    class="rounded-pill"
                 >
                     Join
 
@@ -116,7 +117,7 @@
                     class="mt-0"
                 >
                         <v-card 
-                            :subtitle="role === 'Customer' ? 'Customer' : 'Teller'" 
+                            :subtitle="role === 'Customer' ? `Customer` : `Teller`" 
                             width="200" 
                             :color="role === 'Customer' ? 'white' : '#d1f4cc'" 
                             :class="['rounded-xl', role === 'Customer' ? 'rounded-ts-0' : 'rounded-be-0']" 
@@ -178,7 +179,7 @@
                                 class="mr-1 footer"
                                 append-inner-icon="mdi-send"
                                 prepend-inner-icon="mdi-swap-vertical"
-                                @click:append-inner="sendMessage()"
+                                @click:append-inner="sendMessage"
                                 @click:prepend-inner="swapRoles()"
                             />
                             <v-btn icon variant="text">
@@ -220,7 +221,6 @@
     import { ref, onMounted } from 'vue'
     import { db } from "@/utils/firebase";
     import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
-    import messageSound from '~/public/bubble-sound.mp3'
 
 
     const user = useUserProfile()    
@@ -234,11 +234,11 @@
     const msg = ref('')
     const role = ref('Teller')
     const label = ref('Send message as Teller')
-    const msgObj = ref({
-        'roles': [],
-        'messages': []
-    })
+    const msgObj = ref({})
+    const roles = ref(new Array())
+    const messages = ref(new Array())
     const active = ref(false)
+    console.log(roles.value)
 
     // const audio = new Audio(messageSound)
 
@@ -246,21 +246,39 @@
     //     audio.play()
     // }
 
-    const threadRef = dbRef(db, '/users/')
+    function isObject(variable) {
+        return variable !== null && typeof variable === 'object';
+    }
+    const threadRef = dbRef(db, `/users/${user.bankName}/${user.branchID}/${user.tellerStation}`)
     onChildAdded(threadRef, (snapshot) => {
         const newMessage = snapshot.val()
-         user.roles = newMessage['roles']
-         user.messages = newMessage['messages']
+        if(isObject(newMessage)){
+            if(newMessage.hasOwnProperty('roles')){
+                user.roles = newMessage['roles']
+            user.messages = newMessage['messages']
+            roles.value = user.roles
+            messages.value = user.messages
 
-        console.log('New message received:', user.messages);
+
+            console.log('New message received:', newMessage);
+
+
+            }
+        }
     })            
 
     onChildChanged(threadRef, (snapshot) => {
         const updatedMessage = snapshot.val()
-        user.roles = updatedMessage['roles']
-        user.messages = updatedMessage['messages']
+        if(isObject(updatedMessage)){
+            if(updatedMessage.hasOwnProperty('roles')){
+                user.roles = updatedMessage['roles']
+                user.messages = updatedMessage['messages']
+                roles.value = user.roles
+                messages.value = user.messages
 
-
+                console.log('Updated message received:', updatedMessage);
+            }
+        }
         // updatedMessage['roles'].forEach(role => {
         //     user.roles.push(role)
         // })
@@ -269,7 +287,6 @@
         //     user.messages.push(message)
         // })
 
-        console.log('Updated message received:', updatedMessage);
     })          
 
 
@@ -393,15 +410,30 @@
 
   }
 
-  async function sendMessage(){
-    // let roleArr = msgObj.value['roles']
-    // let messageArr = msgObj.value['messages']
-    // roleArr.push(role.value)
-    // messageArr.push(msg.value)
-    // msgObj.value['roles'] = roleArr
-    // msgObj.value['messages'] = messageArr
-    await user.sendMessage(role.value,msg.value)
-    let arr = user.msgThread['messages']
+//   onMounted(async()=>{
+//     await user.getMessageThread()
+//     roles.value = user.roles
+//     messages.value = user.messages
+//     console.log(roles.value)
+//   })
+
+    function calculateTime(){
+        const currentTime = new Date()
+        const hours = currentTime.getHours()
+        const minutes = currentTime.getMinutes()
+        const time = `${hours}:${minutes}`
+        return time
+        // return time
+    }
+
+  const sendMessage = async () =>{
+    console.log(roles.value)
+    roles.value.push(role.value)
+    messages.value.push(msg.value)
+    console.log(messages.value)
+
+    await user.sendMessage(roles.value,messages.value)
+    let arr = messages.value
     if(arr.length >= 5){
         active.value = true
 
@@ -424,6 +456,11 @@
 
     .threadActive{
         position:relative;
+        bottom: 0;
+        width: 100%;
+    }
+    .threadNotActive{
+        position:fixed;
         bottom: 0;
         width: 100%;
     }
