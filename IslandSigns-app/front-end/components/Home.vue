@@ -108,7 +108,9 @@
       console.log('Chat Active?:', isChatActive);
 
     }
-
+    else{
+      sessionActive.value = false
+    }
   })     
 
   async function createSession(){

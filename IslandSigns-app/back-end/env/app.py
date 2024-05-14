@@ -14,7 +14,7 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-customModel = YOLO("CustomModel_v8.pt")
+customModel = YOLO("best.pt")
 
 @app.route('/predict', methods=['POST'])
 def predict():

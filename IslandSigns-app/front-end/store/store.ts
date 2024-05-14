@@ -155,5 +155,32 @@ export const useUserProfile = defineStore('userprofiles',{
                 console.error(error)
             }
         },
+
+        async endSession(){
+            try{
+                const updates: any={}
+                updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chatActivity`]={
+                    isActive: false
+                }
+                return await update(ref(db),updates)
+
+            }
+            catch(error){
+                console.error(error)
+            }
+        },
+        async removeChatLog(){
+            try{
+                const updates: any={}
+                this.roles = []
+                this.messages = []
+                updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chat/`]=null
+                return await update(ref(db),updates)
+
+            }
+            catch(error){
+                console.error(error)
+            }
+        },
     }
 })
