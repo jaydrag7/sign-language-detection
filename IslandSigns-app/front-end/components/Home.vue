@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 <template>
   <v-container class="mt-14">
 
@@ -148,4 +146,3 @@
 }
 </style>
 
->>>>>>> a4a2d712532e044726d0a23a0822400425945cf8

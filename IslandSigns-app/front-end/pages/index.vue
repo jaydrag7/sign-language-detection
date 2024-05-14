@@ -1,29 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <v-container style="justify-content: center;" class="mt-5">
-    <v-row style="justify-content: center;">
-      <v-card class="rounded-lg"> 
-      <video width="500" height="" ref="video" autoplay muted></video>
-    </v-card>
-    </v-row>
-    <v-row style="justify-content: center;">
-      <canvas ref="screenshot" v-show="false"></canvas>
-    </v-row>
-    <v-row style="justify-content: center;">
-      <v-btn ref="openCamera" @click="startCamera(),cameraEnabled=!cameraEnabled" class="mt-5" color="green">Open Camera</v-btn>
-      <v-btn @click="stopCamera()" class="mt-5 ml-5" color="red">Close Camera</v-btn>
-    </v-row>
-    <v-row style="justify-content: center;">
-    <v-container style="justify-content: center;">
-      <v-card-text>
-        <span>{{ msg.predictions }}</span>
-
-
-      </v-card-text>
-    </v-container>
-    </v-row>
-  </v-container>
-=======
   <v-app>
     <v-app-bar app flat>
       <v-btn
@@ -206,86 +181,13 @@
         </footer>
 
   </v-app>
->>>>>>> a4a2d712532e044726d0a23a0822400425945cf8
 </template>
+
 <script setup>
   import {ref,onMounted} from 'vue'
   import axios from 'axios'
  
   const msg = ref("")
-
-  async function getPrediction(frame) {
-    const path = 'http://127.0.0.1:5000/'
-      await axios.post(path, {frame})
-        .then((res) => {
-          msg.value = res.data;
-        })
-        .catch((error) => {
-
-<<<<<<< HEAD
-          console.error(error);
-        })
-=======
-    // Handle register button click
-    const goToRegister = () => {
-    // Implement your register logic here
-    route.push( '/register' )
-  };
-  const goToSignIn = () => {
-    // Implement your register logic here
-    route.push( '/SigninPage' )
-  };
-
-
-</script>
-
-  
-  <style scoped>
-  /* General styles */
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-  .underline-link {
-    text-decoration: none; /* Remove underline by default */
-  }
-
-  .underline-link:hover {
-    text-decoration: underline; /* Add underline on hover */
-  }
-  
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  /* Header styles */
-  /* header {
-    background-color: #e2dfdf;
-    padding: 1rem;
-  } */
-
-  /* .hdimg-logo{
-    width: 75px;
-    margin-right: 20px;
-  } */
-  
-  nav ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  nav ul li {
-    display: inline-block;
-    margin-right: 1rem;
-  }
-  
-  nav ul li:last-child {
-    margin-right: 0;
->>>>>>> a4a2d712532e044726d0a23a0822400425945cf8
-  }
-
   const video = ref(null)
   const openCamera = ref(null)
   const stream = ref(null)
@@ -366,5 +268,73 @@
       stream.value = null;
     }
   }
+  async function getPrediction(frame) {
+    const path = 'http://127.0.0.1:5000/'
+      await axios.post(path, {frame})
+        .then((res) => {
+          msg.value = res.data;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+  }
 
+  // Handle register button click
+  const goToRegister = () => {
+    // Implement your register logic here
+    route.push( '/register' )
+  };
+  const goToSignIn = () => {
+    // Implement your sign-in logic here
+    route.push( '/SigninPage' )
+  };
 </script>
+
+<style scoped>
+/* General styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+.underline-link {
+  text-decoration: none; /* Remove underline by default */
+}
+
+.underline-link:hover {
+  text-decoration: underline; /* Add underline on hover */
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Header styles */
+/* header {
+  background-color: #e2dfdf;
+  padding: 1rem;
+} */
+
+/* .hdimg-logo{
+  width: 75px;
+  margin-right: 20px;
+} */
+
+nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+nav ul li {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+nav ul li:last-child {
+  margin-right: 0;
+}
+</style>
+
+  
+

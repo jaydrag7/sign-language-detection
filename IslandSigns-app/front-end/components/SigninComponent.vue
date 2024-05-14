@@ -1,12 +1,6 @@
 <template>
   <div id="app">
-<<<<<<< HEAD
-   <v-btn class="back-button" @click="goBack">← Back</v-btn>
-   <img src="/Users/kobe/Desktop/Islandsigns/sign-language-detection/IslandSigns-app/front-end/public/logo1.png" alt="Logo" class="logo">
-    <h1 class="header">Sign In</h1>
-=======
-    <h1 class="header"> <v-img src="IslandSigns-logo.png"/>Login</h1>
->>>>>>> a4a2d712532e044726d0a23a0822400425945cf8
+    <h1 class="header"> <v-img src="IslandSigns-logo.png" class="logo"/>Login</h1>
     <form @submit.prevent="submitForm" class="signup-form">
       <div>
         <v-btn icon="mdi-arrow-left" variant="tonal" class="mb-2" color="#61be61" @click="goBack"/>
@@ -49,63 +43,50 @@ const passcode = ref('');
 const user= useUserProfile()
 const route =useRouter()
 const goBack = () => {
-  route.push("/")
+  route.push("/index")
 };
 const errormsg=ref(false)
 const response=ref("")
 async function submitForm() {
-  
-  response.value = await user.signIn(bankName.value,bankBranch.value,tellerStationNumber.value,passcode.value)
-  if (response.value!="Password match"){
+  // Check if all fields are filled
+  if (bankName.value && bankBranch.value && tellerStationNumber.value && passcode.value) {
+    response.value = await user.signIn(bankName.value,bankBranch.value,tellerStationNumber.value,passcode.value)
+    if (response.value!="Password match"){
+      errormsg.value=true
+    }
+    else{
+      route.push("/chatsPage")
+    }
+  } else {
+    // If not all fields are filled, show the error message
     errormsg.value=true
-
+    response.value = "Please fill in all fields."
   }
-  else{
-    route.push("/chatsPage")
-  }
-  
 };
 
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 #app {
-  font-family: 'Roboto', sans-serif;
   display: flex;
   flex-direction: column; 
   justify-content: center;
   align-items: center;
-  height: 110vh;
+  height: 100vh;
   background-color: #fff;
 }
 
 .header {
   font-size: 2em;
   font-weight: bold;
-  margin-bottom: 5px; 
-  color: #333;
-}
-
-.signup-form {
-  position: relative;
-  max-width: 330px;
-  width: 90%;
-  background-color: white;
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: left;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .back-button {
-  position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 120px;
+  right: 250px;
   background-color: #61be61;
   color: white;
   border: none;
@@ -120,8 +101,7 @@ async function submitForm() {
 }
 
 .signup-form {
-  max-width: 330px;
-  width: 90%;
+  width: 330px;
   background-color: white;
   padding: 20px;
   border-radius: 20px;
@@ -137,8 +117,9 @@ async function submitForm() {
 }
 
 .submit-button {
-  width: 100%; 
-  padding: 5px; 
+  width: 50%; 
+  left:70px;
+  padding: 10px;
   background-color: #61be61; 
   color: white;
   border: none;
@@ -152,15 +133,16 @@ async function submitForm() {
 .submit-button:hover {
   background-color: #008000;
 }
-
 .error-message {
   color: red;
   font-size: 1.0em;
   margin-top: 0.5em;
 }
 .logo {
-  width: 200px;
-  height: 200px;
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  margin-bottom: 3px;
 }
 
 
