@@ -1,55 +1,36 @@
 <template>
-<!--<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-
-
-  <v-container style="justify-content: center; width: 700px" class="mt-5">
-      </v-container>
-      -->
-    <div class="r-container">
-      <!--
-      <div class="logo-img">
-        <img src="~/public/IslandSigns-logo.png" alt="Island Signs Logo" class="logo-img"/>
+  <div id="app">
+    <h1 class="header"> <v-img src="IslandSigns-logo.png"/>Register</h1>
+    <form @submit.prevent="submitForm" class="signup-form">
+      <div>
+        <v-btn icon="mdi-arrow-left" variant="tonal" class="mb-2" color="#61be61" @click="goBack"/>
       </div>
-      -->
-      <router-link :to="{ path: '/' }"><v-btn class="back-button"> ← Back</v-btn></router-link>
-      <h1 class="header">Register</h1>
 
-      <form class="register-form">
-        
-          <div class="form-group">
-            <label>Bank Name</label>
-            <v-text-field label="Bank Name" v-model="bankName" required></v-text-field>
-          </div>
-          <div class="form-group">
-            <label>Bank Branch</label>
-            <v-text-field label="Bank Branch" v-model="bankBranch" required></v-text-field>
-          </div>
-          <div class="form-group">
-            <label>Teller Station Number</label>
-            <v-text-field label="Teller Station Number" v-model="tellerStationNumber" required></v-text-field>
-          </div>
-          <div class="form-group">
-            <label>Passcode</label>
-            <v-text-field label="Passcode" type="password" v-model="passcode" required></v-text-field>
-          </div>
-          <!--
-          <v-col cols="12" class="form-group">
-            <v-label for="confirmPassword">Confirm Passcode</v-label>
-            <v-text-field type="password" id="confirmPassword" v-model="confirmPassword" required></v-text-field>
-            <span v-if="passwordsMatch === false" class="error">Passwords do not match</span>
-          </v-col>
-          -->
-          <v-btn class="submit-button" @click="submitForm">Register</v-btn>
-        
-
-      </form>
-    </div>
-
-  
+      <div class="form-group">
+        <label for="bankName"><b>Bank Name</b></label> 
+        <v-text-field id="bankName" label="eg: NCB" v-model="bankName"></v-text-field>
+      </div>
+      <div class="form-group">
+        <label for="bankBranch"><b>Bank Branch</b></label>
+        <v-text-field id="bankBranch" label="eg: HWT2378" v-model="bankBranch"></v-text-field>
+      </div>
+      <div class="form-group">
+        <label for="tellerStationNumber"><b>Teller Station Number</b></label>
+        <v-text-field id="tellerStationNumber" label="eg: 2" v-model="tellerStationNumber"></v-text-field>
+      </div>
+      <div class="form-group">
+        <label for="passcode"><b>Passcode</b></label>
+        <v-text-field id="passcode" label="eg: #4892JyHG" v-model="passcode" type="password"></v-text-field>
+      </div>
+      <div>
+        <v-card-text v-if="isRegistered" class="">
+          You are now a registered user.
+        </v-card-text>
+      </div>
+      <v-btn @click=submitForm class="submit-button" style="text-transform: none;">Register</v-btn>
+    </form>
+  </div>
 </template>
-
 <script setup>
   import { ref } from 'vue';
   import {useUserProfile} from '~/store/store';
@@ -67,6 +48,13 @@
     passcode : '',
 
   })
+  const isRegistered = ref(false)
+
+  const goBack = () => {
+    isRegistered.value=false
+    route.push("/")
+};
+
 
 
   async function submitForm() {
@@ -75,100 +63,21 @@
     formData.tellerStationNumber = tellerStationNumber.value
     formData.passcode = passcode.value
     
-    await user.register(formData)
-    route.push('/')
-
-    
-  };
+    await user.register(formData) 
+    isRegistered.value=true
+   
+  }
 
 </script>
 
 <style scoped>
-
-.form-group{
-  margin-bottom: 1em;
-}
-
-/*
-.r-container{
+#app {
   display: flex;
   flex-direction: column; 
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: #f5f5f5;
-}
-
-
-.register-page{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 600px;
-}
-
-
-label {
-  margin-bottom: 0.5rem;
-}
-
-input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: rgb(233, 233, 233);
-}
-*/
-/*
-button {
-  padding: 0.5rem 1rem;
-  background-color: #82f0ac;
-  color: black;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-/
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.error {
-  color: red;
-}
-
-.s-btn{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
- */
-img{
-  height: auto;
-  width: 90px;
-}
-
-.logo-img{
-  display: flex;
-  flex-direction: row;
-}
-
-.back-btn{
-  border-radius: 20px;
-  width: 100px;
-}
-
-/* */
-.r-container {
-  display: flex;
-  flex-direction: column; 
-  justify-content: center;
-  align-items: center;
-  height: auto;
-  background-color: #f5f5f5;
+  height: 120vh;
+  background-color: #fff;
 }
 
 .header {
@@ -193,14 +102,14 @@ img{
   background-color: #008000;
 }
 
-.logo-image {
+.sign-in-image {
   width: 180px;
   height: 180px;
   object-fit: cover;
   margin-bottom: 3px;
 }
 
-.register-form {
+.signup-form {
   width: 330px;
   background-color: white;
   padding: 20px;
@@ -210,6 +119,10 @@ img{
   flex-direction: column;
   justify-content: center;
   align-items: left;
+}
+
+.form-group {
+  margin-bottom: 1em;
 }
 
 .submit-button {

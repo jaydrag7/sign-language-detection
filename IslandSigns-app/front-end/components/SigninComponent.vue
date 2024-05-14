@@ -1,30 +1,33 @@
 <template>
   <div id="app">
-   <v-btn class="back-button" @click="goBack">← Back</v-btn>
-    <h1 class="header">Sign In</h1>
+    <h1 class="header"> <v-img src="IslandSigns-logo.png"/>Login</h1>
     <form @submit.prevent="submitForm" class="signup-form">
+      <div>
+        <v-btn icon="mdi-arrow-left" variant="tonal" class="mb-2" color="#61be61" @click="goBack"/>
+      </div>
+
       <div class="form-group">
         <label for="bankName"><b>Bank Name</b></label> 
-        <v-text-field id="bankName" label="Bank Name" v-model="bankName"></v-text-field>
+        <v-text-field id="bankName" label="eg: NCB" v-model="bankName"></v-text-field>
       </div>
       <div class="form-group">
         <label for="bankBranch"><b>Bank Branch</b></label>
-        <v-text-field id="bankBranch" label="Bank Branch" v-model="bankBranch"></v-text-field>
+        <v-text-field id="bankBranch" label="eg: HWT2378" v-model="bankBranch"></v-text-field>
       </div>
       <div class="form-group">
         <label for="tellerStationNumber"><b>Teller Station Number</b></label>
-        <v-text-field id="tellerStationNumber" label="Teller Station Number" v-model="tellerStationNumber"></v-text-field>
+        <v-text-field id="tellerStationNumber" label="eg: 2" v-model="tellerStationNumber"></v-text-field>
       </div>
       <div class="form-group">
         <label for="passcode"><b>Passcode</b></label>
-        <v-text-field id="passcode" label="Passcode" v-model="passcode" type="password"></v-text-field>
+        <v-text-field id="passcode" label="eg: #4892JyHG" v-model="passcode" type="password"></v-text-field>
       </div>
       <div>
         <v-card-text v-if="errormsg" class="text-red">
           {{response }}
         </v-card-text>
       </div>
-      <v-btn @click=submitForm class="submit-button">Sign In</v-btn>
+      <v-btn @click=submitForm class="submit-button" style="text-transform: none;">Login</v-btn>
     </form>
   </div>
 </template>
@@ -66,8 +69,8 @@ async function submitForm() {
   flex-direction: column; 
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: #f5f5f5;
+  height: 110vh;
+  background-color: #fff;
 }
 
 .header {

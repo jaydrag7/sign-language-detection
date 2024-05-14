@@ -1,114 +1,185 @@
 <template>
-
   <v-app>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <v-main>
-      <v-container fluid class="landing-page">
-        <header>
-          <v-app-bar app flat color="#e2dfdf">
-            <v-img
-              src="IslandS Logo.png"
-              alt="Island Signs Logo" max-width="70px" class="hdimg-logo"
-            />
-            <p></p>
-            <h4>IslandSigns - Jamaican Sign Language Translator</h4>
-            <v-spacer></v-spacer>
-            <v-btn text to="/">Home</v-btn>
-            
-          </v-app-bar>
-        </header>
+    <v-app-bar app flat>
+      <v-btn
+        style="text-transform:none;"
 
-        <main>
-          <section class="head">
-            <v-container fluid class="max-w-1000 mx-auto">
-              <v-row class="head-content">
-                
-                <h1>IslandSigns - Jamaican Sign Language Translator</h1>
-              </v-row>
-              <br>
-              <p>Translate Jamaican Sign Language into text and speech to text.</p>
-            </v-container>
-          </section>
+      >
+        Support
+      </v-btn>
+      <v-spacer/>
+      <v-spacer/>
+      <v-spacer/>
+      <v-spacer/>
+      <v-spacer/>
+      <v-spacer/>
+      <v-avatar image="IslandSigns-logo.png" size="100"/>
+      <v-card-title class="text-h6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">IslandSigns</v-card-title>
+      <v-spacer/>
+      <v-spacer/>
+      <v-spacer/>
+      <v-spacer/>
+      <v-spacer/>
+      <v-spacer/>
 
-          <section class="type-options" justify-content="center">
-            <v-container fluid>
-              <v-row justify="space-around" wrap>
-                <v-col cols="12" md="6">
-                  <div class="language-option">
-                    <h2>For those who sign</h2>
-                    <br>
-                    <v-img src="sign.png" alt="Sign Language Option" width="300px"/>
-                  </div>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <div class="language-option">
-                    <h2>For those who speak</h2>
-                    <br>
-                    <v-img src="speak.png" alt="Speak Language Option" width="300px"/>
-                  </div>
-                </v-col>
-              </v-row>
-            </v-container>
-          </section>
+      <v-btn 
+        variant="outlined"
+        @click="goToSignIn" 
+        class="mr-2"
+        width="30"
+        style="text-transform:none;"
+      >
+        Log in
+      </v-btn>
 
-          <section class="button-options" justify-content="center">
-           
-            <v-container fluid class="con-btn">
-                <div class="login-btn">
-                <v-btn @click="goToSignIn" block color="green">Login</v-btn>
-                </div>
-                <div class="register-btn">
-                  <v-btn @click="goToRegister" block color="green">Register</v-btn>
-                </div>
+      <v-btn 
+        variant="flat"
+        @click="goToRegister" 
+        color="blue-lighten-1"
+        style="text-transform:none;"
+
+      >
+        Register
+      </v-btn>
+    </v-app-bar>
+    <v-container class="mt-10">
+      <v-row  class="mt-10">
+        <v-col/>
+        <v-col>
+          <v-card-title class="text-h5 text-blue-lighten-1" style="font-family: Verdana, Geneva, Tahoma, sans-serif;">
+            For those who Sign
+          </v-card-title>
+          <v-img src="sign.png" width="300"/>
+        </v-col>
+        <v-col>
+          <v-card-title class="text-h5 text-blue-lighten-1" style="font-family: Verdana, Geneva, Tahoma, sans-serif;">
+            For those who Speak
+          </v-card-title>
+          <v-img src="speak.png" width="300"/>
+        </v-col>
+        <v-col/>
+      </v-row>
+    </v-container>
+    <v-row class="mt-10">
+        <v-card class="rounded-sm" color="" variant="flat" style="width: 100%;">
+          <v-row>
+            <v-col/>
+            <v-col>
+            <v-row class="mt-2">
+            <v-card-title class="text-h4 text-blue-lighten-1" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            Redefining
+          </v-card-title>
+          </v-row>
+          <v-row>
+            <v-card-title class="text-h4 text"  style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            your banking experience
+          </v-card-title>
+          </v-row>
+          <v-row>
+            <v-card-title class="text-h4"  style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+              with
+            </v-card-title>
+            <v-card-title class="text-h4 text-green-lighten-1 mb-5"  style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+              Artificial Intelligence
+            </v-card-title>
+          </v-row>
+          </v-col>
+          <v-col>
+            <v-img height="150" src="bank.png"/>
+          </v-col>
+          <v-col/>
+
+
+          </v-row>
+        </v-card>
+    </v-row>
+    <v-row class="mt-10">
+      
+      <v-col>
+        <v-container class="mt-10">
+      <h2>How to Use</h2>
+      <br>
+      
+      <div class="use"><div class="start">1</div> Create your account.</div>
+      <div class="use"><div class="start">2</div> Start a session.</div>
+      <div class="use"><div class="start">3</div> Begin your conversation and our app will do the rest.</div>
+      
+    </v-container>
+      </v-col>
+      <v-col>
+        <v-card variant="flat" class="rounded-xl mt-10" color="blue-lighten-4" style="max-width: 600px; margin: 0 auto;">
+          <v-row>
+        <v-col>
+          <v-card-text align="left" class="text-h6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+            IslandSigns serves as a pivotal communication solution between the deaf or hard-of-hearing community and hearing individuals when making banking transactions in Jamaica.
+            We train our custom AI model on a variety of banking scenarios to capture JSL in real-time. Allowing for seamless communication and creating an inclusive space for deaf Jamaicans.
+
+          </v-card-text>
+        </v-col>
+      </v-row><br>
+        </v-card>
+      </v-col>
+    </v-row>
+    <footer class="mt-10">
+          <v-container fluid>
+            <v-row>
+              <v-container>
+                <v-row>
+                  <v-col>
+                    <v-card-text class="text-blue-lighten-1 text-body-1">
+                      Company
+                    </v-card-text>
+                    <v-card-text class="underline-link">
+                      About
+                    </v-card-text>
+                    <v-card-text class="underline-link">
+                      Contact Us
+                    </v-card-text>
+                  </v-col>
+               <v-col>
+                <v-card-text class="text-blue-lighten-1 text-body-1">
+                  Blog
+                </v-card-text>
+                <v-card-text class="underline-link">
+                  JSL
+                </v-card-text>
+                <v-card-text class="underline-link">
+                  Resources
+                </v-card-text>
+               </v-col>
+               <v-col>
+                <v-card-text class="text-blue-lighten-1 text-body-1">
+                  Learn
+                </v-card-text>
+                <v-card-text class="underline-link">
+                  Help Center
+                </v-card-text>
+               </v-col>
+            </v-row>
+              </v-container>
+            </v-row>
+            <v-row justify="left">            
               
-            </v-container>
-          </section>
-
-         <section class="how-to" justify-content="center">
-            <v-container fluid class="how-one">
-              <h2>How to Use</h2>
-              <br>
-              
-              <div class="use"><div class="start">1</div> Start a Session</div>
-              <div class="use"><div class="start">2</div> Begin your conversation and our app will do the rest.</div>
-             
-            </v-container>
-          </section>
-
-          <section class="about" justify-content="center">
-            <v-container fluid class="about-one" >
-              <h2 class="text-center">About</h2>
-              <br>
-              <p>
-                IslandSigns serves as a pivotal communication solution between the deaf or hard-of-hearing community and hearing individuals when making banking transactions in Jamaica.
-              </p>
-              <br>
-              <p>
-                We train our custom AI model on a variety of banking scenarios to capture JSL in real-time. Allowing for seamless communication and creating an inclusive space for deaf Jamaicans.
-              </p>
-            </v-container>
-          </section>
-
-        </main>
-
-
-        <footer>
-          <v-container fluid class="pa-0">
-            <v-row justify="center">
-              
-              <v-col cols="12" class="mt-4">
-                <v-row justify="center">
-                  <img src="~/public/insta.png" alt="Insta Logo" width="50px">
-                  <img src="~/public/twit.png" alt="Twitter Logo" width="50px">
-                  <img src="~/public/fb1.png" alt="Facebook Logo" width="50px">
-                </v-row>
-              </v-col>
-              <v-col cols="12" class="text-center text-caption grey--text">&copy; 2024 ISLANDSIGNS</v-col>
+                <span 
+                  class="text-center text-caption grey--text"
+                >
+                  &copy; ISLANDSIGNS 2024
+                </span>            
+                <span class="ml-2 mt-n2">
+                  <a class="text-center grey--text" style="text-decoration: underline; font-size: small">Privacy</a>
+                </span>
+                <span class="ml-2 mt-n2">
+                  <a class="text-center grey--text" style="text-decoration: underline; font-size: small">Terms</a>
+                </span>
+              <v-col/>
+              <v-col/>
+              <v-col/>
+              <v-col/>
+              <v-col/>
             </v-row>
           </v-container>
         </footer>
-      </v-container>
-    </v-main>
+
   </v-app>
 </template>
   
@@ -137,6 +208,13 @@
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+  }
+  .underline-link {
+    text-decoration: none; /* Remove underline by default */
+  }
+
+  .underline-link:hover {
+    text-decoration: underline; /* Add underline on hover */
   }
   
   a {
