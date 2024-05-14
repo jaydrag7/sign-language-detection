@@ -56,7 +56,7 @@
                                 <v-img
                                     src="caution.png"
                                     height="30"
-                                    class="mt-2"
+                                    class="mt-2 ml-2"
                                 />
                                 <v-card-text
                                     class="text-h4 text-red"
@@ -83,7 +83,7 @@
                                     class="mr-5"
                                     variant="outlined"
                                     rounded
-                                    @click="closeDialog=false;closeWarningDialog=false"
+                                    @click="closeDialog=false;closeWarningDialog=false,endSession()"
                                 >
                                     Yes
                                 </v-btn>
@@ -287,7 +287,13 @@
         //     user.messages.push(message)
         // })
 
-    })          
+    })
+    
+    async function endSession(){
+        
+        await user.endSession()
+        return await user.removeChatLog()
+    }
 
 
 

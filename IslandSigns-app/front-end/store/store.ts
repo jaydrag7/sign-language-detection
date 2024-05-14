@@ -139,6 +139,51 @@ export const useUserProfile = defineStore('userprofiles',{
                 console.error(error)
             }
                 
+<<<<<<< HEAD
         }
+=======
+        },
+
+        async createSession(){
+            try{
+                const updates: any={} 
+                updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chatActivity`] = {
+                    isActive: true
+                }
+                return await update(ref(db),updates)
+
+            }
+            catch(error){
+                console.error(error)
+            }
+        },
+
+        async endSession(){
+            try{
+                const updates: any={}
+                updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chatActivity`]={
+                    isActive: false
+                }
+                return await update(ref(db),updates)
+
+            }
+            catch(error){
+                console.error(error)
+            }
+        },
+        async removeChatLog(){
+            try{
+                const updates: any={}
+                this.roles = []
+                this.messages = []
+                updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chat/`]=null
+                return await update(ref(db),updates)
+
+            }
+            catch(error){
+                console.error(error)
+            }
+        },
+>>>>>>> a4a2d712532e044726d0a23a0822400425945cf8
     }
 })
