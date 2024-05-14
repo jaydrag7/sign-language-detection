@@ -2,55 +2,51 @@
 <!--<head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
--->
+
 
   <v-container style="justify-content: center; width: 700px" class="mt-5">
-
+      </v-container>
+      -->
     <div class="r-container">
-      <router-link :to="{ path: '/' }">
-      <v-btn class="back-btn"> ← Back</v-btn>
-    </router-link>
-
-    <div class="register-page">
+      <!--
       <div class="logo-img">
-        <v-img src="IslandSigns-logo.png" alt="Island Signs Logo"/>
+        <img src="~/public/IslandSigns-logo.png" alt="Island Signs Logo" class="logo-img"/>
       </div>
+      -->
+      <router-link :to="{ path: '/' }"><v-btn class="back-button"> ← Back</v-btn></router-link>
+      <h1 class="header">Register</h1>
 
-      <h2><b>Register</b></h2>
-      <br>
-      <p></p>
-
-      <v-form >
-        <v-row>
-          <v-col cols="12"  class="form-group">
-            <v-label>Bank Name</v-label>
-            <v-text-field v-model="bankName" required></v-text-field>
-          </v-col>
+      <form class="register-form">
+        
+          <div class="form-group">
+            <label>Bank Name</label>
+            <v-text-field label="Bank Name" v-model="bankName" required></v-text-field>
+          </div>
+          <div class="form-group">
+            <label>Bank Branch</label>
+            <v-text-field label="Bank Branch" v-model="bankBranch" required></v-text-field>
+          </div>
+          <div class="form-group">
+            <label>Teller Station Number</label>
+            <v-text-field label="Teller Station Number" v-model="tellerStationNumber" required></v-text-field>
+          </div>
+          <div class="form-group">
+            <label>Passcode</label>
+            <v-text-field label="Passcode" type="password" v-model="passcode" required></v-text-field>
+          </div>
+          <!--
           <v-col cols="12" class="form-group">
-            <v-label>Bank Branch</v-label>
-            <v-text-field v-model="bankBranch" required></v-text-field>
-          </v-col>
-          <v-col cols="12" class="form-group">
-            <v-label>Teller Station Number</v-label>
-            <v-text-field v-model="tellerStationNumber" required></v-text-field>
-          </v-col>
-          <v-col cols="12" class="form-group">
-            <v-label>Passcode</v-label>
-            <v-text-field type="password" v-model="passcode" required></v-text-field>
-          </v-col>
-          <v-col cols="12" class="form-group">
-            <!--<v-label for="confirmPassword">Confirm Passcode</v-label>
+            <v-label for="confirmPassword">Confirm Passcode</v-label>
             <v-text-field type="password" id="confirmPassword" v-model="confirmPassword" required></v-text-field>
-            <span v-if="passwordsMatch === false" class="error">Passwords do not match</span>-->
+            <span v-if="passwordsMatch === false" class="error">Passwords do not match</span>
           </v-col>
-        </v-row>
-        <div class="s-btn">
-          <v-btn @click="submitForm">Register</v-btn>
-        </div>
-      </v-form>
+          -->
+          <v-btn class="submit-button" @click="submitForm">Register</v-btn>
+        
+
+      </form>
     </div>
-  </div>
-  </v-container>
+
   
 </template>
 
@@ -80,7 +76,7 @@
     formData.passcode = passcode.value
     
     await user.register(formData)
-    // route.push('/')
+    route.push('/')
 
     
   };
@@ -90,18 +86,19 @@
 <style scoped>
 
 .form-group{
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1rem;
+  margin-bottom: 1em;
 }
 
-
+/*
 .r-container{
-  border-style: solid;
-  border-color: rgb(161, 161, 161);
-  border-width: 1px;
-  padding: 30px;
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5;
 }
+
 
 .register-page{
   display: flex;
@@ -109,6 +106,7 @@
   align-items: center;
   width: 600px;
 }
+
 
 label {
   margin-bottom: 0.5rem;
@@ -120,7 +118,8 @@ input {
   border-radius: 4px;
   background-color: rgb(233, 233, 233);
 }
-
+*/
+/*
 button {
   padding: 0.5rem 1rem;
   background-color: #82f0ac;
@@ -129,6 +128,7 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
+/
 
 button:disabled {
   background-color: #ccc;
@@ -145,23 +145,88 @@ button:disabled {
   justify-content: center;
 }
 
-
-/* img{
+ */
+img{
   height: auto;
   width: 90px;
-} */
+}
 
-/* .logo-img{
+.logo-img{
   display: flex;
   flex-direction: row;
-} */
+}
 
 .back-btn{
   border-radius: 20px;
   width: 100px;
 }
 
-form{
-  width: 300px;
+/* */
+.r-container {
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  background-color: #f5f5f5;
+}
+
+.header {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.back-button {
+  top: 120px;
+  right: 250px;
+  background-color: #61be61;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 5px 15px;
+  cursor: pointer;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back-button:hover {
+  background-color: #008000;
+}
+
+.logo-image {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  margin-bottom: 3px;
+}
+
+.register-form {
+  width: 330px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+}
+
+.submit-button {
+  width: 50%; 
+  left:70px;
+  padding: 10px;
+  background-color: #61be61; 
+  color: white;
+  border: none;
+  border-radius: 50px; 
+  cursor: pointer;
+  margin-top: 20px; 
+  display: flex;
+  justify-content: center;
+}
+
+.submit-button:hover {
+  background-color: #008000;
 }
 </style>

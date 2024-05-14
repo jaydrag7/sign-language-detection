@@ -40,7 +40,7 @@ const passcode = ref('');
 const user= useUserProfile()
 const route =useRouter()
 const goBack = () => {
-  route.push("/homePage")
+  route.push("/")
 };
 const errormsg=ref(false)
 const response=ref("")

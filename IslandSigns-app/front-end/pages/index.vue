@@ -1,8 +1,5 @@
 <template>
 
-
-
-
   <v-app>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <v-main>
@@ -10,8 +7,8 @@
         <header>
           <v-app-bar app flat color="#e2dfdf">
             <v-img
-              src="IslandSigns-logo.png"
-              alt="Island Signs Logo" max-width="60px" class="hdimg-logo"
+              src="IslandS Logo.png"
+              alt="Island Signs Logo" max-width="70px" class="hdimg-logo"
             />
             <p></p>
             <h4>IslandSigns - Jamaican Sign Language Translator</h4>
@@ -33,7 +30,7 @@
             </v-container>
           </section>
 
-          <section class="type-options">
+          <section class="type-options" justify-content="center">
             <v-container fluid>
               <v-row justify="space-around" wrap>
                 <v-col cols="12" md="6">
@@ -101,9 +98,9 @@
               
               <v-col cols="12" class="mt-4">
                 <v-row justify="center">
-                  <v-img src="insta.png" alt="Insta Logo" width="50px"/>
-                  <v-img src="twit.png" alt="Twitter Logo" width="50px"/>
-                  <v-img src="fb1.png" alt="Facebook Logo" width="50px"/>
+                  <img src="~/public/insta.png" alt="Insta Logo" width="50px">
+                  <img src="~/public/twit.png" alt="Twitter Logo" width="50px">
+                  <img src="~/public/fb1.png" alt="Facebook Logo" width="50px">
                 </v-row>
               </v-col>
               <v-col cols="12" class="text-center text-caption grey--text">&copy; 2024 ISLANDSIGNS</v-col>
@@ -153,10 +150,10 @@
     padding: 1rem;
   } */
 
-  /* .hdimg-logo{
-    width: 75px;
-    margin-right: 20px;
-  } */
+  .hdimg-logo{
+    width: 70px;
+    margin-right: 10px;
+  } 
   
   nav ul {
     list-style: none;
@@ -238,12 +235,28 @@
     /*padding: 4rem 0;*/
     padding: 10px;
   }
-  
+
+  .language-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+  text-align: center; /* Center text */
+}
+
+.language-option img {
+  max-width: 100%; /* Ensure images don't exceed container width */
+  height: auto; /* Maintain aspect ratio */
+  margin-bottom: 1rem; /* Add some space below images */
+}
+ /* 
   .language-option{
     flex: 1 1 300px;
     padding: 0 1rem;
     text-align: center;
+    justify-content: center;
+    align-items: center;
   }
+  */
   
   .language-option h2 {
     font-size: 1.8rem;
@@ -354,10 +367,11 @@
   }
 
 
-  /* footer img{
+  footer img{
     width: 50px;
-    height: auto;
+    height: 50px;
     margin: 7px;
 
-  } */
+  }
+
   </style>
