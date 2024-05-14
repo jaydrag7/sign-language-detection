@@ -105,19 +105,5 @@ export const useUserProfile = defineStore('userprofiles',{
                 console.error(error)
             }
         },
-        async register(data: object){
-            try{
-                const updates:any={}
-                updates[`users/${data.bankName}/${ data.bankBranch}/${data.tellerStationNumber}/`]={
-                    bankTellerPasscode: data.passcode
-                }
-                return await update(ref(db),updates)
-
-            }
-            catch(error){
-                console.error(error)
-            }
-                
-        }
     }
 })
