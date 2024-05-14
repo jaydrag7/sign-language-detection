@@ -41,25 +41,21 @@ const passcode = ref('');
 const user= useUserProfile()
 const route =useRouter()
 const goBack = () => {
-  route.push("/homePage")
+  route.push("/")
 };
 const errormsg=ref(false)
 const response=ref("")
 async function submitForm() {
-  // Check if all fields are filled
-  if (bankName.value && bankBranch.value && tellerStationNumber.value && passcode.value) {
-    response.value = await user.signIn(bankName.value,bankBranch.value,tellerStationNumber.value,passcode.value)
-    if (response.value!="Password match"){
-      errormsg.value=true
-    }
-    else{
-      route.push("/chatsPage")
-    }
-  } else {
-    // If not all fields are filled, show the error message
+  
+  response.value = await user.signIn(bankName.value,bankBranch.value,tellerStationNumber.value,passcode.value)
+  if (response.value!="Password match"){
     errormsg.value=true
-    response.value = "Please fill in all fields."
+
   }
+  else{
+    route.push("/chatsPage")
+  }
+  
 };
 
 </script>

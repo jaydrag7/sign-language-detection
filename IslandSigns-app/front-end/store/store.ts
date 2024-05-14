@@ -7,9 +7,10 @@ interface UserProfile{
     branchID: Number,
     tellerStation:Number,
     passcode: String,
-    msgThread:Object,
+    msgThread:any,
     roles:String[],
-    messages:String[]
+    messages:String[],
+    sessionActive: Boolean
 }
 export const useUserProfile = defineStore('userprofiles',{
     state:():UserProfile => ({
@@ -19,7 +20,8 @@ export const useUserProfile = defineStore('userprofiles',{
         passcode: "",
         msgThread:{},
         roles:[],
-        messages:[]
+        messages:[],
+        sessionActive: false
     }),
     getters:{
         getThread(state){
@@ -34,9 +36,11 @@ export const useUserProfile = defineStore('userprofiles',{
                 const data=await get(child(ref(db),`users/${bankName}/${branchID}/${tellerStation}`))
                 if(data.exists()){
                     const pass=Object.values(data.val())
-    
-                    console.log(pass)
                     if(pass[0]==passcode){
+                        this.bankName = bankName
+                        this.branchID = branchID
+                        this.tellerStation = tellerStation
+                        this.passcode = passcode
                         return "Password match"
                     
                     }
@@ -57,20 +61,19 @@ export const useUserProfile = defineStore('userprofiles',{
                 console.log(error)
             }
         },
-        async sendMessage(role:String,msg:String){
+        async sendMessage(roles:any,msgs:any){
             try{
                 const updates: any={}
                 // this.msgThread['roles'].push(role)
                 // this.msgThread['messages'].push(msg)
-                this.roles.push(role)
-                this.messages.push(msg)
-
-                // console.log(this.roles,this.messages)
+                this.roles = roles
+                console.log(this.roles)
+                this.messages = msgs
                 this.msgThread = {
                     'roles': this.roles,
                     'messages':this.messages
                 }
-                updates[`/users/chat/`]=this.msgThread
+                updates[`/users/${this.bankName}/${this.branchID}/${this.tellerStation}/chat`]=this.msgThread
                 return await update(ref(db),updates)
             }
             catch(error){
@@ -78,32 +81,64 @@ export const useUserProfile = defineStore('userprofiles',{
             }
 
         },
-        async getMessageThread(){
+        // async getMessageThread(){
+        //     try{
+        //         const threadRef = ref(db)
+        //         const data = await get(child(threadRef,`/users/${this.bankName}/${this.branchID}/${this.tellerStation}/chat/`))
+        //         if(data.exists()){
+        //             let prevThread: any={}
+        //             prevThread = data.val()
+        //             if(prevThread!=undefined){
+        //                 console.log(prevThread)
+        //                 this.roles = prevThread.roles
+        //                 this.messages =prevThread.messages
+        //                 console.log(this.messages)
+    
+
+        //             }
+        //         }
+        //     }
+        //     catch(error){
+        //         console.error(error)
+        //     }
+        // },
+
+        async getChatActivity(){
             try{
                 const threadRef = ref(db)
-                const data = await get(child(threadRef,`/users/`))
+                const data = await get(child(threadRef,`/users/${this.bankName}/${this.branchID}/${this.tellerStation}/`))
                 if(data.exists()){
-                    let prevThread: any={}    
-                    prevThread = data.val()
-                    // this.roles.concat(prevThread['chat']['roles'])
-                    // this.messages.concat(prevThread['chat']['messages'])
-                    console.log(this.messages)
-                }
-                // get(child(threadRef, `users/`)).then((snapshot) => {
-                //     if (snapshot.exists()) {
-                //         let prevThread: any={}    
-                //         prevThread = snapshot.val()                  
+                    let nodes: any={}    
+                    nodes = data.val()
+                    if(nodes['isActive']){
+                        this.sessionActive = true
+                    }
 
-                //         console.log(prevThread)
-                //     } else {
-                //       console.log("No data available");
-                //     }
-                // })                                              
+
+                }
+
 
             }
             catch(error){
                 console.error(error)
             }
         },
+        async register(data: object){
+            try{
+                const updates:any={}
+                updates[`users/`]={
+                    bankName: data.bankName,
+                    bankID: data.bankBranch,
+                    banktsnum: data.tellerStationNumber,
+                    bankTellerPasscode: data.passcode
+                }
+                return await update(ref(db),updates)
+
+            }
+            catch(error){
+                console.error(error)
+            }
+                
+        }
     }
 })
