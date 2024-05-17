@@ -459,7 +459,7 @@ async function getPrediction(frame) {
         console.log(st)
 
         // const openai = new OpenAI({
-        //   apiKey: "sk-proj-kWn31C0aMk2tSfzVeW8tT3BlbkFJRWjiqXsXpUSZSupXVsaW",
+        //   apiKey: "",
         //   dangerouslyAllowBrowser: true,
         // });
 
