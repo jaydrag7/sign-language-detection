@@ -182,7 +182,7 @@
                                 @click:append-inner="sendMessage"
                                 @click:prepend-inner="swapRoles()"
                             />
-                            <v-btn icon variant="text">
+                            <v-btn @click="" icon variant="text">
                                 <v-icon icon="mdi-microphone"/>
                                 <v-tooltip
                                     activator="parent"
@@ -221,6 +221,12 @@
     import { ref, onMounted } from 'vue'
     import { db } from "@/utils/firebase";
     import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
+    import OpenAI from 'openai'
+
+    // import { AssemblyAI } from 'assemblyai'
+    // import { Readable } from 'stream'
+    // import recorder from 'node-record-lpcm16'
+
 
 
     const user = useUserProfile()    
@@ -245,6 +251,69 @@
     // const playMessageSound = () =>{
     //     audio.play()
     // }
+
+    // async function recordAudio(){
+    // const client = new AssemblyAI({
+    //     apiKey: '90900b36bdd4486e8be7a22cda507fe1'
+    // })
+
+    // const transcriber = client.realtime.transcriber({
+    //     sampleRate: 16_000
+    // })
+
+    // transcriber.on('open', ({ sessionId }) => {
+    //     console.log(`Session opened with ID: ${sessionId}`)
+    // })
+
+    // transcriber.on('error', (error) => {
+    //     console.error('Error:', error)
+    // })
+
+    // transcriber.on('close', (code, reason) =>
+    //     console.log('Session closed:', code, reason)
+    // )
+
+    // transcriber.on('transcript', (transcript) => {
+    //     if (!transcript.text) {
+    //     return
+    //     }
+
+    //     if (transcript.message_type === 'PartialTranscript') {
+    //     console.log('Partial:', transcript.text)
+    //     } else {
+    //     console.log('Final:', transcript.text)
+    //     }
+    // })
+
+    // try {
+    //     console.log('Connecting to real-time transcript service')
+    //     await transcriber.connect()
+
+    //     console.log('Starting recording')
+    //     const recording = recorder.record({
+    //     channels: 1,
+    //     sampleRate: 16_000,
+    //     audioType: 'wav' // Linear PCM
+    //     })
+
+    //     Readable.toWeb(recording.stream()).pipeTo(transcriber.stream())
+
+    //     // Stop recording and close connection using Ctrl-C.
+    //     process.on('SIGINT', async function () {
+    //     console.log()
+    //     console.log('Stopping recording')
+    //     recording.stop()
+
+    //     console.log('Closing real-time transcript connection')
+    //     await transcriber.close()
+
+    //     process.exit()
+    //     })
+    // } catch (error) {
+    //     console.error(error)
+    // }
+    // }
+
 
     function isObject(variable) {
         return variable !== null && typeof variable === 'object';
@@ -334,35 +403,90 @@
 
   const customerObj=ref({})
 
-  async function getPrediction(frame) {
-    const path = 'http://127.0.0.1:5000/predict'
-    if(cameraEnabled.value){
-        await axios.post(path,{frame})
+//   async function getPrediction(frame) {
+//     const path = 'http://127.0.0.1:5000/predict'
+//     if(cameraEnabled.value){
+//         await axios.post(path,{frame})
 
-        .then((res) => {
-            if(res.data['predictions'].length !=0){
-                let custMsg = []
-                role.value = 'Teller'
-                swapRoles()
-                custMsg = res.data['predictions']
-                msg.value =msg.value +" "+ custMsg[0]
-                console.log(res.data)
+//         .then((res) => {
+    
+//             if(res.data['predictions'].length !=0){
+//                 let custMsg = []
+//                 let st = ""
+//                 role.value = 'Teller'
+//                 swapRoles()
+//                 custMsg = res.data['predictions']
+//                 st = msg.value +" "+ custMsg[0]
+//                 const openai = new OpenAI({
+//                 apiKey: "sk-proj-kWn31C0aMk2tSfzVeW8tT3BlbkFJRWjiqXsXpUSZSupXVsaW",
+//                 dangerouslyAllowBrowser: true,
+//                 });
+//                 const completion = await openai.chat.completions.create({
+//                     messages: [{"role": "system", "content": "You are a helpful assistant."},
+//                         {"role": "user", "content": "Who won the world series in 2020?"},
+//                         {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+//                         {"role": "user", "content": "Where was it played?"}],
+//                     model: "gpt-3.5-turbo",
+//                 });
+//                 console.log(completion.choices[0]);          
 
-            }
-        })
-        .catch((error) => {
+//                 msg.value = response
+//                 console.log(res.data)
 
-          console.error(error);
-        })
+//             }
+//         })
+//         .catch((error) => {
+
+//           console.error(error);
+//         })
 
         
+//     }
+//   }
+
+async function getPrediction(frame) {
+  const path = 'http://127.0.0.1:5000/predict';
+  if (cameraEnabled.value) {
+    try {
+      const res = await axios.post(path, { frame });
+      if (res.data['predictions'].length !== 0) {
+        let custMsg = [];
+        let st = "";
+        role.value = 'Teller';
+        swapRoles();
+        custMsg = res.data['predictions'];
+        st = msg.value + " " + custMsg[0];
+        console.log(st)
+
+        // const openai = new OpenAI({
+        //   apiKey: "sk-proj-kWn31C0aMk2tSfzVeW8tT3BlbkFJRWjiqXsXpUSZSupXVsaW",
+        //   dangerouslyAllowBrowser: true,
+        // });
+
+        // const completion = await openai.chat.completions.create({
+        //   messages: [
+        //     { "role": "system", "content": "You are a helpful transcriber that transcribes incoherent words or sentences to coherent ones. If you are given a word or phrase that does not make sense or you need more clarification on the word or phrase, just return back the original message." },
+        //     { "role": "user", "content": st }
+        //   ],
+        //   model: "gpt-3.5-turbo",
+        // });
+
+        // console.log(completion.choices[0].message.content);
+
+        msg.value = st;
+        console.log(res.data);
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
+}
+
 
 
   async function captureAndSendFrames(feed,streamWidth,streamHeight){
     const canvas = screenshot.value
-    const context = canvas.getContext('2d')
+    const context = canvas.getContext('2d',{ willReadFrequently: true })
     const fps = 30
 
     //Set canvas dimensions

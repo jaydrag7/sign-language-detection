@@ -81,28 +81,6 @@ export const useUserProfile = defineStore('userprofiles',{
             }
 
         },
-        // async getMessageThread(){
-        //     try{
-        //         const threadRef = ref(db)
-        //         const data = await get(child(threadRef,`/users/${this.bankName}/${this.branchID}/${this.tellerStation}/chat/`))
-        //         if(data.exists()){
-        //             let prevThread: any={}
-        //             prevThread = data.val()
-        //             if(prevThread!=undefined){
-        //                 console.log(prevThread)
-        //                 this.roles = prevThread.roles
-        //                 this.messages =prevThread.messages
-        //                 console.log(this.messages)
-    
-
-        //             }
-        //         }
-        //     }
-        //     catch(error){
-        //         console.error(error)
-        //     }
-        // },
-
         async getChatActivity(){
             try{
                 const threadRef = ref(db)

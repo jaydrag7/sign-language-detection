@@ -158,7 +158,7 @@
             </v-row>
               </v-container>
             </v-row>
-            <v-row justify="left">            
+            <v-row>            
               
                 <span 
                   class="text-center text-caption grey--text"

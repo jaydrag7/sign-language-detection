@@ -10,7 +10,7 @@
             <v-list>
               <v-list-item>
                 <v-list-item-title>
-                    <v-btn :style="{ textTransform: 'none' }" variant="text" prepend-icon="mdi-logout" @click="logout">
+                    <v-btn :style="{ textTransform: 'none' }" variant="text" prepend-icon="mdi-logout" @click="logout(),endSession()">
                         Sign Out
                     </v-btn>
                 </v-list-item-title>
@@ -26,7 +26,9 @@
 
 <script setup>
 import Home from '../components/Home.vue'
+import {useUserProfile} from '~/store/store'
 
+const user = useUserProfile()
 const accountBtnOpen = ref(false)
 const route = useRouter()
 
@@ -35,5 +37,12 @@ function logout(){
   route.push("/")
 
 }
+
+async function endSession(){
+        
+        await user.endSession()
+        return await user.removeChatLog()
+    }
+
 
 </script>
