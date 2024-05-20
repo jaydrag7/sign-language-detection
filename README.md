@@ -22,4 +22,4 @@ Once you have Nodejs installed and on your $PATH, create a NUXT workspace in a f
 
 **Back-end**
 - *Flask*<br/>
-Here's a link to setup your Flask environment wether you're on macOS/Linux or Windows. https://flask.palletsprojects.com/en/3.0.x/installation/
+Here's a link to setup your Flask environment whether you're on macOS/Linux or Windows. https://flask.palletsprojects.com/en/3.0.x/installation/
