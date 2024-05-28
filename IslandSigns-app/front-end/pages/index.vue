@@ -1,20 +1,20 @@
 <template>
   <v-app>
     <v-app-bar app flat>
+      <v-avatar href="/" image="IslandSigns-logo.png" size="100"/>
+      <v-card-title class="text-h6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">IslandSigns</v-card-title>
+
       <v-btn
         style="text-transform:none;"
-
       >
         Support
       </v-btn>
-      <v-spacer/>
-      <v-spacer/>
-      <v-spacer/>
-      <v-spacer/>
-      <v-spacer/>
-      <v-spacer/>
-      <v-avatar image="IslandSigns-logo.png" size="100"/>
-      <v-card-title class="text-h6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">IslandSigns</v-card-title>
+      <v-btn
+        style="text-transform:none;"
+      >
+        Research
+      </v-btn>
+
       <v-spacer/>
       <v-spacer/>
       <v-spacer/>
@@ -42,6 +42,19 @@
         Register
       </v-btn>
     </v-app-bar>
+    <v-card style="width: 100%;" class="mt-16">
+      <v-sheet color="blue-lighten-1" style="width: 100%;">
+        <v-card-text align="center" class="text-h4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+          What is IslandSigns?
+        </v-card-text>
+
+        <v-card-text align="left" class="text-h6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+          IslandSigns serves as a pivotal communication solution between the deaf or hard-of-hearing community and hearing individuals when making banking transactions in Jamaica.
+          We train our custom AI model on a variety of banking scenarios to capture JSL in real-time. Allowing for seamless communication and creating an inclusive space for deaf Jamaicans.
+        </v-card-text>
+      </v-sheet>
+      </v-card>      
+
     <v-container class="mt-10">
       <v-row  class="mt-10">
         <v-col/>
@@ -71,21 +84,23 @@
           </v-card-title>
           </v-row>
           <v-row>
-            <v-card-title class="text-h4 text"  style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            <v-card-title class="text-h4 text mt-6"  style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
             your banking experience
           </v-card-title>
           </v-row>
           <v-row>
-            <v-card-title class="text-h4"  style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            <v-card-title class="text-h4 mt-6"  style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
               with
             </v-card-title>
-            <v-card-title class="text-h4 text-green-lighten-1 mb-5"  style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            <v-card-title class="text-h4 text-green-lighten-1 mb-5 mt-6"  style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
               Artificial Intelligence
             </v-card-title>
           </v-row>
           </v-col>
           <v-col>
             <v-img height="150" src="bank.png"/>
+            <v-img height="150" src="artificial-intelligence.gif"/>
+
           </v-col>
           <v-col/>
 
@@ -97,16 +112,14 @@
       
       <v-col>
         <v-container class="mt-10">
-      <h2>How to Use</h2>
-      <br>
-      
-      <div class="use"><div class="start">1</div> Create your account.</div>
-      <div class="use"><div class="start">2</div> Start a session.</div>
-      <div class="use"><div class="start">3</div> Begin your conversation and our app will do the rest.</div>
-      
-    </v-container>
+          <v-card-text class="text-h4">How to Use</v-card-text>
+          <br>
+          <v-chip color="green">1</v-chip> <span>Create your account.</span>
+          <v-chip color="green" class="ml-5">2</v-chip> <span>Start a session.</span>
+          <v-chip color="green" class="ml-5">3</v-chip> <span>Begin your conversation and our app will do the rest.</span>      
+        </v-container>
       </v-col>
-      <v-col>
+      <!-- <v-col>
         <v-card variant="flat" class="rounded-xl mt-10" color="blue-lighten-4" style="max-width: 600px; margin: 0 auto;">
           <v-row>
         <v-col>
@@ -118,8 +131,91 @@
         </v-col>
       </v-row><br>
         </v-card>
-      </v-col>
+      </v-col> -->
     </v-row>
+    <v-container>
+      <v-card-text class="text-h4" style="font-family:'Lucida Sans';">
+        Features
+      </v-card-text>
+    </v-container>
+    <v-container>
+      <v-row>
+        <v-card variant="flat" style="width: 300px;">
+          <v-sheet class="mt-2">
+            <v-img src="webcam.png" height="80"/>
+          </v-sheet>
+          <v-sheet class="mt-5">
+            <v-card-text class="text-center" style="font-family:Arial, Helvetica, sans-serif;">
+            Real-time JSL-to-text transcriptions
+          </v-card-text>
+          </v-sheet>
+        </v-card>
+        <v-card variant="flat" style="width: 300px;">
+          <v-sheet class="mt-2">
+            <v-img src="microphone.png" height="80"/>
+          </v-sheet>
+          <v-sheet class="mt-5">
+            <v-card-text class="text-center" style="font-family:Arial, Helvetica, sans-serif;">
+            Automatic Speech Recognition
+          </v-card-text>
+          </v-sheet>
+        </v-card>
+        <v-card variant="flat" style="width: 300px;">
+          <v-sheet class="mt-2">
+            <v-img src="encrypted-data.png" height="80"/>
+          </v-sheet>
+          <v-sheet class="mt-5">
+            <v-card-text class="text-center" style="font-family:Arial, Helvetica, sans-serif;">
+            Encrypted Messaging
+          </v-card-text>
+          </v-sheet>
+        </v-card>
+
+
+
+      </v-row>
+    </v-container>
+
+    <v-container justify-content="center">
+      <v-card-text class="text-h4" style="font-family:'Lucida Sans';">
+        Why Choose IslandSigns?
+      </v-card-text>
+    </v-container>
+    <v-container>
+      <v-row>
+        <v-card elevation="10" class="rounded-xl" variant="plain" style="width: 300px;">
+          <v-sheet class="mt-2">
+            <v-img src="jamaica.png" height="80"/>
+          </v-sheet>
+          <v-sheet color="yellow-lighten-2" class="mt-5">
+            <v-card-text class="font-weight-bold text">
+            Built by Jamaicans, For Jamaicans
+          </v-card-text>
+          </v-sheet>
+        </v-card>
+        <v-card elevation="10" class="ml-5 rounded-xl" variant="plain" style="width: 300px;">
+          <v-sheet class="mt-2">
+            <v-img src="unite.png" height="80"/>
+          </v-sheet>
+          <v-sheet color="blue-lighten-1" class="mt-5">
+            <v-card-text class="font-weight-bold text-black">
+            Promoting Inclusivity
+          </v-card-text>
+          </v-sheet>
+        </v-card>
+        <v-card elevation="10" class="ml-5 rounded-xl" variant="plain" style="width: 300px;">
+          <v-sheet class="mt-2">
+            <v-img src="communication.png" height="80"/>
+          </v-sheet>
+          <v-sheet color="green-lighten-1" class="mt-5">
+            <v-card-text class="font-weight-bold text-black">
+            Bridging the communication gap
+          </v-card-text>
+          </v-sheet>
+        </v-card>
+
+      </v-row>
+      </v-container>
     <footer class="mt-10">
           <v-container fluid>
             <v-row>

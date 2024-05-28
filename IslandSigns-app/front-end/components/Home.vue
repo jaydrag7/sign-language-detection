@@ -27,7 +27,7 @@
         class="text-left rounded-xl"
       >
         <v-card-text>
-          <v-icon icon="mdi-information" size="30"/> TIP
+          <v-avatar image="tip.png"/> TIP
         </v-card-text>
         <v-sheet color="green-lighten-3">
           <v-card-text class="text-body text-black" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">

@@ -182,8 +182,9 @@
                                 @click:append-inner="sendMessage"
                                 @click:prepend-inner="swapRoles()"
                             />
-                            <v-btn @click="" icon variant="text">
-                                <v-icon icon="mdi-microphone"/>
+                            <audio ref="audioPlayback"></audio>
+                            <v-btn @click="microphoneEnabled ? recordAudio():closeMicrophone()" icon variant="tonal" :color="microphoneEnabled ? 'green-lighten-1': 'red-lighten-1'">
+                                <v-icon :icon="microphoneEnabled ? 'mdi-microphone':'mdi-microphone-off'"/>
                                 <v-tooltip
                                     activator="parent"
                                     location="top"
@@ -193,7 +194,7 @@
                             <v-btn 
                                 @click="cameraEnabled=!cameraEnabled,openCamera()" 
                                 icon
-                                variant="text"
+                                variant="tonal"
                             >
                                 <v-icon icon="mdi-video"/>
                                 <v-tooltip
@@ -223,16 +224,12 @@
     import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
     import OpenAI from 'openai'
 
-    // import { AssemblyAI } from 'assemblyai'
-    // import { Readable } from 'stream'
-    // import recorder from 'node-record-lpcm16'
-
-
 
     const user = useUserProfile()    
     const closeDialog = ref(false)
     const closeWarningDialog = ref(false)
     const stream = ref(null)
+    const audioStream = ref(null)
     const screenshot = ref(null)
     const cameraEnabled = ref(false)
     const video = ref(null)
@@ -244,75 +241,9 @@
     const roles = ref(new Array())
     const messages = ref(new Array())
     const active = ref(false)
-    console.log(roles.value)
-
-    // const audio = new Audio(messageSound)
-
-    // const playMessageSound = () =>{
-    //     audio.play()
-    // }
-
-    // async function recordAudio(){
-    // const client = new AssemblyAI({
-    //     apiKey: '90900b36bdd4486e8be7a22cda507fe1'
-    // })
-
-    // const transcriber = client.realtime.transcriber({
-    //     sampleRate: 16_000
-    // })
-
-    // transcriber.on('open', ({ sessionId }) => {
-    //     console.log(`Session opened with ID: ${sessionId}`)
-    // })
-
-    // transcriber.on('error', (error) => {
-    //     console.error('Error:', error)
-    // })
-
-    // transcriber.on('close', (code, reason) =>
-    //     console.log('Session closed:', code, reason)
-    // )
-
-    // transcriber.on('transcript', (transcript) => {
-    //     if (!transcript.text) {
-    //     return
-    //     }
-
-    //     if (transcript.message_type === 'PartialTranscript') {
-    //     console.log('Partial:', transcript.text)
-    //     } else {
-    //     console.log('Final:', transcript.text)
-    //     }
-    // })
-
-    // try {
-    //     console.log('Connecting to real-time transcript service')
-    //     await transcriber.connect()
-
-    //     console.log('Starting recording')
-    //     const recording = recorder.record({
-    //     channels: 1,
-    //     sampleRate: 16_000,
-    //     audioType: 'wav' // Linear PCM
-    //     })
-
-    //     Readable.toWeb(recording.stream()).pipeTo(transcriber.stream())
-
-    //     // Stop recording and close connection using Ctrl-C.
-    //     process.on('SIGINT', async function () {
-    //     console.log()
-    //     console.log('Stopping recording')
-    //     recording.stop()
-
-    //     console.log('Closing real-time transcript connection')
-    //     await transcriber.close()
-
-    //     process.exit()
-    //     })
-    // } catch (error) {
-    //     console.error(error)
-    // }
-    // }
+    const audioChunks = ref([])
+    const audioPlayback = ref(null)
+    const microphoneEnabled = ref(true)
 
 
     function isObject(variable) {
@@ -365,7 +296,6 @@
     }
 
 
-
     async function openCamera() {
     try {
       if(cameraEnabled){
@@ -403,46 +333,6 @@
 
   const customerObj=ref({})
 
-//   async function getPrediction(frame) {
-//     const path = 'http://127.0.0.1:5000/predict'
-//     if(cameraEnabled.value){
-//         await axios.post(path,{frame})
-
-//         .then((res) => {
-    
-//             if(res.data['predictions'].length !=0){
-//                 let custMsg = []
-//                 let st = ""
-//                 role.value = 'Teller'
-//                 swapRoles()
-//                 custMsg = res.data['predictions']
-//                 st = msg.value +" "+ custMsg[0]
-//                 const openai = new OpenAI({
-//                 apiKey: "sk-proj-kWn31C0aMk2tSfzVeW8tT3BlbkFJRWjiqXsXpUSZSupXVsaW",
-//                 dangerouslyAllowBrowser: true,
-//                 });
-//                 const completion = await openai.chat.completions.create({
-//                     messages: [{"role": "system", "content": "You are a helpful assistant."},
-//                         {"role": "user", "content": "Who won the world series in 2020?"},
-//                         {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-//                         {"role": "user", "content": "Where was it played?"}],
-//                     model: "gpt-3.5-turbo",
-//                 });
-//                 console.log(completion.choices[0]);          
-
-//                 msg.value = response
-//                 console.log(res.data)
-
-//             }
-//         })
-//         .catch((error) => {
-
-//           console.error(error);
-//         })
-
-        
-//     }
-//   }
 
 async function getPrediction(frame) {
   const path = 'http://127.0.0.1:5000/predict';
@@ -521,9 +411,60 @@ async function getPrediction(frame) {
 
     await captureFrame()
 
-
-
   }
+  const audioRecorder = ref(null)
+
+  async function recordAudio(){
+    audioStream.value = await navigator.mediaDevices.getUserMedia({audio:true})
+    audioRecorder.value = new MediaRecorder(audioStream.value)
+    console.log(audioRecorder.value)
+    audioRecorder.value.ondataavailable = event => {
+        audioChunks.value.push(event.data)
+        console.log(audioChunks.value)
+    }
+    audioRecorder.value.onstop = () =>{
+        const audioBlob = new Blob(audioChunks.value,{type:'audio/wav'})
+        const audioUrl = URL.createObjectURL(audioBlob)
+        audioPlayback.value.src = audioUrl
+        console.log(audioPlayback.value)
+        audioChunks.value = []
+        sendAudioForTranscription(audioBlob)
+
+    }
+    microphoneEnabled.value = false
+    audioRecorder.value.start()
+
+    }
+
+    function closeMicrophone(){
+        microphoneEnabled.value = true
+        console.log(audioRecorder.value)
+        audioRecorder.value.stop()
+
+
+    }
+
+    async function sendAudioForTranscription(audioBlob){
+        console.log(audioBlob)
+        const formData = new FormData()
+        formData.append('audio',audioBlob,'audio.wav')
+        const path = 'http://127.0.0.1:5000/audio';
+        try{
+            const res = await axios.post(path, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+            })
+            msg.value = msg.value + res.data
+            console.log(res.data)
+        }
+        catch(error){
+            console.error(error)
+        }
+
+
+    }
+
 
   function swapRoles(){
     switch(role.value){
@@ -567,8 +508,8 @@ async function getPrediction(frame) {
     if(arr.length >= 5){
         active.value = true
 
-
     }
+    msg.value = ""
   }
 </script>
 <style>

@@ -5,7 +5,8 @@ from ultralytics import YOLO
 import base64
 from PIL import Image
 from io import BytesIO
-
+from openai import OpenAI
+import tempfile
 
 # instantiate the app
 app = Flask(__name__)
@@ -18,6 +19,24 @@ phrases_model = YOLO("phrases.pt")
 greetings_model = YOLO("greetings2.pt")
 alphabet_model = YOLO("alphabet.pt")
 numbers_model = YOLO("numbers.pt")
+client = OpenAI(api_key='sk-proj-sa2wZXkZS1l9O31WixduT3BlbkFJMddjWW1ekxGQWnEj1Xwv')
+
+@app.route('/audio',methods=['POST'])
+def transcribe_audio():
+    if request.method == 'POST':
+        try:
+            audio_blob = request.files['audio'].read()
+            audio_file_path = 'audio.wav'
+            with open(audio_file_path, 'wb') as audio_file:
+                audio_file.write(audio_blob)
+            audio_file = open("audio.wav","rb")
+            transcript = client.audio.transcriptions.create(
+                model="whisper-1",
+                file=audio_file
+            )
+            return jsonify(transcript.text)
+        except Exception as e:
+            return jsonify({'error':str(e)})
 
 @app.route('/predict', methods=['POST'])
 def predict():

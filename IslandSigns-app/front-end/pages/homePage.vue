@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app dark>
-      <v-btn class="text-h8" @click="">Support</v-btn>
+      <v-btn style="text-transform: none;" class="text-h8" @click="">Support</v-btn>
       <v-img src="IslandSigns-logo.png"/>
       <v-menu>
             <template v-slot:activator="{ props }">
