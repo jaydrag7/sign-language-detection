@@ -56,27 +56,30 @@
       </v-card>      
 
     <v-container class="mt-10">
-      <v-row  class="mt-10">
-        <v-col/>
-        <v-col>
-          <v-card-title class="text-h5 text-blue-lighten-1" style="font-family: Verdana, Geneva, Tahoma, sans-serif;">
+      <v-row class="justify-center" align="center">
+        <v-card-title class="text-h4 text-blue-lighten-1" style="font-family: Verdana, Geneva, Tahoma, sans-serif;">
             For those who Sign
-          </v-card-title>
-          <v-img src="sign.png" width="300"/>
-        </v-col>
-        <v-col>
-          <v-card-title class="text-h5 text-blue-lighten-1" style="font-family: Verdana, Geneva, Tahoma, sans-serif;">
-            For those who Speak
-          </v-card-title>
-          <v-img src="speak.png" width="300"/>
-        </v-col>
-        <v-col/>
+        </v-card-title>
+        <v-img src="sign.png" height="300"/>
       </v-row>
+      <v-row class="mt-10 justify-center" align="center">
+        <v-card-title class="text-h4 text-blue-lighten-1" style="font-family: Verdana, Geneva, Tahoma, sans-serif;">
+            For those who speak
+          </v-card-title>            
+          <v-img src="speak.png" height="300"/>
+      </v-row>
+
     </v-container>
-    <v-row class="mt-10">
+    <v-row class="mt-10 justify-class">
         <v-card class="rounded-sm" color="" variant="flat" style="width: 100%;">
-          <v-row>
+          <v-row style="width: 100%;">
             <v-col/>
+            <v-col cols="3">
+            <v-img height="160" src="bank.png"/>
+            <v-img height="160" src="artificial-intelligence.gif"/>
+
+          </v-col>
+
             <v-col>
             <v-row class="mt-2">
             <v-card-title class="text-h4 text-blue-lighten-1" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
@@ -97,11 +100,6 @@
             </v-card-title>
           </v-row>
           </v-col>
-          <v-col>
-            <v-img height="150" src="bank.png"/>
-            <v-img height="150" src="artificial-intelligence.gif"/>
-
-          </v-col>
           <v-col/>
 
 
@@ -112,11 +110,13 @@
       
       <v-col>
         <v-container class="mt-10">
-          <v-card-text class="text-h4">How to Use</v-card-text>
+          <v-card-text class="text-h4 text-center">How to Use</v-card-text>
           <br>
-          <v-chip color="green">1</v-chip> <span>Create your account.</span>
-          <v-chip color="green" class="ml-5">2</v-chip> <span>Start a session.</span>
-          <v-chip color="green" class="ml-5">3</v-chip> <span>Begin your conversation and our app will do the rest.</span>      
+          <v-row class="justify-center" align="center">
+            <v-chip color="green">1</v-chip> <span class="text-h6">Create your account.</span>
+            <v-chip color="green" class="ml-5">2</v-chip> <span class="text-h6">Start a session.</span>
+            <v-chip color="green" class="ml-5">3</v-chip> <span class="text-h6">Begin your conversation and our app will do the rest.</span>      
+          </v-row>
         </v-container>
       </v-col>
       <!-- <v-col>
@@ -133,39 +133,39 @@
         </v-card>
       </v-col> -->
     </v-row>
-    <v-container>
-      <v-card-text class="text-h4" style="font-family:'Lucida Sans';">
+    <v-container class="mt-16">
+      <v-card-text class="text-h4 text-center" style="font-family:'Lucida Sans';">
         Features
       </v-card-text>
     </v-container>
     <v-container>
-      <v-row>
+      <v-row class="justify-center" align="center">
         <v-card variant="flat" style="width: 300px;">
           <v-sheet class="mt-2">
-            <v-img src="webcam.png" height="80"/>
+            <v-img src="webcam.png" height="100"/>
           </v-sheet>
           <v-sheet class="mt-5">
-            <v-card-text class="text-center" style="font-family:Arial, Helvetica, sans-serif;">
+            <v-card-text class="text-center text-h6" style="font-family:Arial, Helvetica, sans-serif;">
             Real-time JSL-to-text transcriptions
           </v-card-text>
           </v-sheet>
         </v-card>
         <v-card variant="flat" style="width: 300px;">
           <v-sheet class="mt-2">
-            <v-img src="microphone.png" height="80"/>
+            <v-img src="microphone.png" height="100"/>
           </v-sheet>
           <v-sheet class="mt-5">
-            <v-card-text class="text-center" style="font-family:Arial, Helvetica, sans-serif;">
+            <v-card-text class="text-center text-h6" style="font-family:Arial, Helvetica, sans-serif;">
             Automatic Speech Recognition
           </v-card-text>
           </v-sheet>
         </v-card>
         <v-card variant="flat" style="width: 300px;">
           <v-sheet class="mt-2">
-            <v-img src="encrypted-data.png" height="80"/>
+            <v-img src="encrypted-data.png" height="100"/>
           </v-sheet>
           <v-sheet class="mt-5">
-            <v-card-text class="text-center" style="font-family:Arial, Helvetica, sans-serif;">
+            <v-card-text class="text-center text-h6" style="font-family:Arial, Helvetica, sans-serif;">
             Encrypted Messaging
           </v-card-text>
           </v-sheet>
@@ -176,13 +176,13 @@
       </v-row>
     </v-container>
 
-    <v-container justify-content="center">
-      <v-card-text class="text-h4" style="font-family:'Lucida Sans';">
+    <v-container class="mt-16">
+      <v-card-text class="text-h4 text-center" style="font-family:'Lucida Sans';">
         Why Choose IslandSigns?
       </v-card-text>
     </v-container>
     <v-container>
-      <v-row>
+      <v-row class="justify-center" align="center">
         <v-card elevation="10" class="rounded-xl" variant="plain" style="width: 300px;">
           <v-sheet class="mt-2">
             <v-img src="jamaica.png" height="80"/>
@@ -216,65 +216,65 @@
 
       </v-row>
       </v-container>
-    <footer class="mt-10">
-          <v-container fluid>
+    <footer  style="background-color:#F2F1F0;" class="mt-10">
+      <v-container fluid>
+        <v-row>
+          <v-container>
             <v-row>
-              <v-container>
-                <v-row>
-                  <v-col>
-                    <v-card-text class="text-blue-lighten-1 text-body-1">
-                      Company
-                    </v-card-text>
-                    <v-card-text class="underline-link">
-                      About
-                    </v-card-text>
-                    <v-card-text class="underline-link">
-                      Contact Us
-                    </v-card-text>
-                  </v-col>
-               <v-col>
+              <v-col>
                 <v-card-text class="text-blue-lighten-1 text-body-1">
-                  Blog
+                  Company
                 </v-card-text>
-                <v-card-text class="underline-link">
-                  JSL
+                <v-card-text class="underline-link text-black">
+                  About
                 </v-card-text>
-                <v-card-text class="underline-link">
-                  Resources
+                <v-card-text class="underline-link text-black">
+                  Contact Us
                 </v-card-text>
-               </v-col>
-               <v-col>
-                <v-card-text class="text-blue-lighten-1 text-body-1">
-                  Learn
-                </v-card-text>
-                <v-card-text class="underline-link">
-                  Help Center
-                </v-card-text>
-               </v-col>
-            </v-row>
-              </v-container>
-            </v-row>
-            <v-row>            
-              
-                <span 
-                  class="text-center text-caption grey--text"
-                >
-                  &copy; ISLANDSIGNS 2024
-                </span>            
-                <span class="ml-2 mt-n2">
-                  <a class="text-center grey--text" style="text-decoration: underline; font-size: small">Privacy</a>
-                </span>
-                <span class="ml-2 mt-n2">
-                  <a class="text-center grey--text" style="text-decoration: underline; font-size: small">Terms</a>
-                </span>
-              <v-col/>
-              <v-col/>
-              <v-col/>
-              <v-col/>
-              <v-col/>
-            </v-row>
+              </v-col>
+            <v-col>
+            <v-card-text class="text-blue-lighten-1 text-body-1">
+              Blog
+            </v-card-text>
+            <v-card-text class="underline-link text-black">
+              JSL
+            </v-card-text>
+            <v-card-text class="underline-link text-black">
+              Resources
+            </v-card-text>
+            </v-col>
+            <v-col>
+            <v-card-text class="text-blue-lighten-1 text-body-1">
+              Learn
+            </v-card-text>
+            <v-card-text class="underline-link text-black">
+              Help Center
+            </v-card-text>
+            </v-col>
+        </v-row>
           </v-container>
-        </footer>
+        </v-row>
+        <v-row>            
+          
+            <span 
+              class="text-center text-caption text-black"
+            >
+              &copy; ISLANDSIGNS 2024
+            </span>            
+            <span class="ml-2 mt-n2">
+              <a class="text-center text-black underline-link" style="font-size: small">Privacy</a>
+            </span>
+            <span class="ml-2 mt-n2">
+              <a class="text-center text-black underline-link" style="font-size: small">Terms</a>
+            </span>
+          <v-col/>
+          <v-col/>
+          <v-col/>
+          <v-col/>
+          <v-col/>
+        </v-row>
+      </v-container>
+    </footer>
 
   </v-app>
 </template>
@@ -291,7 +291,7 @@
   };
   const goToSignIn = () => {
     // Implement your register logic here
-    route.push( '/SigninPage' )
+    route.push( '/login' )
   };
 
 

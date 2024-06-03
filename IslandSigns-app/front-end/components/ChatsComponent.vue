@@ -24,10 +24,10 @@
             </template>
             <v-card
                 fluid="true"
-                color="grey-lighten-4"
+                :color="theme ? '#0b141a':'grey-lighten-3'"
             >
                 <v-toolbar
-                    color="white"
+                    :color="theme ? '#202c33':'white'"
                 >
                     <v-dialog
                         v-model="closeWarningDialog"
@@ -39,12 +39,13 @@
                                 v-bind="props"
                                 append-icon="mdi-close"
                                 color="red-lighten-1"      
-                                variant="tonal"      
+                                variant="flat"      
                             >
                                 End Session
                             </v-btn>
                         </template>
                         <v-card
+                            :color="theme ? '#202c33':''"
                             class="warning-card rounded-xl"
                             width="250"
                         >
@@ -161,7 +162,7 @@
                         </v-row>
                         <v-row class="ml-1 mr-1">
                         <v-card
-                            color="grey-lighten-2"
+                            :color="theme ? '#202c33':'grey-lighten-2'"
                             style="width: 100%;"
                             class="rounded-lg"
                             height="100"
@@ -183,7 +184,7 @@
                                 @click:prepend-inner="swapRoles()"
                             />
                             <audio ref="audioPlayback"></audio>
-                            <v-btn @click="microphoneEnabled ? recordAudio():closeMicrophone()" icon variant="tonal" :color="microphoneEnabled ? 'green-lighten-1': 'red-lighten-1'">
+                            <v-btn @click="microphoneEnabled ? recordAudio():closeMicrophone()" icon variant="text" :color="microphoneEnabled ? '': 'red-lighten-1'">
                                 <v-icon :icon="microphoneEnabled ? 'mdi-microphone':'mdi-microphone-off'"/>
                                 <v-tooltip
                                     activator="parent"
@@ -194,7 +195,7 @@
                             <v-btn 
                                 @click="cameraEnabled=!cameraEnabled,openCamera()" 
                                 icon
-                                variant="tonal"
+                                variant="text"
                             >
                                 <v-icon icon="mdi-video"/>
                                 <v-tooltip
@@ -244,6 +245,9 @@
     const audioChunks = ref([])
     const audioPlayback = ref(null)
     const microphoneEnabled = ref(true)
+    const props = defineProps({
+        theme: Boolean,
+    })
 
 
     function isObject(variable) {

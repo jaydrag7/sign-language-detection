@@ -6,12 +6,12 @@
         <v-card-text class="text-h6">
           <v-icon color="green-lighten-1" icon="mdi-chat"/> Session
         </v-card-text>
-        <v-sheet class="mt-1" color="grey-lighten-3" style="height: 100%;">
+        <v-sheet class="mt-1" :color="theme ? '#202c33':'grey-lighten-3'" style="height: 100%;">
           <v-row style="width:100% ;">
             <v-card-text class="text-h7 py-5 px-5 mr-n16" style="display: flex; font-family:Verdana, Geneva, Tahoma, sans-serif;">
-            <v-btn v-if="sessionActive" variant="plain" class="mt-n1" size="30" color="red-lighten-1" icon="mdi-access-point"/> {{ sessionText() }} <v-img v-if="sessionActive==false" class="mt-n2" height="35" src="empty-box.png"/>
+            <v-btn v-if="sessionActive" variant="text" class="mt-n1" size="30" color="red-lighten-1" icon="mdi-access-point"/> {{ sessionText() }} <v-img v-if="sessionActive==false" class="mt-n2" height="35" src="empty-box.png"/>
             </v-card-text>
-            <ChatsComponent v-if="sessionActive"/>
+            <ChatsComponent v-if="sessionActive" :theme="theme"/>
 
           </v-row>
 
@@ -40,7 +40,7 @@
     <v-row justify="center">
       <v-col cols="12" sm="6" class="text-center">
         <v-btn 
-          color="blue-lighten-3" 
+          :color="theme ? '#202c33':'blue-lighten-3'" 
           prepend-icon="mdi-plus"
           @click="createSession" 
           height="100" width="200" 
@@ -52,7 +52,7 @@
         </v-btn>
         <v-snackbar
           v-model="sessionBool"
-          color="#010420"
+          :color="theme ? 'white':'#010420'"
           :text="session"
         >
         <template v-slot:actions>
@@ -84,6 +84,10 @@
   const disableSessionButton = ref(false)
   const sessionActive = ref(false)
   const bool = ref(false)
+
+  const props = defineProps({
+    theme: Boolean,
+  })
 
   // onMounted(async()=>{
   //   user.getChatActivity()

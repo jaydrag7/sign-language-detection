@@ -8,19 +8,19 @@
 
       <div class="form-group">
         <label for="bankName"><b>Bank Name</b></label> 
-        <v-text-field id="bankName" label="eg: NCB" v-model="bankName"></v-text-field>
+        <v-text-field variant="outlined" id="bankName" label="eg: NCB" v-model="bankName"></v-text-field>
       </div>
       <div class="form-group">
         <label for="bankBranch"><b>Bank Branch</b></label>
-        <v-text-field id="bankBranch" label="eg: HWT2378" v-model="bankBranch"></v-text-field>
+        <v-text-field variant="outlined" id="bankBranch" label="eg: HWT2378" v-model="bankBranch"></v-text-field>
       </div>
       <div class="form-group">
         <label for="tellerStationNumber"><b>Teller Station Number</b></label>
-        <v-text-field id="tellerStationNumber" label="eg: 2" v-model="tellerStationNumber"></v-text-field>
+        <v-text-field variant="outlined" id="tellerStationNumber" label="eg: 2" v-model="tellerStationNumber"></v-text-field>
       </div>
       <div class="form-group">
         <label for="passcode"><b>Passcode</b></label>
-        <v-text-field id="passcode" label="eg: #4892JyHG" v-model="passcode" type="password"></v-text-field>
+        <v-text-field variant="outlined" id="passcode" label="eg: #4892JyHG" v-model="passcode" type="password"></v-text-field>
       </div>
       <div>
         <v-card-text v-if="errormsg" class="text-red">
@@ -55,7 +55,7 @@ async function submitForm() {
 
   }
   else{
-    route.push("/homePage")
+    route.push("/home")
   }
   
 };
