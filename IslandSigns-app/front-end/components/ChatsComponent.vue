@@ -164,7 +164,7 @@
                         <v-card
                             :color="theme ? '#202c33':'grey-lighten-2'"
                             style="width: 100%;"
-                            class="rounded-lg"
+                            class="rounded-xl"
                             height="100"
                             variant="flat"
                         >
@@ -177,7 +177,7 @@
                                 auto-grow
                                 :label="label"
                                 variant="solo"
-                                class="mr-1 footer"
+                                class="mr-1 footer rounded-xl"
                                 append-inner-icon="mdi-send"
                                 prepend-inner-icon="mdi-swap-vertical"
                                 @click:append-inner="sendMessage"

@@ -1,6 +1,6 @@
 <template>
-  <v-app :class="{'body':switchTheme}">
-    <v-app-bar :color="switchTheme ? '#202c33':''">
+  <v-app :class="{'body':user.darkTheme}">
+    <v-app-bar :color="user.darkTheme ? '#202c33':''">
       <v-btn style="text-transform: none;" class="text-h8" @click="">Support</v-btn>
       <v-img src="IslandSigns-logo.png"/>
       <v-menu>
@@ -10,10 +10,10 @@
             <v-list>
               <v-list-item>
                 <v-list-item-title>
-                  <v-switch @click="switchTheme=!switchTheme" prepend-icon="mdi-theme-light-dark" v-model="switchTheme" color="blue-lighten-1" inset/>
+                  <v-switch @click="switchTheme()" prepend-icon="mdi-theme-light-dark" v-model="theme" color="blue-lighten-1" inset/>
                 </v-list-item-title>
                 <v-list-item-title>
-                    <v-btn :style="{ textTransform: 'none' }" variant="text" prepend-icon="mdi-logout" @click="logout(),endSession()">
+                    <v-btn :style="{ textTransform: 'none' }" variant="text" prepend-icon="mdi-logout" @click="endSession(),logout()">
                         Sign Out
                     </v-btn>
                 </v-list-item-title>
@@ -23,7 +23,7 @@
 
     </v-app-bar>
 
-    <Home :theme="switchTheme"></Home>
+    <Home :theme="user.darkTheme"></Home>
   </v-app>
 </template>
 
@@ -34,7 +34,7 @@ import {useUserProfile} from '~/store/store'
 const user = useUserProfile()
 const accountBtnOpen = ref(false)
 const route = useRouter()
-const switchTheme = ref(false)
+const theme = ref(false)
 
 function logout(){
   // accountBtnOpen.value = true
@@ -42,6 +42,11 @@ function logout(){
 
 }
 
+async function switchTheme(){
+  theme.value = !theme.value
+  return await user.changeTheme(theme.value)
+
+}
 async function endSession(){
         
         await user.endSession()

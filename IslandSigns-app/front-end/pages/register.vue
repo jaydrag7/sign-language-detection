@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <h1 class="header"> <v-img src="IslandSigns-logo.png"/>Register</h1>
+    <v-avatar image="IslandSigns-logo.png" size="150"/>
+    <h1 class="header">Register</h1>
     <form @submit.prevent="submitForm" class="signup-form">
       <div>
         <v-btn icon="mdi-arrow-left" variant="tonal" class="mb-2" color="#61be61" @click="goBack"/>

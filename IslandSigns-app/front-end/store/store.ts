@@ -10,7 +10,8 @@ interface UserProfile{
     msgThread:any,
     roles:String[],
     messages:String[],
-    sessionActive: Boolean
+    sessionActive: Boolean,
+    darkTheme: Boolean
 }
 export const useUserProfile = defineStore('userprofiles',{
     state:():UserProfile => ({
@@ -21,7 +22,8 @@ export const useUserProfile = defineStore('userprofiles',{
         msgThread:{},
         roles:[],
         messages:[],
-        sessionActive: false
+        sessionActive: false,
+        darkTheme: false
     }),
     getters:{
         getThread(state){
@@ -36,11 +38,13 @@ export const useUserProfile = defineStore('userprofiles',{
                 const data=await get(child(ref(db),`users/${bankName}/${branchID}/${tellerStation}`))
                 if(data.exists()){
                     const pass=Object.values(data.val())
+                    console.log(pass)
                     if(pass[0]==passcode){
                         this.bankName = bankName
                         this.branchID = branchID
                         this.tellerStation = tellerStation
                         this.passcode = passcode
+                        this.darkTheme = pass[2]
                         return "Password match"
                     
                     }
@@ -107,6 +111,7 @@ export const useUserProfile = defineStore('userprofiles',{
                 const updates:any={}
                 updates[`users/${data.bankName}/${ data.bankBranch}/${data.tellerStationNumber}/`]={
                     bankTellerPasscode: data.passcode,
+                   darkTheme: false,
                     chatActivity:{
                         isActive: false
                     }
@@ -140,6 +145,18 @@ export const useUserProfile = defineStore('userprofiles',{
                 updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chatActivity`]={
                     isActive: false
                 }
+                return await update(ref(db),updates)
+
+            }
+            catch(error){
+                console.error(error)
+            }
+        },
+        async changeTheme(theme: boolean){
+            try{
+                const updates: any={}
+                this.darkTheme = theme
+                updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/darkTheme`]=theme
                 return await update(ref(db),updates)
 
             }
