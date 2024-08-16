@@ -1,4 +1,4 @@
-<template>
+<template class="app">
   <v-app>
     <v-app-bar app flat>
       <a href="/" class="mt-2">
@@ -135,11 +135,10 @@
       </v-card-text>
     </v-row>
   </v-container>
-  <v-container class="mt-16">
-    <v-row class="justify-center" align="center">
+    <v-row class="justify-center mt-16" align="center">
       <v-avatar image="sign.png" size="200" draggable="false"/>
     </v-row>
-    <v-row class="justify-center mt-16">
+    <v-row ref="animateLeft" class="justify-start mt-16 slide-in-left">
       <v-card elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="blue-lighten-1">
         <v-card-text class="text-left text-black font-weight-bold" style="font-size:x-large;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">For those who sign</v-card-text>
       <v-card-text class="text-left text-white" style="font-size: large;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">        
@@ -151,8 +150,8 @@
     <v-row class="justify-center mt-16" align="center">
       <v-avatar image="speak.png" size="200" draggable="false"/>
     </v-row>
-    <v-row class="justify-center mt-16">
-      <v-card elevation="10" variant="flat" class="rounded-ts-pill rounded-bs-pill" color="green-lighten-1">
+    <v-row class="justify-end mt-16">
+      <v-card elevation="10" variant="flat" class="rounded-ts-pill rounded-bs-pill slide-in-left" color="green-lighten-1">
         <v-card-text class="text-right text-black font-weight-bold" style="font-size:x-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">For those who speak</v-card-text>
       <v-card-text class="text-right text-white" style="font-size: large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">        
         Connect and Engage in conversations with persons from the deaf/hard-of-hearing community.
@@ -162,7 +161,7 @@
     <v-row class="justify-center mt-16">
       <v-avatar image="artificial-intelligence.gif" size="200"/>
     </v-row>
-    <v-row class="justify-center">
+    <v-row class="justify-start">
       <v-card elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="orange-lighten-1">
         <v-card-text class="text-left text-black" style="font-size:large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
           Redefining Communication with <span class="text-blue-lighten-1" style="font-size: x-large;">Artificial Intelligence</span>
@@ -177,7 +176,7 @@
       </v-card>
     </v-row>
     <v-row class="justify-center" no-gutters>      
-      <v-card elevation="" class="mt-16" variant="outlined" style="width: 300px;">
+      <v-card class="mt-16" variant="outlined" style="width: 300px;">
         <v-sheet class="mt-2">
           <v-img src="jamaica.png" height="80"/>
         </v-sheet>
@@ -187,7 +186,7 @@
         </v-card-text>
         </v-sheet>
       </v-card>
-      <v-card elevation="" class="mt-16" variant="outlined" style="width: 300px;">
+      <v-card class="mt-16" variant="outlined" style="width: 300px;">
         <v-sheet class="mt-2">
           <v-img src="unite.png" height="80"/>
         </v-sheet>
@@ -197,7 +196,7 @@
         </v-card-text>
         </v-sheet>
       </v-card>
-      <v-card elevation="" class="mt-16" variant="outlined" style="width: 300px;">
+      <v-card class="mt-16" variant="outlined" style="width: 300px;">
         <v-sheet class="mt-2">
           <v-img src="communication.png" height="80"/>
         </v-sheet>
@@ -219,7 +218,7 @@
     <v-row class="justify-center mt-16">
       <v-avatar image="webcam.png" size="150"/>
     </v-row>
-    <v-row class="justify-center mt-7">
+    <v-row class="justify-end mt-7">
       <v-card elevation="10" variant="flat" class="rounded-ts-pill rounded-bs-pill" color="blue-lighten-1">
         <v-card-text class="text-right text-white" style="font-size:x-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
           Real-time Jamaican Sign Language to Text Translations
@@ -229,7 +228,7 @@
     <v-row class="justify-center mt-16">
       <v-avatar image="microphone.png" size="150"/>
     </v-row>
-    <v-row class="justify-center">
+    <v-row class="justify-start">
       <v-card elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="green-lighten-1">
         <v-card-text class="text-left text-white" style="font-size:x-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
           Automatic Speech Recognition
@@ -239,14 +238,13 @@
     <v-row class="justify-center mt-16">
       <v-avatar image="encrypted-data.png" size="150"/>
     </v-row>
-    <v-row class="justify-center">
+    <v-row class="justify-end">
       <v-card elevation="10" variant="flat" class="rounded-ts-pill rounded-bs-pill" color="orange-lighten-1">
         <v-card-text class="text-right text-white" style="font-size:x-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
           Encrypted Text Messaging
         </v-card-text>
       </v-card>
     </v-row>
-  </v-container>  
   <v-footer class="mt-16" color="blue-lighten-1">
         <v-container fluid>
           <v-row>
@@ -311,10 +309,33 @@
 
 </template>
   
-  <script setup>
+<script setup>
+  import { ref } from 'vue'
 
   const route = useRouter()
   const drawer = ref(false)
+  const animateLeft = ref(null)
+
+  const isElementInViewport = (el) => {
+    const rect = el.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    )
+  }
+
+  const onScroll = () => {
+    if (animateLeft.value && isElementInViewport(animateLeft.value)) {
+      animateLeft.value.classList.add('slide-in-left');
+      window.removeEventListener('scroll', onScroll);  // Remove listener after animation triggers
+    }
+  }
+
+  onMounted(()=>{
+    window.addEventListener('scroll',onScroll)
+  })
   
 
     // Handle register button click
@@ -338,6 +359,21 @@
     margin: 0;
     padding: 0;
   }
+  @keyframes slideInFromLeft {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .slide-in-left{
+    animation: slideInFromLeft 1s ease-out forwards;
+  }
+
   .underline-link {
     text-decoration: none; /* Remove underline by default */
   }

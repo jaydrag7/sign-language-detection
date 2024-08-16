@@ -1,34 +1,30 @@
 <template>
   <div id="app">
-    <v-avatar image="IslandSigns-logo.png" size="150"/>
-    <h1 class="header">Login</h1>
+    <v-avatar image="IslandSigns-logo.png" size="120" class="mb-n7"/>
     <form @submit.prevent="submitForm" class="signup-form">
-      <div>
+      <v-row align="center" class="mb-2">
         <v-btn icon="mdi-arrow-left" variant="tonal" class="mb-2" color="#61be61" @click="goBack"/>
-      </div>
+        <v-card-text class="ml-7 font-weight-bold text-h6">Welcome Back!</v-card-text>
+      </v-row>
 
       <div class="form-group">
-        <label for="bankName"><b>Bank Name</b></label> 
-        <v-text-field variant="outlined" id="bankName" label="eg: NCB" v-model="bankName"></v-text-field>
+        <v-text-field variant="outlined" id="bankName" label="Bank Name" v-model="bankName"></v-text-field>
       </div>
       <div class="form-group">
-        <label for="bankBranch"><b>Bank Branch</b></label>
-        <v-text-field variant="outlined" id="bankBranch" label="eg: HWT2378" v-model="bankBranch"></v-text-field>
+        <v-text-field variant="outlined" id="bankBranch" label="Bank Branch" v-model="bankBranch"></v-text-field>
       </div>
       <div class="form-group">
-        <label for="tellerStationNumber"><b>Teller Station Number</b></label>
-        <v-text-field variant="outlined" id="tellerStationNumber" label="eg: 2" v-model="tellerStationNumber"></v-text-field>
+        <v-text-field variant="outlined" id="tellerStationNumber" label="Teller Station Number" v-model="tellerStationNumber"></v-text-field>
       </div>
       <div class="form-group">
-        <label for="passcode"><b>Passcode</b></label>
-        <v-text-field variant="outlined" id="passcode" label="eg: #4892JyHG" v-model="passcode" type="password"></v-text-field>
+        <v-text-field variant="outlined" id="passcode" label="Passcode" v-model="passcode" type="password"></v-text-field>
       </div>
       <div>
         <v-card-text v-if="errormsg" class="text-red">
           {{response }}
         </v-card-text>
       </div>
-      <v-btn @click=submitForm class="submit-button" style="text-transform: none;">Login</v-btn>
+      <v-btn @click=submitForm class="submit-button" style="text-transform: none;" :disabled="isEmpty()">Login</v-btn>
     </form>
   </div>
 </template>
@@ -36,6 +32,7 @@
 <script setup>
 import { ref } from 'vue';
 import {useUserProfile} from '~/store/store';
+import base64 from 'base-64'
 
 const bankName = ref('');
 const bankBranch = ref('');
@@ -48,18 +45,24 @@ const goBack = () => {
 };
 const errormsg=ref(false)
 const response=ref("")
+
 async function submitForm() {
   
-  response.value = await user.signIn(bankName.value,bankBranch.value,tellerStationNumber.value,passcode.value)
+  response.value = await user.signIn(bankName.value,bankBranch.value,tellerStationNumber.value,base64.encode(encodeURI(passcode.value)))
   if (response.value!="Password match"){
     errormsg.value=true
 
   }
   else{
+    errormsg.value=false
     route.push("/home")
   }
-  
-};
+}
+
+function isEmpty(){
+  return bankName.value === '' || bankBranch.value === '' || tellerStationNumber.value === '' || passcode.value === ''
+}
+
 
 
 </script>
@@ -70,7 +73,6 @@ async function submitForm() {
   flex-direction: column; 
   justify-content: center;
   align-items: center;
-  height: 110vh;
   background-color: #fff;
 }
 
@@ -113,10 +115,6 @@ async function submitForm() {
   flex-direction: column;
   justify-content: center;
   align-items: left;
-}
-
-.form-group {
-  margin-bottom: 1em;
 }
 
 .submit-button {

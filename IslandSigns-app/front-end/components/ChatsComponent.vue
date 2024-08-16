@@ -37,12 +37,10 @@
                             <v-btn
                                 :style="{textTransform:'none'}"
                                 v-bind="props"
-                                append-icon="mdi-close"
                                 color="red-lighten-1"      
-                                variant="flat"      
-                            >
-                                End Session
-                            </v-btn>
+                                variant="flat"
+                                icon="mdi-close"      
+                            />    
                         </template>
                         <v-card
                             :color="theme ? '#202c33':''"
@@ -103,9 +101,8 @@
                         </v-card>
 
                     </v-dialog>
-                    <v-img
-                        src="IslandSigns-logo.png"
-                    />
+                    <v-spacer/>
+                    <v-avatar image="IslandSigns-logo.png" size="120"/>
                 </v-toolbar>
                 <v-container
                     v-if="user.roles"
@@ -125,7 +122,7 @@
                             elevation="2"                    
                         >
                             <v-card-text>
-                                {{ user.messages[i] }}
+                                {{ decodeMsg(user.messages[i]) }}
                             </v-card-text>
 
                         </v-card>
@@ -133,85 +130,77 @@
 
                 </v-row>
                 </v-container>
-                <v-row 
-                    justify-lg="center"
+                <v-container
+                    :class="{'threadActive': active, 'threadNotActive': !active}"   
+                    align="center"
                 >
-                    <v-container
-                        class="mt-10" :class="{'threadActive': active, 'threadNotActive': !active}"                    
-                    >
-                        <v-row justify="end">
-                            <v-card v-if="cameraEnabled" height="220" class="rounded-xl mb-2 mr-3"> 
-                                <v-row>
-                                    <video height="200" ref="video" autoplay muted></video>
-                                    <canvas ref="screenshot" v-show="false"></canvas>
-                                </v-row>
-                                <v-row justify="center">
-                                    <v-btn
-                                        @click="cameraEnabled=false,closeCamera()"
-                                        append-icon="mdi-close"
-                                        variant='tonal'
-                                        color='red'
-                                        width="250"
-                                    >
-                                        Close
-                                    </v-btn>
-                                </v-row>
-                        
-                                   
-                            </v-card>
-                        </v-row>
-                        <v-row class="ml-1 mr-1">
-                        <v-card
-                            :color="theme ? '#202c33':'grey-lighten-2'"
-                            style="width: 100%;"
-                            class="rounded-xl"
-                            height="100"
-                            variant="flat"
-                        >
-                        <v-row
-                            class="mt-0 pa-5"
-                        >
-                            <v-textarea
-                                v-model="msg"
-                                rows="1"
-                                auto-grow
-                                :label="label"
-                                variant="solo"
-                                class="mr-1 footer rounded-xl"
-                                append-inner-icon="mdi-send"
-                                prepend-inner-icon="mdi-swap-vertical"
-                                @click:append-inner="sendMessage"
-                                @click:prepend-inner="swapRoles()"
-                            />
-                            <audio ref="audioPlayback"></audio>
-                            <v-btn @click="microphoneEnabled ? recordAudio():closeMicrophone()" icon variant="text" :color="microphoneEnabled ? '': 'red-lighten-1'">
-                                <v-icon :icon="microphoneEnabled ? 'mdi-microphone':'mdi-microphone-off'"/>
-                                <v-tooltip
-                                    activator="parent"
-                                    location="top"
-                                >Record Audio</v-tooltip>
-
-                            </v-btn>
-                            <v-btn 
-                                @click="cameraEnabled=!cameraEnabled,openCamera()" 
-                                icon
-                                variant="text"
-                            >
-                                <v-icon icon="mdi-video"/>
-                                <v-tooltip
-                                    activator="parent"
-                                    location="top"
-                                >Record JSL</v-tooltip>
-                            </v-btn>
-
-
-                        </v-row>
+                    <v-row justify="end">
+                        <v-card v-if="cameraEnabled" height="220" class="rounded-xl mb-2 mr-3"> 
+                            <v-row>
+                                <video height="200" ref="video" autoplay muted></video>
+                                <canvas ref="screenshot" v-show="false"></canvas>
+                            </v-row>
+                            <v-row justify="center">
+                                <v-btn
+                                    @click="cameraEnabled=false,closeCamera()"
+                                    append-icon="mdi-close"
+                                    variant='tonal'
+                                    color='red'
+                                    width="250"
+                                >
+                                    Close
+                                </v-btn>
+                            </v-row>
+                    
+                                
                         </v-card>
-                        </v-row>
-                    </v-container>
+                    </v-row>
+                    <v-card
+                        :color="theme ? '#202c33':'grey-lighten-2'"
+                        class="justify-center mt-16"
+                        variant="flat"
+                    >
+                    <v-row
+                        class="pt-6 pb-3 pl-7 pr-7"
+                    >
+            
+                        <v-textarea
+                            v-model="msg"
+                            rows="1"
+                            auto-grow
+                            :label="label"
+                            variant="solo"
+                            class="mr-1 footer rounded-xl"
+                            append-inner-icon="mdi-send"
+                            prepend-inner-icon="mdi-swap-vertical"
+                            @click:append-inner="sendMessage"
+                            @click:prepend-inner="swapRoles()"
+                        />
+                        <audio ref="audioPlayback"></audio>
+                        <v-btn @click="microphoneEnabled ? recordAudio():closeMicrophone()" icon variant="text" :color="microphoneEnabled ? '': 'red-lighten-1'">
+                            <v-icon :icon="microphoneEnabled ? 'mdi-microphone':'mdi-microphone-off'"/>
+                            <v-tooltip
+                                activator="parent"
+                                location="top"
+                            >Record Audio</v-tooltip>
+
+                        </v-btn>
+                        <v-btn 
+                            @click="cameraEnabled=!cameraEnabled,openCamera()" 
+                            icon
+                            variant="text"
+                        >
+                            <v-icon icon="mdi-video"/>
+                            <v-tooltip
+                                activator="parent"
+                                location="top"
+                            >Record JSL</v-tooltip>
+                        </v-btn>
+                    </v-row>
+                    </v-card>
+                </v-container>
 
                     
-                </v-row>
                 
             </v-card>
         </v-dialog>
@@ -223,7 +212,7 @@
     import { ref, onMounted } from 'vue'
     import { db } from "@/utils/firebase";
     import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
-    import OpenAI from 'openai'
+    import base64 from 'base-64'
 
 
     const user = useUserProfile()    
@@ -502,10 +491,8 @@ async function getPrediction(frame) {
     }
 
   const sendMessage = async () =>{
-    console.log(roles.value)
     roles.value.push(role.value)
-    messages.value.push(msg.value)
-    console.log(messages.value)
+    messages.value.push(base64.encode(encodeURI(msg.value)))
 
     await user.sendMessage(roles.value,messages.value)
     let arr = messages.value
@@ -514,6 +501,10 @@ async function getPrediction(frame) {
 
     }
     msg.value = ""
+  }
+
+  function decodeMsg(msg){
+    return base64.decode(decodeURI(msg))
   }
 </script>
 <style>

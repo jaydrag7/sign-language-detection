@@ -1,8 +1,8 @@
 <template>
   <v-app :class="{'body':user.darkTheme}">
     <v-app-bar :color="user.darkTheme ? '#202c33':''">
-      <v-btn style="text-transform: none;" class="text-h8" @click="">Support</v-btn>
-      <v-img src="IslandSigns-logo.png"/>
+      <v-avatar image="IslandSigns-logo.png" size="120"/>
+      <v-spacer/>
       <v-menu>
             <template v-slot:activator="{ props }">
               <v-btn icon="mdi-account-circle" v-bind="props"/>
@@ -12,6 +12,7 @@
                 <v-list-item-title>
                   <v-switch @click="switchTheme()" prepend-icon="mdi-theme-light-dark" v-model="theme" color="blue-lighten-1" inset/>
                 </v-list-item-title>
+                <v-divider/>
                 <v-list-item-title>
                     <v-btn :style="{ textTransform: 'none' }" variant="text" prepend-icon="mdi-logout" @click="endSession(),logout()">
                         Sign Out
@@ -34,7 +35,7 @@ import {useUserProfile} from '~/store/store'
 const user = useUserProfile()
 const accountBtnOpen = ref(false)
 const route = useRouter()
-const theme = ref(false)
+const theme = ref(user.darkTheme)
 
 function logout(){
   // accountBtnOpen.value = true

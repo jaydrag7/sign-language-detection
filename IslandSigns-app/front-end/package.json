@@ -28,6 +28,7 @@
     "@tensorflow/tfjs-converter": "^4.17.0",
     "assemblyai": "^4.4.2",
     "axios": "^1.6.7",
+    "base-64": "^1.0.0",
     "firebase": "^10.10.0",
     "ndarray": "^1.0.19",
     "ndarray-ops": "^1.2.2",
