@@ -9,7 +9,7 @@
         <v-sheet class="mt-1" :color="theme ? '#202c33':'grey-lighten-3'" style="height: 100%;">
           <v-row style="width:100% ;">
             <v-card-text class="text-h7 py-5 px-5 mr-n16" style="display: flex; font-family:Verdana, Geneva, Tahoma, sans-serif;">
-            <v-btn v-if="sessionActive" variant="text" class="mt-n1" size="30" color="red-lighten-1" icon="mdi-access-point"/> {{ sessionText() }} <v-img v-if="sessionActive==false" class="mt-n2" height="35" src="empty-box.png"/>
+            <v-btn v-if="sessionActive" variant="text" class="mt-n1" size="30" color="red-lighten-1" icon="mdi-access-point"/> {{ sessionText() }} <v-img v-if="sessionActive==false" class="mt-n2" height="35" src="empty-box.png" draggable="false"/>
             </v-card-text>
             <ChatsComponent v-if="sessionActive" :theme="theme"/>
 
@@ -38,35 +38,56 @@
     </v-row>
 
     <v-row justify="center">
-      <v-col cols="12" sm="6" class="text-center">
+      <div class="pa-5">
         <v-btn 
-          :color="theme ? '#202c33':'blue-lighten-3'" 
-          prepend-icon="mdi-plus"
-          @click="createSession" 
-          height="100" width="200" 
-          :disabled="sessionActive"
-          :loading="sessionLoading"
-          style="font-weight: bold"
-        >
-          Create Session
-        </v-btn>
-        <v-snackbar
-          v-model="sessionBool"
-          :color="theme ? 'white':'#010420'"
-          :text="session"
-        >
-        <template v-slot:actions>
-        <v-btn
-          :icon="sessionActive ? 'mdi-check-outline':'mdi-close-outline'"
-          :color="sessionActive ? 'green-lighten-1': 'red-lighten-1'"
-          variant="flat"
-          size="30"
-        />
-      </template>
-        </v-snackbar>
-      </v-col>
+        :color="theme ? '#202c33':'blue-lighten-3'" 
+        prepend-icon="mdi-pencil"
+        @click="createSession" 
+        :disabled="sessionActive"
+        :loading="sessionLoading"
+        style="font-weight: bold"
+        class="mx-auto mb-5"
+      >
+        New Session
+      </v-btn>
+      <v-snackbar
+        v-model="sessionBool"
+        :color="theme ? 'white':'#010420'"
+        :text="session"
+      >
+      <template v-slot:actions>
+      <v-btn
+        :icon="sessionActive ? 'mdi-check-outline':'mdi-close-outline'"
+        :color="sessionActive ? 'green-lighten-1': 'red-lighten-1'"
+        variant="flat"
+        size="30"
+      />
+    </template>
+      </v-snackbar>
+      </div>
+      <div class="pa-5">
+        <v-row align="center">
+          <div>
+            <v-textarea style="width: 200px;" v-model="sessionCode" clearable label="Enter session code" variant="outlined" bg-color="white" rows="1"/>
+
+          </div>
+          <div class="pa-2">
+            <v-btn 
+            color="green-lighten-3" 
+            prepend-icon="mdi-plus"
+            :disabled="isEmpty()"
+            style="font-weight: bold"
+            class="mx-auto mb-5"
+            variant="text"
+          >
+          Join
+          </v-btn>
+
+
+          </div>
+        </v-row>
+      </div>
     </v-row>
-   
   </v-container>
 </template>
 
@@ -83,7 +104,9 @@
   const sessionLoading = ref(false)
   const disableSessionButton = ref(false)
   const sessionActive = ref(false)
-  const bool = ref(false)
+  const joinSessionBool = ref(false)
+  const sessionCode = ref("")
+  const showTip = ref(false)
 
   const props = defineProps({
     theme: Boolean,
@@ -96,6 +119,9 @@
   function isObject(variable) {
         return variable !== null && typeof variable === 'object';
     }
+  function isEmpty(){
+    return sessionCode.value === ""
+  }
 
 
   const threadRef = dbRef(db, `/users/${user.bankName}/${user.branchID}/${user.tellerStation}/chatActivity`)
