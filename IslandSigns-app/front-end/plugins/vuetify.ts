@@ -1,4 +1,4 @@
-import { createVuetify } from 'vuetify'
+import { createVuetify, type ThemeDefinition } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
@@ -6,7 +6,19 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 
 
 export default defineNuxtPlugin(nuxtApp => {
-    // Doing something with nuxtApp
+    const colorPalette: ThemeDefinition={
+      dark:false,
+      colors:{
+        primaryDarkBgColor: '#0b141a',
+        secondaryDarkBtnColor: '#202c33',
+        primary: '#42A5F5', //blue
+        cancel: '#EF5350', //red
+        secondary_a: '#66BB6A', //green
+        secondary_b: '#FFA726', //orange
+        tertiary_a: '#4a154b', //purple
+
+      }
+    };
     const vuetify = createVuetify({
         components,
          directives,
@@ -18,11 +30,23 @@ export default defineNuxtPlugin(nuxtApp => {
               mdi,
             }
           },
+        theme: {
+          defaultTheme: 'colorPalette',
+          themes: {
+            colorPalette,
+          }
+
+        },
         
     });
     
 
     nuxtApp.vueApp.use(vuetify)
+    return {
+      provide: {
+        colorPalette
+      }
+    }
   })
 
 

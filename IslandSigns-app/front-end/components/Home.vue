@@ -81,7 +81,7 @@
         <v-window-item
         >
           <v-card
-            class="align-center justify-center ma-5"
+            class="align-center justify-center"
             variant="flat"
             width="300"
             :color="user.darkTheme ? '#0b141a':''"
@@ -110,7 +110,7 @@
         <v-window-item
         >
           <v-card
-            class="align-center justify-center ma-5"
+            class="align-center justify-center"
             variant="flat"
             width="300"
             :color="user.darkTheme ? '#0b141a':''"
@@ -140,7 +140,7 @@
         <v-window-item
         >
           <v-card
-            class="align-center justify-center ma-5"
+            class="align-center justify-center"
             variant="flat"
             width="300"
             :color="user.darkTheme ? '#0b141a':''"
@@ -170,7 +170,7 @@
         <v-window-item
         >
           <v-card
-            class="align-center justify-center ma-5"
+            class="align-center justify-center"
             variant="flat"
             width="300"
             :color="user.darkTheme ? '#0b141a':''"

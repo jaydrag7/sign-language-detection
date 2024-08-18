@@ -74,7 +74,7 @@
         v-if="!$vuetify.display.mobile" 
         variant="flat"
         @click="goToRegister" 
-        color="green-lighten-1"
+        color='primary'
         style="text-transform:none;"
       >
         Register
@@ -139,7 +139,7 @@
       <v-avatar image="sign.png" size="200" draggable="false"/>
     </v-row>
     <v-row ref="animateLeft" class="justify-start mt-16 slide-in-left">
-      <v-card elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="blue-lighten-1">
+      <v-card elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="primary">
         <v-card-text class="text-left text-black font-weight-bold" style="font-size:x-large;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">For those who sign</v-card-text>
       <v-card-text class="text-left text-white" style="font-size: large;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">        
         Communicate seamlessly
@@ -151,7 +151,7 @@
       <v-avatar image="speak.png" size="200" draggable="false"/>
     </v-row>
     <v-row class="justify-end mt-16">
-      <v-card elevation="10" variant="flat" class="rounded-ts-pill rounded-bs-pill slide-in-left" color="green-lighten-1">
+      <v-card elevation="10" variant="flat" class="rounded-ts-pill rounded-bs-pill slide-in-left" color="secondary_a">
         <v-card-text class="text-right text-black font-weight-bold" style="font-size:x-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">For those who speak</v-card-text>
       <v-card-text class="text-right text-white" style="font-size: large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">        
         Connect and Engage in conversations with persons from the deaf/hard-of-hearing community.
@@ -162,7 +162,7 @@
       <v-avatar image="artificial-intelligence.gif" size="200"/>
     </v-row>
     <v-row class="justify-start">
-      <v-card elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="orange-lighten-1">
+      <v-card elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="secondary_b">
         <v-card-text class="text-left text-black" style="font-size:large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
           Redefining Communication with <span class="text-blue-lighten-1" style="font-size: x-large;">Artificial Intelligence</span>
         </v-card-text>
