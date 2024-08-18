@@ -1,6 +1,6 @@
-<template class="app">
-  <v-app>
-    <v-app-bar app flat>
+<template>
+  <v-app :class="{'light-theme':!theme,'dark-theme':theme}">
+    <v-app-bar :color="theme ? 'secondaryDarkBtnColor':''" app flat>
       <a href="/" class="mt-2">
         <v-avatar image="IslandSigns.png" size="300" class="mt-16"/>
       </a>
@@ -8,8 +8,7 @@
         v-if="!$vuetify.display.mobile"
         style="text-transform:none;font-weight: bold;"
         variant="text"
-        append-icon="mdi-chevron-right"
-        class="text-h6"
+        class="text-h6 ml-2"
       >
         Support
       </v-btn>
@@ -17,7 +16,6 @@
         v-if="!$vuetify.display.mobile"
         style="text-transform:none;font-weight: bold;"
         variant="text"
-        append-icon="mdi-chevron-right"
         class="text-h6"
 
       >
@@ -60,6 +58,11 @@
       <v-spacer/>
 
       <v-btn
+        icon="mdi-theme-light-dark"
+        @click="theme=!theme"
+      />
+
+      <v-btn
         v-if="!$vuetify.display.mobile"
         variant="outlined"
         @click="goToSignIn" 
@@ -77,7 +80,7 @@
         color='primary'
         style="text-transform:none;"
       >
-        Register
+        Get started
       </v-btn>
     </v-app-bar>
     <v-navigation-drawer
@@ -131,7 +134,7 @@
       <v-container class="justify-center">
     <v-row class="justify-center mt-16">
       <v-card-text class="text-h4 text-center" style="font-family: Verdana;font-weight: bold;">
-      Creating Connections. <span class="text-blue-lighten-1">One Sign at a Time</span>
+      <span :class="{'text-color-light':theme,'text-color-dark':!theme}">Creating Connections.</span> <span class="text-blue-lighten-1">One Sign at a Time</span>
       </v-card-text>
     </v-row>
   </v-container>
@@ -176,36 +179,42 @@
       </v-card>
     </v-row>
     <v-row class="justify-center" no-gutters>      
-      <v-card class="mt-16" variant="outlined" style="width: 300px;">
-        <v-sheet class="mt-2">
-          <v-img src="jamaica.png" height="80"/>
-        </v-sheet>
+      <div class="pa-5">
+        <v-card class="mt-16" variant="" style="width: 300px;">
+          <v-sheet class="mt-2" :color="theme ? 'primaryDarkBgColor':'bckgrnd'">
+            <v-img src="jamaica.png" height="80"/>
+          </v-sheet>
         <v-sheet color="green-lighten-1" class="mt-5">
           <v-card-text class="font-weight-bold text-black">
           Built by Jamaicans, for Jamaicans
         </v-card-text>
         </v-sheet>
-      </v-card>
-      <v-card class="mt-16" variant="outlined" style="width: 300px;">
-        <v-sheet class="mt-2">
-          <v-img src="unite.png" height="80"/>
-        </v-sheet>
-        <v-sheet color="blue-lighten-1" class="mt-5">
-          <v-card-text class="font-weight-bold text-black">
-          Promoting Inclusivity
-        </v-card-text>
-        </v-sheet>
-      </v-card>
-      <v-card class="mt-16" variant="outlined" style="width: 300px;">
-        <v-sheet class="mt-2">
-          <v-img src="communication.png" height="80"/>
-        </v-sheet>
+        </v-card>
+      </div>
+      <div class="pa-5">
+          <v-card class="mt-16" variant="" style="width: 300px;">
+            <v-sheet class="mt-2" :color="theme ? 'primaryDarkBgColor':'bckgrnd'">
+              <v-img src="unite.png" height="80"/>
+            </v-sheet>
+          <v-sheet color="blue-lighten-1" class="mt-5">
+            <v-card-text class="font-weight-bold text-black">
+            Promoting Inclusivity
+          </v-card-text>
+          </v-sheet>
+          </v-card>
+      </div>
+      <div class="pa-5">
+        <v-card class="mt-16" variant="" style="width: 300px;">
+          <v-sheet class="mt-2" :color="theme ? 'primaryDarkBgColor':'bckgrnd'">
+            <v-img src="communication.png" height="80"/>
+          </v-sheet>
         <v-sheet color="orange-lighten-1" class="mt-5">
           <v-card-text class="font-weight-bold text-black">
           Bridging the communication gap
         </v-card-text>
         </v-sheet>
-      </v-card>
+        </v-card>
+      </div>
     </v-row>
     <v-row class="justify-center mt-16">
       <v-card elevation="10" variant="flat" class="rounded-pill" color="#4a154b">
@@ -245,13 +254,13 @@
         </v-card-text>
       </v-card>
     </v-row>
-  <v-footer class="mt-16" color="blue-lighten-1">
+  <v-footer class="mt-16" :color="theme ? 'secondaryDarkBtnColor':'primary'">
         <v-container fluid>
           <v-row>
             <v-container>
               <v-row>
                 <v-col>
-                  <v-card-text class="text-black text-body-1">
+                  <v-card-text class="text-body-1">
                     Company
                   </v-card-text>
                   <v-card-text class="underline-link" href="">
@@ -262,7 +271,7 @@
                   </v-card-text>
                 </v-col>
               <v-col>
-              <v-card-text class="text-black text-body-1">
+              <v-card-text class="text-body-1">
                 Blog
               </v-card-text>
               <v-card-text class="underline-link">
@@ -273,7 +282,7 @@
               </v-card-text>
               </v-col>
               <v-col>
-              <v-card-text class="text-black text-body-1">
+              <v-card-text class="text-body-1">
                 Learn
               </v-card-text>
               <v-card-text class="underline-link">
@@ -314,6 +323,7 @@
 
   const route = useRouter()
   const drawer = ref(false)
+  const theme = ref(false)
   const animateLeft = ref(null)
 
   const isElementInViewport = (el) => {
@@ -354,10 +364,17 @@
   
   <style scoped>
   /* General styles */
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+  .light-theme {
+    background-color: #e9eef2;
+  }
+  .dark-theme {
+    background-color: #0b141a;
+  }
+  .text-color-light{
+    color: #fff;
+  }
+  .text-color-dark{
+    color: #000000;
   }
   @keyframes slideInFromLeft {
     0% {

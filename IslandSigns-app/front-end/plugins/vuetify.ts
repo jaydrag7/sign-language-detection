@@ -16,6 +16,7 @@ export default defineNuxtPlugin(nuxtApp => {
         secondary_a: '#66BB6A', //green
         secondary_b: '#FFA726', //orange
         tertiary_a: '#4a154b', //purple
+        bckgrnd: '#e9eef2', //grey
 
       }
     };
