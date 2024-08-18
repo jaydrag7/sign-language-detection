@@ -56,6 +56,7 @@
                                     src="caution.png"
                                     height="30"
                                     class="mt-2 ml-2"
+                                    draggable="false"
                                 />
                                 <v-card-text
                                     class="text-h4 text-red"

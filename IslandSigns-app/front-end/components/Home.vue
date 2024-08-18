@@ -20,23 +20,6 @@
       </v-card>
     </v-row>
 
-    <v-row justify="center" class="pa-10">
-      <v-card 
-        variant="outlined" 
-        color="green-lighten-1" 
-        class="text-left rounded-xl"
-      >
-        <v-card-text>
-          <v-avatar image="tip.png"/> TIP
-        </v-card-text>
-        <v-sheet color="green-lighten-3">
-          <v-card-text class="text-body text-black" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">
-          For best results, ensure that live feed can be taken from a well-lit area and limit background noise as best as possible for JSL-to-text and speech-to-text translations.
-        </v-card-text>
-        </v-sheet>
-      </v-card>
-    </v-row>
-
     <v-row justify="center">
       <div class="pa-5">
         <v-btn 
@@ -68,7 +51,7 @@
       <div class="pa-5">
         <v-row align="center">
           <div>
-            <v-textarea style="width: 200px;" v-model="sessionCode" clearable label="Enter session code" variant="outlined" bg-color="white" rows="1"/>
+            <v-textarea style="width: 200px;" v-model="sessionCode" clearable placeholder="Enter session code" variant="outlined" bg-color="white" rows="1"/>
 
           </div>
           <div class="pa-2">
@@ -82,11 +65,139 @@
           >
           Join
           </v-btn>
-
-
           </div>
         </v-row>
       </div>
+    </v-row>
+    <v-row class="justify-center">
+      <v-divider class="border-opacity-100" :color="user.darkTheme ? 'green-lighten-3':''"/>
+    </v-row>
+    <v-row class="justify-center mt-10">
+      <v-window
+        v-model="windowCount"
+        direction="horizontal"
+        show-arrows
+      >
+        <v-window-item
+        >
+          <v-card
+            class="align-center justify-center ma-5"
+            variant="flat"
+            width="300"
+            :color="user.darkTheme ? '#0b141a':''"
+          >
+            <v-row class="justify-center">
+              <v-avatar image="chat.png" size="100" class="mt-10"/>
+            </v-row>
+            <v-row class="justify-center mt-10">
+              <span
+              class="text-h6 font-weight-bold"
+              style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"
+            >
+              Create
+            </span>
+            </v-row>
+            <v-row class="justify-center ">
+              <v-card-text
+              class="text-body-2"
+              style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"
+            >
+              Click <span class="font-weight-bold">New Session</span> to generate a session link you can share with someone you want to connect with.
+            </v-card-text>
+            </v-row>
+          </v-card>
+        </v-window-item>
+        <v-window-item
+        >
+          <v-card
+            class="align-center justify-center ma-5"
+            variant="flat"
+            width="300"
+            :color="user.darkTheme ? '#0b141a':''"
+
+          >
+            <v-row class="justify-center">
+              <v-avatar image="link.png" size="100" class="mt-10"/>
+            </v-row>
+            <v-row class="justify-center mt-10">
+              <span
+              class="text-h6 font-weight-bold"
+              style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"
+            >
+              Join
+            </span>
+            </v-row>
+            <v-row class="justify-center ">
+              <v-card-text
+              class="text-body-2 justify-center"
+              style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"
+            >
+              Enter a session code in the text area to join an existing session.
+            </v-card-text>
+            </v-row>
+          </v-card>
+        </v-window-item>
+        <v-window-item
+        >
+          <v-card
+            class="align-center justify-center ma-5"
+            variant="flat"
+            width="300"
+            :color="user.darkTheme ? '#0b141a':''"
+
+          >
+            <v-row class="justify-center">
+              <v-avatar image="encrypted-data.png" size="100" class="mt-10"/>
+            </v-row>
+            <v-row class="justify-center mt-10">
+              <span
+              class="text-h6 font-weight-bold"
+              style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"
+            >
+              Safety
+            </span>
+            </v-row>
+            <v-row class="justify-center ">
+              <v-card-text
+              class="text-body-2 justify-center"
+              style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"
+            >
+              Only <span class="font-weight-bold">you</span> determine who can join your conversation.
+            </v-card-text>
+            </v-row>
+          </v-card>
+        </v-window-item>
+        <v-window-item
+        >
+          <v-card
+            class="align-center justify-center ma-5"
+            variant="flat"
+            width="300"
+            :color="user.darkTheme ? '#0b141a':''"
+
+          >
+            <v-row class="justify-center">
+              <v-avatar image="tip.png" size="100" class="mt-10"/>
+            </v-row>
+            <v-row class="justify-center mt-10">
+              <span
+              class="text-h6 font-weight-bold"
+              style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"
+            >
+              Tip
+            </span>
+            </v-row>
+            <v-row class="justify-center ">
+              <v-card-text
+              class="text-body-2 justify-center"
+              style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"
+            >
+            For best results, ensure that live feed can be taken from a well-lit area and limit background noise as best as possible for JSL-to-text and speech-to-text translations.
+          </v-card-text>
+            </v-row>
+          </v-card>
+        </v-window-item>
+      </v-window>
     </v-row>
   </v-container>
 </template>
@@ -102,11 +213,9 @@
   const session = ref('')
   const sessionBool = ref(false)
   const sessionLoading = ref(false)
-  const disableSessionButton = ref(false)
   const sessionActive = ref(false)
-  const joinSessionBool = ref(false)
   const sessionCode = ref("")
-  const showTip = ref(false)
+  const windowCount = ref(0)
 
   const props = defineProps({
     theme: Boolean,
