@@ -9,15 +9,18 @@
         <v-card-text class="font-weight-bold text-h6 text-center mr-5">Welcome Back!</v-card-text>
       </v-row>
       <div class="form-group mt-10">
-        <v-text-field variant="outlined" id="bankName" label="username" v-model="bankName"></v-text-field>
+        <v-text-field variant="outlined" id="email" label="email" v-model="existingEmail"></v-text-field>
       </div>
       <div class="form-group">
-        <v-text-field variant="outlined" id="bankBranch" label="password" v-model="bankBranch"></v-text-field>
+        <v-text-field variant="outlined" id="password" label="password" type="password" v-model="existingPassword"></v-text-field>
       </div>
+      <span class="text-green-lighten-1 text-body-2">{{ signinMsg }}.</span>
       <v-btn
           size="x-large"
           style="text-transform: none;"
           variant="tonal"
+          :disabled="isSignInEmpty()"
+          @click="EmPassClient()"
         >
         Sign in
         </v-btn>
@@ -39,6 +42,7 @@
           color="primary"
           variant="flat"
           class="mt-5"
+          @click="googleSignIn()"
         >
           Google
         </v-btn>
@@ -65,19 +69,22 @@
         <v-card-text class="font-weight-bold text-h6 text-center mr-16">Register!</v-card-text>
       </v-row>
       <div class="form-group mt-10">
-        <v-text-field variant="outlined" id="bankName" label="email" v-model="bankName"></v-text-field>
+        <v-text-field variant="outlined" id="email" label="email" v-model="newClientEmail"></v-text-field>
       </div>
       <div class="form-group">
-        <v-text-field variant="outlined" id="bankName" label="username" v-model="bankName"></v-text-field>
+        <v-text-field variant="outlined" id="username" label="username" v-model="newClientUsername"></v-text-field>
       </div>
       <div class="form-group">
-        <v-text-field variant="outlined" id="bankBranch" label="password" v-model="bankBranch"></v-text-field>
+        <v-text-field variant="outlined" id="password" label="password" type="password" v-model="newClientPassword"></v-text-field>
       </div>
+      <span class="text-green-lighten-1 text-body-2">{{ registerMsg }}.</span>
       <v-btn
           size="x-large"
           style="text-transform: none;"
           variant="flat"
           color="primary"
+          @click="newEmPassClient()"
+          :disabled="isRegisterEmpty()"
         >
           Continue
         </v-btn>
@@ -124,8 +131,9 @@
 <script setup>
   import { ref } from 'vue';
   import {useUserProfile} from '~/store/store';
-  import base64 from 'base-64'
-
+  import base64 from 'base-64';
+  import {auth} from '~/utils/firebase';
+  import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
 
   const user= useUserProfile()
   const route = useRouter()
@@ -133,6 +141,13 @@
   const bankBranch = ref('')
   const tellerStationNumber = ref('')
   const passcode = ref('')
+  const newClientEmail = ref('')
+  const newClientUsername = ref('')
+  const newClientPassword = ref('')
+  const registerMsg = ref('')
+  const signinMsg = ref('')
+  const existingEmail = ref('')
+  const existingPassword = ref('')
   const formData= ref({
     bankName : '',
     bankBranch: '',
@@ -161,8 +176,131 @@
    
   }
 
-  function isEmpty(){
-  return bankName.value === '' || bankBranch.value === '' || tellerStationNumber.value === '' || passcode.value === ''
+  function isRegisterEmpty(){
+  return newClientEmail.value === '' || newClientUsername.value === '' || newClientPassword.value === ''
+}
+  function isSignInEmpty(){
+  return existingEmail.value === '' || existingPassword.value === ''
+}
+
+async function googleSignIn(){
+  const provider = new GoogleAuthProvider();
+  try{
+    const popUp = await signInWithPopup(auth,provider)
+    const client = popUp.user
+    const clientName = client.displayName
+    const email = client.email
+    const bytes = encodeURI(email)
+    const encodedEmail = base64.encode(bytes)
+
+    await user.getUsers()
+    const existingClients = user.users
+    const existingClientEmails =  Object.keys(existingClients)
+    for (let i=0;i<existingClientEmails.length;i++){
+      if(existingClientEmails.includes(encodedEmail)){
+        const index = existingClientEmails.indexOf(encodedEmail)
+        const clientsArr = Object.values(existingClients)
+        const currentClient = clientsArr[index]
+        const clientMetaData = {
+          fname: currentClient.fname,
+          lname: currentClient.lname,
+          email: encodedEmail
+        }
+        await user.signInGoogleClient(clientMetaData)
+        route.push('/home')
+
+      }else{
+        const newClientName = clientName.split(' ')
+        const newClientfname = newClientName[0]
+        const newClientlname = newClientName[1]
+        const newClientMetaData = { 
+          fname: newClientfname,
+          lname: newClientlname,
+          email: encodedEmail,
+        }
+        await user.createNewGoogleClient(newClientMetaData)
+        route.push('/home')
+      }
+    }
+
+
+
+
+  }
+  catch(err){
+    console.error(err)
+  }
+}
+
+async function newEmPassClient(){
+  try{
+    await createUserWithEmailAndPassword(auth,newClientEmail.value,newClientPassword.value)
+    .then(async (userCredentials) => {
+      const client = userCredentials.user
+      const bytes = encodeURI(client.email)
+      const encodedEmail = base64.encode(bytes)
+
+      await user.getUsers()
+      const existingClients = user.users
+      const existingClientEmails =  Object.keys(existingClients)
+      for (let i=0;i<existingClientEmails.length;i++){
+        if(existingClientEmails.includes(encodedEmail)){
+          registerMsg.value = 'This account already exists'
+        }
+        else{
+          const clientMetaData = {
+            fname: newClientUsername.value,
+            email: encodedEmail,
+            password: client.reloadUserInfo.passwordHash
+          }
+          await user.createNewEmPassClient(clientMetaData)
+          route.push('/home')
+        }
+
+      }
+      console.log(client)
+
+    })
+  }
+  catch(err){
+    registerMsg.value = 'This account already exists'
+    console.error(err.message)
+  }
+}
+
+async function EmPassClient(){
+  try{
+    await signInWithEmailAndPassword(auth,existingEmail.value,existingPassword.value)
+    .then(async (userCredentials)=>{
+      const client = userCredentials.user
+      const bytes = encodeURI(client.email)
+      const encodedEmail = base64.encode(bytes)
+      const clientMetaData = {
+        email:encodedEmail,
+      }
+      await user.signInEmPassClient(clientMetaData)
+      route.push('/home')
+
+    })
+
+  }
+  catch(err){
+    signinMsg.value = 'Invalid Credential(s)'
+    console.error(err)
+  }
+  // await user.getUsers()
+  // const existingClients = user.users
+  // const existingClientEmails =  Object.keys(existingClients)
+  // const bytes = encodeURI(existingEmail)
+  // const encodedEmail = base64.encode(bytes)
+  // for (let i=0;i<existingClientEmails.length;i++){
+  //   if(existingClientEmails.includes(encodedEmail)){
+
+  //   }
+
+
+  // }
+
 }
 </script>
 
@@ -172,7 +310,7 @@
   flex-direction: column; 
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  background-color: #ffff;
 }
 
 .header {

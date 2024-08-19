@@ -11,7 +11,11 @@ interface UserProfile{
     roles:String[],
     messages:String[],
     sessionActive: Boolean,
-    darkTheme: Boolean
+    darkTheme: any,
+    users:any,
+    fname: any,
+    lname: any,
+    email: any
 }
 export const useUserProfile = defineStore('userprofiles',{
     state:():UserProfile => ({
@@ -23,7 +27,12 @@ export const useUserProfile = defineStore('userprofiles',{
         roles:[],
         messages:[],
         sessionActive: false,
-        darkTheme: false
+        darkTheme: false,
+        users: {},
+        fname:"",
+        lname:"",
+        email:"",
+
     }),
     getters:{
         getThread(state){
@@ -33,6 +42,120 @@ export const useUserProfile = defineStore('userprofiles',{
 
     },
     actions:{
+        async getUsers(){
+            try{
+                const data = await get(child(ref(db),`users`))
+                if(data.exists()){
+                    this.users = data.val()
+                }
+
+            }
+            catch(err){
+                console.log(err)
+            }
+        },
+
+        async createNewGoogleClient(data:any){
+            try{
+                const updates: any={}
+                this.fname = data.fname
+                this.lname = data.lname
+                this.email = data.email
+                this.darkTheme = false
+                updates[`/users/`+`${data.email}`] = {
+                    fname: data.fname,
+                    lname: data.lname,
+                    darkTheme: false,
+                    isLoggedIn: true,
+                }
+                return await update(ref(db),updates)
+
+            }
+            catch(err){
+                console.log(err)
+            }
+
+        },
+
+        async createNewEmPassClient(data:any){
+            try{
+                const updates: any={}
+                this.fname = data.fname
+                this.email = data.email
+                this.darkTheme = false
+                updates[`/users/`+`${data.email}`] = {
+                    fname: data.fname,
+                    darkTheme: false,
+                    isLoggedIn: true,
+                    password: data.password
+                }
+                return await update(ref(db),updates)
+
+            }
+            catch(err){
+                console.log(err)
+            }
+
+
+        },
+
+        async signOutClient(){
+            try{
+                const updates: any={}
+                updates[`/users/${this.email}/isLoggedIn`] = false
+                return await update(ref(db),updates)
+
+            }
+            catch(err){
+                console.log(err)
+            }
+
+        },
+
+        async signInGoogleClient(data:any){
+            try{
+                const clientMetaData = await get(child(ref(db),`users/${data.email}/`))
+                if(clientMetaData.exists()){
+                    const dataArr = Object.values(clientMetaData.val())
+                    this.darkTheme = dataArr[0]
+                    this.fname = dataArr[1]
+                    this.email = data.email
+                    this.lname = dataArr[3]
+                    // console.log(dataArr)
+                    const updates: any={}
+                    updates[`users/${data.email}/isLoggedIn`] = true
+                    return await update(ref(db),updates)
+    
+                }
+
+            }
+            catch(err){
+                console.log(err)
+            }
+
+        },
+        async signInEmPassClient(data:any){
+            try{
+                const clientMetaData = await get(child(ref(db),`users/${data.email}/`))
+                if(clientMetaData.exists()){
+                    const dataArr = Object.values(clientMetaData.val())
+                    this.darkTheme = dataArr[0]
+                    this.fname = dataArr[1]
+                    this.email = data.email
+                    // console.log(dataArr)
+                    const updates: any={}
+                    updates[`users/${data.email}/isLoggedIn`] = true
+                    return await update(ref(db),updates)
+    
+                }
+
+            }
+            catch(err){
+                console.log(err)
+            }
+
+        },
+
         async signIn(bankName: String,branchID: Number,tellerStation:Number,passcode: String){
             try{
                 const data=await get(child(ref(db),`users/${bankName}/${branchID}/${tellerStation}`))
@@ -156,7 +279,7 @@ export const useUserProfile = defineStore('userprofiles',{
             try{
                 const updates: any={}
                 this.darkTheme = theme
-                updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/darkTheme`]=theme
+                updates[`users/${this.email}/darkTheme`]=theme
                 return await update(ref(db),updates)
 
             }

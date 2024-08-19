@@ -3,6 +3,8 @@
     <v-app-bar :color="user.darkTheme ? '#202c33':''">
       <v-avatar image="IslandSigns-logo.png" size="120"/>
       <v-spacer/>
+      <span v-if="user.fname">{{ user.fname }}</span>
+
       <v-app-bar-nav-icon icon="mdi-account-circle" @click.stop="drawer=!drawer"/>
       <!-- <v-menu>
             <template v-slot:activator="{ props }">
@@ -48,7 +50,7 @@
         <v-list-item class="mt-n7" prepend-icon="mdi-cog" title="Settings" @click=""/>
         <v-list-item prepend-icon="mdi-help" title="Support" @click=""/>
         <v-divider class="border-opacity-100"/>
-        <v-list-item prepend-icon="mdi-logout" title="Sign Out" @click="endSession(),logout()"/>
+        <v-list-item prepend-icon="mdi-logout" title="Sign Out" @click="logout()"/>
       </v-list>
     </v-navigation-drawer>
 
@@ -66,8 +68,8 @@ const rail = ref(false)
 const route = useRouter()
 const theme = ref(user.darkTheme)
 
-function logout(){
-  // accountBtnOpen.value = true
+async function logout(){
+  await user.signOutClient()
   route.push("/")
 
 }
