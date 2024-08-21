@@ -13,6 +13,7 @@
             </v-card-text>
             <ChatsComponent v-if="sessionActive" :theme="theme"/>
             <InviteBtn v-if="sessionActive" :theme="theme"/>
+            <InviteCard v-if="true" :theme="theme"/>
           </v-row>
 
 
@@ -205,6 +206,7 @@
 <script setup>
   import {useUserProfile} from '~/store/store'
   import ChatsComponent from '~/components/ChatsComponent'
+  import InviteCard from '~/components/InviteCard'
   import InviteBtn from '~/components/InviteBtn'
   import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
   import { db } from "@/utils/firebase"

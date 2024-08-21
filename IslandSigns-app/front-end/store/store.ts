@@ -33,7 +33,7 @@ export const useUserProfile = defineStore('userprofiles',{
         fname:"",
         lname:"",
         email:"",
-        sessionId:""
+        sessionId:"",
     }),
     getters:{
         getThread(state){

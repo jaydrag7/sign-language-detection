@@ -47,7 +47,22 @@
         <v-list-item>
           <v-switch @click="switchTheme()" prepend-icon="mdi-theme-light-dark" v-model="theme" color="blue-lighten-1" inset/>
         </v-list-item>
-        <v-list-item class="mt-n7" prepend-icon="mdi-cog" title="Settings" @click=""/>
+        <v-list-item class="mt-n7" prepend-icon="mdi-account-plus" @click="">
+          <div class="d-flex justify-space-between">
+            <span class="text-body-2 mt-1">Invites</span>
+            <v-btn
+            icon
+            size="x-small"
+            class="justify-center"
+            variant="tonal"
+            color="cancel"
+            text="1"
+          />
+
+
+          </div>
+        </v-list-item>
+        <v-list-item prepend-icon="mdi-cog" title="Settings" @click=""/>
         <v-list-item prepend-icon="mdi-help" title="Support" @click=""/>
         <v-divider class="border-opacity-100"/>
         <v-list-item prepend-icon="mdi-logout" title="Sign Out" @click="logout()"/>
@@ -59,14 +74,38 @@
 </template>
 
 <script setup>
-import Home from '../components/Home.vue'
-import {useUserProfile} from '~/store/store'
+  import Home from '../components/Home.vue'
+  import {useUserProfile} from '~/store/store'
+  import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
+  import { db } from "@/utils/firebase"
+
+
 
 const user = useUserProfile()
 const drawer = ref(false)
-const rail = ref(false)
 const route = useRouter()
 const theme = ref(user.darkTheme)
+
+
+const threadRef = dbRef(db, `/users/${user.email}`)
+  onChildAdded(threadRef, (snapshot) => {
+      const newInvite = snapshot.val()
+      console.log(newInvite)
+      // if(isObject(newMessage)){
+      //     if(newMessage.hasOwnProperty('roles')){
+      //         user.roles = newMessage['roles']
+      //     user.messages = newMessage['messages']
+      //     roles.value = user.roles
+      //     messages.value = user.messages
+
+
+      //     console.log('New message received:', newMessage);
+
+
+      //     }
+      // }
+  })            
+
 
 async function logout(){
   await user.signOutClient()
