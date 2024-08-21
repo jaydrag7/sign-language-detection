@@ -6,36 +6,6 @@
       <span v-if="user.fname">{{ user.fname }}</span>
 
       <v-app-bar-nav-icon icon="mdi-account-circle" @click.stop="drawer=!drawer"/>
-      <!-- <v-menu>
-            <template v-slot:activator="{ props }">
-              <v-btn icon="mdi-account-circle" v-bind="props"/>
-            </template>
-            <v-list>
-              <v-list-item>
-                <v-list-item-title>
-                  <v-switch @click="switchTheme()" prepend-icon="mdi-theme-light-dark" v-model="theme" color="blue-lighten-1" inset/>
-                </v-list-item-title>
-                <v-list-item-title>
-                    <v-btn :style="{ textTransform: 'none' }" variant="text" prepend-icon="mdi-cog">
-                        Settings
-                    </v-btn>
-                </v-list-item-title>
-                <v-list-item-title>
-                    <v-btn :style="{ textTransform: 'none' }" variant="text" prepend-icon="mdi-help">
-                        Support
-                    </v-btn>
-                </v-list-item-title>
-                <v-divider class="border-opacity-100"/>
-                <v-list-item-title>
-                    <v-btn :style="{ textTransform: 'none' }" variant="text" prepend-icon="mdi-logout" @click="endSession(),logout()">
-                        Sign Out
-                    </v-btn>
-                </v-list-item-title>
-
-              </v-list-item>
-            </v-list>
-        </v-menu> -->
-
     </v-app-bar>
     <v-navigation-drawer
       v-model="drawer"
@@ -47,16 +17,18 @@
         <v-list-item>
           <v-switch @click="switchTheme()" prepend-icon="mdi-theme-light-dark" v-model="theme" color="blue-lighten-1" inset/>
         </v-list-item>
-        <v-list-item class="mt-n7" prepend-icon="mdi-account-plus" @click="">
+        <v-list-item class="mt-n7" prepend-icon="mdi-account-plus" @click="showInvitation=!showInvitation">
           <div class="d-flex justify-space-between">
             <span class="text-body-2 mt-1">Invites</span>
             <v-btn
+            v-if="chatInvite"
             icon
             size="x-small"
+            density="compact"
             class="justify-center"
-            variant="tonal"
+            variant="flat"
             color="cancel"
-            text="1"
+            text=""
           />
 
 
@@ -68,13 +40,19 @@
         <v-list-item prepend-icon="mdi-logout" title="Sign Out" @click="logout()"/>
       </v-list>
     </v-navigation-drawer>
-
     <Home :theme="user.darkTheme"></Home>
+    <InviteCard
+      v-if="chatInvite && showInvitation"
+      @close="closeInviteCardHandler()"
+      :theme="user.darkTheme"
+      :chatInviteMetaData="user.inviteMetaData"
+      />
   </v-app>
 </template>
 
 <script setup>
   import Home from '../components/Home.vue'
+  import InviteCard from '~/components/InviteCard.vue'
   import {useUserProfile} from '~/store/store'
   import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
   import { db } from "@/utils/firebase"
@@ -83,14 +61,24 @@
 
 const user = useUserProfile()
 const drawer = ref(false)
+const showInvitation = ref(false)
+const chatInvite = ref(false)
 const route = useRouter()
 const theme = ref(user.darkTheme)
+const newInvite = ref({})
+
+function isObject(variable) {
+    return variable !== null && typeof variable === 'object';
+}
 
 
 const threadRef = dbRef(db, `/users/${user.email}`)
   onChildAdded(threadRef, (snapshot) => {
-      const newInvite = snapshot.val()
-      console.log(newInvite)
+      newInvite.value = snapshot.val()
+      if(isObject(newInvite.value)){
+        user.inviteMetaData = newInvite.value
+        chatInvite.value = true
+      }
       // if(isObject(newMessage)){
       //     if(newMessage.hasOwnProperty('roles')){
       //         user.roles = newMessage['roles']
@@ -104,7 +92,11 @@ const threadRef = dbRef(db, `/users/${user.email}`)
 
       //     }
       // }
-  })            
+  })  
+  
+  function closeInviteCardHandler(){
+    showInvitation.value = false
+  }
 
 
 async function logout(){
