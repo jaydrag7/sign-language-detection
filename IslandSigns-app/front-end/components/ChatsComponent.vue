@@ -1,7 +1,7 @@
 <template>
     <v-row
-        style="justify-content: center;"
-        class="mt-3"
+        style="justify-content:center;"
+        class="mt-3 ml-1"
     >
         <v-dialog
             v-model="closeDialog"
@@ -16,7 +16,6 @@
                     variant="flat"
                     prepend-icon="mdi-location-enter"
                     color="green-lighten-1"
-                    class="rounded-pill"
                 >
                     Join
 

@@ -2,17 +2,17 @@
   <v-container class="mt-14">
 
     <v-row justify="center" class="pa-12">
-      <v-card color="blue-lighten-3" class="text-center" height="120" width="355">
+      <v-card color="blue-lighten-3" class="text-center" height="120" width="300">
         <v-card-text class="text-h6">
           <v-icon color="green-lighten-1" icon="mdi-chat"/> Session
         </v-card-text>
         <v-sheet class="mt-1" :color="theme ? '#202c33':'grey-lighten-3'" style="height: 100%;">
-          <v-row style="width:100% ;">
+          <v-row>
             <v-card-text class="text-h7 py-5 px-5 mr-n16" style="display: flex; font-family:Verdana, Geneva, Tahoma, sans-serif;">
-            <v-btn v-if="sessionActive" variant="text" class="mt-n1" size="30" color="red-lighten-1" icon="mdi-access-point"/> {{ sessionText() }} <v-img v-if="sessionActive==false" class="mt-n2" height="35" src="empty-box.png" draggable="false"/>
+              {{ sessionText() }} <v-img v-if="sessionActive==false" class="mt-n2" height="35" src="empty-box.png" draggable="false"/>
             </v-card-text>
             <ChatsComponent v-if="sessionActive" :theme="theme"/>
-
+            <InviteBtn v-if="sessionActive" :theme="theme"/>
           </v-row>
 
 
@@ -205,6 +205,7 @@
 <script setup>
   import {useUserProfile} from '~/store/store'
   import ChatsComponent from '~/components/ChatsComponent'
+  import InviteBtn from '~/components/InviteBtn'
   import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
   import { db } from "@/utils/firebase"
 
@@ -255,7 +256,10 @@
   async function createSession(){
     try{
       sessionLoading.value = true
-      await user.createSession()
+      sessionActive.value = true
+      const sessionId = generateHexCode()
+      await user.createSession(sessionId)
+
 
     }
     catch(err){
@@ -275,13 +279,15 @@
   }
 
   function sessionText() {
-    return sessionActive.value ? "Live Session" : "--Empty--";
+    return sessionActive.value ? "" : "--Empty--";
+  }
+
+  function generateHexCode(){
+    let hexCode = 'Chat'
+    const hexCharacters = '0123456789ABCDEF'
+    for(let i=0;i<9;i++){
+      hexCode += hexCharacters[Math.floor(Math.random()*16)]
+    }
+    return hexCode
   }
 </script>
-
-<style>
-.session-button {
-  margin-top: 20px;
-}
-</style>
-

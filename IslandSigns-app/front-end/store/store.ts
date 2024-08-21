@@ -15,7 +15,8 @@ interface UserProfile{
     users:any,
     fname: any,
     lname: any,
-    email: any
+    email: any,
+    sessionId: String
 }
 export const useUserProfile = defineStore('userprofiles',{
     state:():UserProfile => ({
@@ -32,7 +33,7 @@ export const useUserProfile = defineStore('userprofiles',{
         fname:"",
         lname:"",
         email:"",
-
+        sessionId:""
     }),
     getters:{
         getThread(state){
@@ -52,6 +53,22 @@ export const useUserProfile = defineStore('userprofiles',{
             }
             catch(err){
                 console.log(err)
+            }
+        },
+
+        async sendChatInvitation(data:any){
+            try{
+                const updates: any={}
+                updates[`users/${data.invitee}/invites`] = {
+                    status:"pending",
+                    from: data.from,
+                    sessionId: this.sessionId
+                }
+                return await update(ref(db),updates)
+
+            }
+            catch(err){
+                console.error(err)
             }
         },
 
@@ -248,12 +265,27 @@ export const useUserProfile = defineStore('userprofiles',{
                 
         },
 
-        async createSession(){
+        // async createSession(){
+        //     try{
+        //         const updates: any={} 
+        //         updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chatActivity`] = {
+        //             isActive: true
+        //         }
+        //         return await update(ref(db),updates)
+
+        //     }
+        //     catch(error){
+        //         console.error(error)
+        //     }
+        // },
+        async createSession(id:String){
             try{
                 const updates: any={} 
-                updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chatActivity`] = {
-                    isActive: true
+                updates[`sessions/${id}`] = {
+                    createdBy: this.fname
                 }
+                this.sessionId = id
+                console.log(this.sessionId)
                 return await update(ref(db),updates)
 
             }

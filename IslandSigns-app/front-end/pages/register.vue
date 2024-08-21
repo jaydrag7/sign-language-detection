@@ -20,6 +20,7 @@
           style="text-transform: none;"
           variant="tonal"
           :disabled="isSignInEmpty()"
+          :loading="btnLoading"
           @click="EmPassClient()"
         >
         Sign in
@@ -58,7 +59,6 @@
           You are now a registered user.
         </v-card-text>
       </div>
-      <!-- <v-btn @click=submitForm class="submit-button" style="text-transform: none;" :disabled="isEmpty()">Register</v-btn> -->
     </form>
     <form v-if="showSignUpWindow" @submit.prevent="submitForm" class="signup-form mt-10 mb-5">
       <v-row class="justify-center mt-n12">
@@ -85,16 +85,10 @@
           color="primary"
           @click="newEmPassClient()"
           :disabled="isRegisterEmpty()"
+          :loading="btnLoading"
         >
           Continue
         </v-btn>
-
-      <!-- <div>
-        <v-card-text v-if="isRegistered">
-          You are now a registered user.
-        </v-card-text>
-      </div> -->
-      <!-- <v-btn @click=submitForm class="submit-button" style="text-transform: none;" :disabled="isEmpty()">Register</v-btn> -->
     </form>
     <v-row v-if="!showSignUpWindow" class="mb-5">
       <span class="text-body-1">
@@ -157,6 +151,7 @@
   })
   const isRegistered = ref(false)
   const showSignUpWindow = ref(false)
+  const btnLoading = ref(false)
 
   const goBack = () => {
     isRegistered.value=false
@@ -234,6 +229,7 @@ async function googleSignIn(){
 
 async function newEmPassClient(){
   try{
+    btnLoading.value = true
     await createUserWithEmailAndPassword(auth,newClientEmail.value,newClientPassword.value)
     .then(async (userCredentials) => {
       const client = userCredentials.user
@@ -254,6 +250,8 @@ async function newEmPassClient(){
             password: client.reloadUserInfo.passwordHash
           }
           await user.createNewEmPassClient(clientMetaData)
+          setTimeout(() => (btnLoading.value = false), 3000)
+
           route.push('/home')
         }
 
@@ -263,13 +261,14 @@ async function newEmPassClient(){
     })
   }
   catch(err){
-    registerMsg.value = 'This account already exists'
+    setTimeout(() => (btnLoading.value = false,registerMsg.value = 'This account already exists'), 3000)
     console.error(err.message)
   }
 }
 
 async function EmPassClient(){
   try{
+    btnLoading.value = true
     await signInWithEmailAndPassword(auth,existingEmail.value,existingPassword.value)
     .then(async (userCredentials)=>{
       const client = userCredentials.user
@@ -279,27 +278,16 @@ async function EmPassClient(){
         email:encodedEmail,
       }
       await user.signInEmPassClient(clientMetaData)
+      setTimeout(() => (btnLoading.value = false), 3000)
       route.push('/home')
 
     })
 
   }
   catch(err){
-    signinMsg.value = 'Invalid Credential(s)'
+    setTimeout(() => (btnLoading.value = false, signinMsg.value = 'Invalid Credential(s)'), 3000)
     console.error(err)
   }
-  // await user.getUsers()
-  // const existingClients = user.users
-  // const existingClientEmails =  Object.keys(existingClients)
-  // const bytes = encodeURI(existingEmail)
-  // const encodedEmail = base64.encode(bytes)
-  // for (let i=0;i<existingClientEmails.length;i++){
-  //   if(existingClientEmails.includes(encodedEmail)){
-
-  //   }
-
-
-  // }
 
 }
 </script>
@@ -313,35 +301,6 @@ async function EmPassClient(){
   background-color: #ffff;
 }
 
-.header {
-  font-size: 2em;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.back-button {
-  top: 120px;
-  right: 250px;
-  background-color: #61be61;
-  color: white;
-  border: none;
-  border-radius: 15px;
-  padding: 5px 15px;
-  cursor: pointer;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.back-button:hover {
-  background-color: #008000;
-}
-
-.sign-in-image {
-  width: 180px;
-  height: 180px;
-  object-fit: cover;
-  margin-bottom: 3px;
-}
-
 .signup-form {
   width: 330px;
   background-color: white;
@@ -353,23 +312,5 @@ async function EmPassClient(){
   flex-direction: column;
   justify-content: center;
   align-items: left;
-}
-
-.submit-button {
-  width: 50%; 
-  left:70px;
-  padding: 10px;
-  background-color: #61be61; 
-  color: white;
-  border: none;
-  border-radius: 50px; 
-  cursor: pointer;
-  margin-top: 20px; 
-  display: flex;
-  justify-content: center;
-}
-
-.submit-button:hover {
-  background-color: #008000;
 }
 </style>
