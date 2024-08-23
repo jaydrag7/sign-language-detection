@@ -20,7 +20,9 @@ interface UserProfile{
     inviteMetaData: any,
     chatParticipant: String,
     sessionStatus: Boolean,
-    sessionInviteeStatus: Boolean
+    sessionInviteeStatus: Boolean,
+    author: Boolean,
+    invitee: Boolean,
 }
 export const useUserProfile = defineStore('userprofiles',{
     state:():UserProfile => ({
@@ -41,7 +43,9 @@ export const useUserProfile = defineStore('userprofiles',{
         inviteMetaData:{},
         chatParticipant:"",
         sessionStatus: false,
-        sessionInviteeStatus: false
+        sessionInviteeStatus: false,
+        author: false,
+        invitee: false
     }),
     getters:{
         getThread(state){
@@ -87,7 +91,7 @@ export const useUserProfile = defineStore('userprofiles',{
                     name: participant,
                     status: this.sessionInviteeStatus
                 }
-                return update(ref(db),updates)
+                return await update(ref(db),updates)
             }
             catch(err){
                 console.error(err)
@@ -300,7 +304,6 @@ export const useUserProfile = defineStore('userprofiles',{
                     }
                 }
                 this.sessionId = id
-                console.log(this.sessionId)
                 return await update(ref(db),updates)
 
             }
@@ -313,6 +316,7 @@ export const useUserProfile = defineStore('userprofiles',{
             try{
                 const updates: any={}
                 this.sessionStatus = !this.sessionStatus
+                this.author = !this.author
                 console.log(this.sessionStatus)
                 updates[`sessions/${this.sessionId}/participants/createdBy/status`] = this.sessionStatus
                 return await update(ref(db),updates)
@@ -327,6 +331,7 @@ export const useUserProfile = defineStore('userprofiles',{
                 const participant = await get(child(ref(db),`sessions/${this.sessionId}/participants/createdBy/name`))
                 if(participant.exists()){
                     this.chatParticipant = participant.val()
+                    this.invitee = !this.invitee
                     const updates: any={}
                     this.sessionStatus = !this.sessionStatus
                     updates[`sessions/${this.sessionId}/participants/invitee/status`] = this.sessionStatus

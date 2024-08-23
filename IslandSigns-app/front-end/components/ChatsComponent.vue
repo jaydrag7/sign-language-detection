@@ -243,9 +243,17 @@
     const audioPlayback = ref(null)
     const microphoneEnabled = ref(true)
 
-    function resetInviteHandler(){
-        closeDialog.value = false
-        emits('resetInvite')
+    async function resetInviteHandler(){
+        if(user.author){
+            await user.updateSessionAuthorStatus()
+            closeDialog.value = false
+            emits('resetInvite')
+        }
+        else if (user.invitee){
+            await user.updateSessionInviteeStatus()
+            closeDialog.value = false
+            emits('resetInvite')
+        }
     }
 
 
@@ -253,17 +261,17 @@
         return variable !== null && typeof variable === 'object';
     }
     const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants`)
-    const authorSessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants/createdBy`)
 
     onChildChanged(sessionStatusRef, (snapshot) => {
         const statusObj = snapshot.val()
-        if(statusObj.name != user.fname && statusObj.status){
-            user.sessionInviteeStatus = true
-            console.log(isOnline)
-        }
-        else{
-            user.sessionInviteeStatus = false
-            console.log(isOnline)
+        if(statusObj.name != user.fname){
+            if(statusObj.status){
+                user.sessionInviteeStatus = true
+                console.log(statusObj.status)
+            }
+            else{
+                user.sessionInviteeStatus = false
+            }
         }
     })     
     // onChildChanged(authorSessionStatusRef, (snapshot) => {

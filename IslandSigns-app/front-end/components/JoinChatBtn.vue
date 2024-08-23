@@ -29,20 +29,6 @@
     const user = useUserProfile()
     const showChatComponent = ref(false)
 
-    const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants`)
-
-    onChildChanged(sessionStatusRef, (snapshot) => {
-        const statusObj = snapshot.val()
-        if(statusObj.name != user.fname && statusObj.status){
-            user.sessionInviteeStatus = true
-            console.log(isOnline)
-        }
-        else{
-            user.sessionInviteeStatus = false
-            console.log(isOnline)
-        }
-    })     
-
 
     function resetInviteHandler(){
         showChatComponent.value = false
@@ -50,6 +36,6 @@
     }
 
     async function updateJoinStatus(){
-        await user.updateSessionAuthorStatus()
+        return await user.updateSessionAuthorStatus()
     }
 </script>

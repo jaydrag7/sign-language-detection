@@ -67,20 +67,6 @@
     const user = useUserProfile()
     const showChatComponent = ref(false)
 
-    const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants`)
-    const authorSessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants/createdBy`)
-
-    onChildChanged(sessionStatusRef, (snapshot) => {
-        const statusObj = snapshot.val()
-        if(statusObj.name != user.fname && statusObj.status){
-            user.sessionInviteeStatus = true
-            console.log(isOnline)
-        }
-        else{
-            user.sessionInviteeStatus = false
-            console.log(isOnline)
-        }
-    })     
     // onChildChanged(authorSessionStatusRef, (snapshot) => {
     //     const isOnline = snapshot.val()
     //     if(isOnline){

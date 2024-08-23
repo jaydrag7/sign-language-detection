@@ -77,32 +77,69 @@ function isObject(variable) {
 
 
 const threadRef = dbRef(db, `/users/${user.email}`)
-const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants`)
-const authorSessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants/createdBy`)
-
-    onChildChanged(sessionStatusRef, (snapshot) => {
-        const statusObj = snapshot.val()
-        if(statusObj.name != user.fname && statusObj.status){
+const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}`)
+  onChildAdded(sessionStatusRef, (snapshot) => {
+    const statusObj = snapshot.val()
+    if(statusObj.hasOwnProperty('participants')){
+      const arr = Object.values(statusObj.participants)
+      arr.forEach((data) => {
+        if(data.name != user.fname){
+          if(data.status){
             user.sessionInviteeStatus = true
-            console.log(isOnline)
-        }
-        else{
+
+          }
+          else{
             user.sessionInviteeStatus = false
-            console.log(isOnline)
+          }
         }
-    })     
-    // onChildChanged(authorSessionStatusRef, (snapshot) => {
-    //     const isOnline = snapshot.val()
-    //     if(isOnline){
+      })
+
+    }
+    // if(statusObj.name != user.fname){
+    //     if(statusObj.status){
     //         user.sessionInviteeStatus = true
-    //         console.log(isOnline)
+    //         console.log(statusObj.status)
     //     }
     //     else{
     //         user.sessionInviteeStatus = false
-    //         console.log(isOnline)
-
     //     }
-    // })     
+    // }
+    // else{
+    //   console.log(statusObj)
+    // }
+    // console.log(statusObj.hasOwnProperty('participants'))
+  })     
+  onChildChanged(sessionStatusRef, (snapshot) => {
+    const statusObj = snapshot.val()
+    if(statusObj.hasOwnProperty('participants')){
+      const arr = Object.values(statusObj.participants)
+      arr.forEach((data) => {
+        if(data.name != user.fname){
+          if(data.status){
+            user.sessionInviteeStatus = true
+
+          }
+          else{
+            user.sessionInviteeStatus = false
+          }
+        }
+      })
+    }
+
+    // if(statusObj.name != user.fname){
+    //     if(statusObj.status){
+    //         user.sessionInviteeStatus = true
+    //         console.log(statusObj.status)
+    //     }
+    //     else{
+    //         user.sessionInviteeStatus = false
+    //     }
+    // }
+    // else{
+    //   console.log(statusObj)
+    // }
+    console.log(statusObj)
+  })     
 
   onChildAdded(threadRef, (snapshot) => {
       newInvite.value = snapshot.val()
@@ -115,7 +152,6 @@ const authorSessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participan
   
   onChildChanged(threadRef,(snapshot) => {
     newInvite.value = snapshot.val()
-    console.log(isObject(newInvite.value))
     if(isObject(newInvite.value)){
       user.inviteMetaData = newInvite.value
       user.sessionId = user.inviteMetaData.sessionId

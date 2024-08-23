@@ -121,7 +121,6 @@
             }
             else{
                 invitePrompt.value = 'User does not exist.'
-                console.log("user does not exist")
             }
         })
 
