@@ -25,7 +25,7 @@
                     class="text-none"
                     rounded="xl"
                     text="Decline"
-                    @click="isActive.value = false,closeClickHandler()"
+                    @click="declineInvite(),isActive.value = false,declineClickHandler()"
                   ></v-btn>
   
                   <v-btn
@@ -34,24 +34,86 @@
                     rounded="xl"
                     text="Accept"
                     variant="flat"
-                    @click=""
+                    @click="isActive.value=false,showChatComponent=!showChatComponent,updateJoinStatus()"
                   ></v-btn>
                 </v-card-actions>
             </v-card>
         </template>
     </v-dialog>
+    <ChatsComponent 
+        v-if="showChatComponent" 
+        @resetInvite="resetInviteHandler()" 
+        :theme="theme"
+        :showDialog="showChatComponent"
+    />
 </template>
 <script setup>
+    import { useUserProfile } from '~/store/store'
+    import ChatsComponent from '~/components/ChatsComponent.vue'
+    import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
+    import { db } from "@/utils/firebase";
+
+
+
     const props = defineProps({
         theme:Boolean,
         chatInviteMetaData: Object
     })
 
     const emit = defineEmits([
-        'close'
+        'close','decline'
     ])
+
+    const user = useUserProfile()
+    const showChatComponent = ref(false)
+
+    const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants`)
+    const authorSessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants/createdBy`)
+
+    onChildChanged(sessionStatusRef, (snapshot) => {
+        const statusObj = snapshot.val()
+        if(statusObj.name != user.fname && statusObj.status){
+            user.sessionInviteeStatus = true
+            console.log(isOnline)
+        }
+        else{
+            user.sessionInviteeStatus = false
+            console.log(isOnline)
+        }
+    })     
+    // onChildChanged(authorSessionStatusRef, (snapshot) => {
+    //     const isOnline = snapshot.val()
+    //     if(isOnline){
+    //         user.sessionInviteeStatus = true
+    //         console.log(isOnline)
+    //     }
+    //     else{
+    //         user.sessionInviteeStatus = false
+    //         console.log(isOnline)
+
+    //     }
+    // })     
+
 
     function closeClickHandler(){
         return emit('close')
+    }
+    function declineClickHandler(){
+        return emit('decline')
+    }
+
+    async function declineInvite(){
+        declineClickHandler()
+        return await user.declineChatInvite()
+    }
+
+    async function resetInviteHandler(){
+        showChatComponent.value = false
+        declineClickHandler()
+        await declineInvite()
+    }
+
+    async function updateJoinStatus(){
+        await user.updateSessionInviteeStatus()
     }
 </script>

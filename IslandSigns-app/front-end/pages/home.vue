@@ -17,7 +17,7 @@
         <v-list-item>
           <v-switch @click="switchTheme()" prepend-icon="mdi-theme-light-dark" v-model="theme" color="blue-lighten-1" inset/>
         </v-list-item>
-        <v-list-item class="mt-n7" prepend-icon="mdi-account-plus" @click="showInvitation=!showInvitation">
+        <v-list-item :disabled="chatInvite === false" class="mt-n7" prepend-icon="mdi-account-plus" @click="showInvitation=!showInvitation">
           <div class="d-flex justify-space-between">
             <span class="text-body-2 mt-1">Invites</span>
             <v-btn
@@ -40,10 +40,14 @@
         <v-list-item prepend-icon="mdi-logout" title="Sign Out" @click="logout()"/>
       </v-list>
     </v-navigation-drawer>
-    <Home :theme="user.darkTheme"></Home>
+    <Home 
+      :theme="user.darkTheme"
+      @resetInvite="declineClickHandler()"
+    />
     <InviteCard
       v-if="chatInvite && showInvitation"
       @close="closeInviteCardHandler()"
+      @decline="declineClickHandler()"
       :theme="user.darkTheme"
       :chatInviteMetaData="user.inviteMetaData"
       />
@@ -73,29 +77,61 @@ function isObject(variable) {
 
 
 const threadRef = dbRef(db, `/users/${user.email}`)
+const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants`)
+const authorSessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants/createdBy`)
+
+    onChildChanged(sessionStatusRef, (snapshot) => {
+        const statusObj = snapshot.val()
+        if(statusObj.name != user.fname && statusObj.status){
+            user.sessionInviteeStatus = true
+            console.log(isOnline)
+        }
+        else{
+            user.sessionInviteeStatus = false
+            console.log(isOnline)
+        }
+    })     
+    // onChildChanged(authorSessionStatusRef, (snapshot) => {
+    //     const isOnline = snapshot.val()
+    //     if(isOnline){
+    //         user.sessionInviteeStatus = true
+    //         console.log(isOnline)
+    //     }
+    //     else{
+    //         user.sessionInviteeStatus = false
+    //         console.log(isOnline)
+
+    //     }
+    // })     
+
   onChildAdded(threadRef, (snapshot) => {
       newInvite.value = snapshot.val()
       if(isObject(newInvite.value)){
         user.inviteMetaData = newInvite.value
+        user.sessionId = user.inviteMetaData.sessionId
         chatInvite.value = true
       }
-      // if(isObject(newMessage)){
-      //     if(newMessage.hasOwnProperty('roles')){
-      //         user.roles = newMessage['roles']
-      //     user.messages = newMessage['messages']
-      //     roles.value = user.roles
-      //     messages.value = user.messages
+  })
+  
+  onChildChanged(threadRef,(snapshot) => {
+    newInvite.value = snapshot.val()
+    console.log(isObject(newInvite.value))
+    if(isObject(newInvite.value)){
+      user.inviteMetaData = newInvite.value
+      user.sessionId = user.inviteMetaData.sessionId
+      chatInvite.value = true
 
 
-      //     console.log('New message received:', newMessage);
-
-
-      //     }
-      // }
-  })  
+    }
+  })
   
   function closeInviteCardHandler(){
     showInvitation.value = false
+  }
+
+  function declineClickHandler(){
+    chatInvite.value = false
+
   }
 
 

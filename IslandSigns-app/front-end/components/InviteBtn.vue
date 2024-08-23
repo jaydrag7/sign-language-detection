@@ -38,6 +38,9 @@
                     placeholder="username"
                     clearable
                   ></v-textarea>  
+                  <div class="mb-4 text-medium-emphasis">
+                    Copy your session code
+                  </div>  
                   <v-textarea
                     :value="codeToCopy"
                     class="mb-2"
@@ -110,6 +113,7 @@
                     invitee: inviteeCode
                 }
                 await user.sendChatInvitation(inviteForm)
+                await user.addChatParticipant(userInvite.value)
                 invitePrompt.value = 'Invite successfully sent.'
 
 

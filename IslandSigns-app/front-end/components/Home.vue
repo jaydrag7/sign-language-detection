@@ -8,12 +8,15 @@
         </v-card-text>
         <v-sheet class="mt-1" :color="theme ? '#202c33':'grey-lighten-3'" style="height: 100%;">
           <v-row>
-            <v-card-text class="text-h7 py-5 px-5 mr-n16" style="display: flex; font-family:Verdana, Geneva, Tahoma, sans-serif;">
-              {{ sessionText() }} <v-img v-if="sessionActive==false" class="mt-n2" height="35" src="empty-box.png" draggable="false"/>
+            <v-card-text v-if="sessionActive==false" class="text-h7 py-5 px-5 mr-n16" style="display: flex; font-family:Verdana, Geneva, Tahoma, sans-serif;">
+              {{ sessionText() }} <v-img class="mt-n2" height="35" src="empty-box.png" draggable="false"/>
             </v-card-text>
-            <ChatsComponent v-if="sessionActive" :theme="theme"/>
+            <JoinChatBtn 
+              v-if="sessionActive"
+              :theme="theme"
+              @resetInvite="resetInviteHandler()"
+            />
             <InviteBtn v-if="sessionActive" :theme="theme"/>
-            <InviteCard v-if="true" :theme="theme"/>
           </v-row>
 
 
@@ -207,6 +210,7 @@
   import {useUserProfile} from '~/store/store'
   import ChatsComponent from '~/components/ChatsComponent'
   import InviteCard from '~/components/InviteCard'
+  import JoinChatBtn from '~/components/JoinChatBtn'
   import InviteBtn from '~/components/InviteBtn'
   import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
   import { db } from "@/utils/firebase"
@@ -223,6 +227,12 @@
   const props = defineProps({
     theme: Boolean,
   })
+  const emits = defineEmits(['resetInvite'])
+
+  function resetInviteHandler(){
+    sessionActive.value = false
+    emits('resetInvite')
+  }
 
   // onMounted(async()=>{
   //   user.getChatActivity()
@@ -236,24 +246,32 @@
   }
 
 
-  const threadRef = dbRef(db, `/users/${user.bankName}/${user.branchID}/${user.tellerStation}/chatActivity`)
-  // onChildAdded(threadRef, (snapshot) => {
-  //     const newMessage = snapshot.val()
-  //     console.log('New message received:', newMessage);
+  const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants`)
+  // const authorSessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants/createdBy`)
 
-  // })     
-  
-  onChildChanged(threadRef, (snapshot) => {
-    const isChatActive = snapshot.val()
-    if(isChatActive){
-      sessionActive.value = true
-      console.log('Chat Active?:', isChatActive);
+  onChildChanged(sessionStatusRef, (snapshot) => {
+        const statusObj = snapshot.val()
+        if(statusObj.name != user.fname && statusObj.status){
+            user.sessionInviteeStatus = true
+            console.log(isOnline)
+        }
+        else{
+            user.sessionInviteeStatus = false
+            console.log(isOnline)
+        }
+    })     
+  //   onChildChanged(authorSessionStatusRef, (snapshot) => {
+  //       const isOnline = snapshot.val()
+  //       if(isOnline){
+  //           user.sessionInviteeStatus = true
+  //           console.log(isOnline)
+  //       }
+  //       else{
+  //           user.sessionInviteeStatus = false
+  //           console.log(isOnline)
 
-    }
-    else{
-      sessionActive.value = false
-    }
-  })     
+  //       }
+  //   })     
 
   async function createSession(){
     try{

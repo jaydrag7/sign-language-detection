@@ -16,7 +16,11 @@ interface UserProfile{
     fname: any,
     lname: any,
     email: any,
-    sessionId: String
+    sessionId: String,
+    inviteMetaData: any,
+    chatParticipant: String,
+    sessionStatus: Boolean,
+    sessionInviteeStatus: Boolean
 }
 export const useUserProfile = defineStore('userprofiles',{
     state:():UserProfile => ({
@@ -34,6 +38,10 @@ export const useUserProfile = defineStore('userprofiles',{
         lname:"",
         email:"",
         sessionId:"",
+        inviteMetaData:{},
+        chatParticipant:"",
+        sessionStatus: false,
+        sessionInviteeStatus: false
     }),
     getters:{
         getThread(state){
@@ -60,7 +68,6 @@ export const useUserProfile = defineStore('userprofiles',{
             try{
                 const updates: any={}
                 updates[`users/${data.invitee}/invites`] = {
-                    status:"pending",
                     from: data.from,
                     sessionId: this.sessionId
                 }
@@ -70,6 +77,22 @@ export const useUserProfile = defineStore('userprofiles',{
             catch(err){
                 console.error(err)
             }
+        },
+
+        async addChatParticipant(participant: String){
+            try{
+                const updates: any={}
+                this.chatParticipant = participant
+                updates[`sessions/${this.sessionId}/participants/invitee`] = {
+                    name: participant,
+                    status: this.sessionInviteeStatus
+                }
+                return update(ref(db),updates)
+            }
+            catch(err){
+                console.error(err)
+            }
+
         },
 
         async createNewGoogleClient(data:any){
@@ -265,29 +288,50 @@ export const useUserProfile = defineStore('userprofiles',{
                 
         },
 
-        // async createSession(){
-        //     try{
-        //         const updates: any={} 
-        //         updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chatActivity`] = {
-        //             isActive: true
-        //         }
-        //         return await update(ref(db),updates)
-
-        //     }
-        //     catch(error){
-        //         console.error(error)
-        //     }
-        // },
         async createSession(id:String){
             try{
                 const updates: any={} 
                 updates[`sessions/${id}`] = {
-                    createdBy: this.fname
+                    participants: {
+                        createdBy: {
+                            name: this.fname,
+                            status: this.sessionStatus
+                        }
+                    }
                 }
                 this.sessionId = id
                 console.log(this.sessionId)
                 return await update(ref(db),updates)
 
+            }
+            catch(error){
+                console.error(error)
+            }
+        },
+
+        async updateSessionAuthorStatus(){
+            try{
+                const updates: any={}
+                this.sessionStatus = !this.sessionStatus
+                console.log(this.sessionStatus)
+                updates[`sessions/${this.sessionId}/participants/createdBy/status`] = this.sessionStatus
+                return await update(ref(db),updates)
+
+            }
+            catch(error){
+                console.error(error)
+            }
+        },
+        async updateSessionInviteeStatus(){
+            try{
+                const participant = await get(child(ref(db),`sessions/${this.sessionId}/participants/createdBy/name`))
+                if(participant.exists()){
+                    this.chatParticipant = participant.val()
+                    const updates: any={}
+                    this.sessionStatus = !this.sessionStatus
+                    updates[`sessions/${this.sessionId}/participants/invitee/status`] = this.sessionStatus
+                    return await update(ref(db),updates)
+                }
             }
             catch(error){
                 console.error(error)
@@ -332,5 +376,16 @@ export const useUserProfile = defineStore('userprofiles',{
                 console.error(error)
             }
         },
+        async declineChatInvite(){
+            try{
+                const updates: any={}
+                updates[`users/${this.email}/invites`]= null
+                return await update(ref(db),updates)
+
+            }
+            catch(err){
+                console.error(err)
+            }
+        }
     }
 })

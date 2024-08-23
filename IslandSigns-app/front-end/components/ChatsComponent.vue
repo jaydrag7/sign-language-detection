@@ -1,26 +1,21 @@
 <template>
-    <v-row
-        style="justify-content:center;"
-        class="mt-3 ml-1"
+    <v-dialog
+        v-model="closeDialog"
+        fullscreen
+        scrollable
     >
-        <v-dialog
-            v-model="closeDialog"
-            fullscreen
-            scrollable
-        >
-            <template v-slot:activator="{props}">
-                <v-btn
-                    :style="{textTransform:'none'}"
-                    @click="closeDialog=!closeDialog"
-                    v-bind="props"
-                    variant="flat"
-                    prepend-icon="mdi-location-enter"
-                    color="green-lighten-1"
-                >
-                    Join
+        <template v-slot:default="{isActive}">
+            <!-- <v-btn
+                :style="{textTransform:'none'}"
+                @click="closeDialog=!closeDialog"
+                v-bind="props"
+                variant="flat"
+                prepend-icon="mdi-location-enter"
+                color="green-lighten-1"
+            >
+                Join
 
-                </v-btn>
-            </template>
+            </v-btn> -->
             <v-card
                 fluid="true"
                 :color="theme ? '#0b141a':'grey-lighten-3'"
@@ -34,11 +29,10 @@
                     >
                         <template v-slot:activator="{props}">
                             <v-btn
-                                :style="{textTransform:'none'}"
                                 v-bind="props"
-                                color="red-lighten-1"      
-                                variant="flat"
-                                icon="mdi-close"      
+                                color="cancel"      
+                                variant="tonal"
+                                icon="mdi-close"  
                             />    
                         </template>
                         <v-card
@@ -82,7 +76,7 @@
                                     class="mr-5"
                                     variant="outlined"
                                     rounded
-                                    @click="closeDialog=false;closeWarningDialog=false,endSession()"
+                                    @click="closeWarningDialog=false,isActive.value = false,resetInviteHandler()"
                                 >
                                     Yes
                                 </v-btn>
@@ -101,6 +95,18 @@
                         </v-card>
 
                     </v-dialog>
+                    <v-chip
+                        v-if="user.sessionStatus"
+                        :text="user.fname"
+                        :color="user.sessionStatus ? 'secondary_a':'cancel'"
+                        class="ml-2"
+                    />    
+                    <v-chip
+                        v-if="user.chatParticipant"
+                        :text="user.chatParticipant"
+                        :color="user.sessionInviteeStatus ? 'secondary_a':'cancel'"
+                        class="ml-2"
+                    />    
                     <v-spacer/>
                     <v-avatar image="IslandSigns-logo.png" size="120"/>
                 </v-toolbar>
@@ -199,12 +205,9 @@
                     </v-row>
                     </v-card>
                 </v-container>
-
-                    
-                
             </v-card>
-        </v-dialog>
-    </v-row>
+        </template>
+    </v-dialog>
 </template>
 <script setup>
     import axios from 'axios'
@@ -214,9 +217,14 @@
     import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
     import base64 from 'base-64'
 
+    const props = defineProps({
+        theme: Boolean,
+        showDialog: Boolean
+    })
+    const emits = defineEmits(['resetInvite'])
 
     const user = useUserProfile()    
-    const closeDialog = ref(false)
+    const closeDialog = ref(props.showDialog)
     const closeWarningDialog = ref(false)
     const stream = ref(null)
     const audioStream = ref(null)
@@ -234,54 +242,43 @@
     const audioChunks = ref([])
     const audioPlayback = ref(null)
     const microphoneEnabled = ref(true)
-    const props = defineProps({
-        theme: Boolean,
-    })
+
+    function resetInviteHandler(){
+        closeDialog.value = false
+        emits('resetInvite')
+    }
 
 
     function isObject(variable) {
         return variable !== null && typeof variable === 'object';
     }
-    const threadRef = dbRef(db, `/users/${user.bankName}/${user.branchID}/${user.tellerStation}`)
-    onChildAdded(threadRef, (snapshot) => {
-        const newMessage = snapshot.val()
-        if(isObject(newMessage)){
-            if(newMessage.hasOwnProperty('roles')){
-                user.roles = newMessage['roles']
-            user.messages = newMessage['messages']
-            roles.value = user.roles
-            messages.value = user.messages
+    const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants`)
+    const authorSessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants/createdBy`)
 
-
-            console.log('New message received:', newMessage);
-
-
-            }
+    onChildChanged(sessionStatusRef, (snapshot) => {
+        const statusObj = snapshot.val()
+        if(statusObj.name != user.fname && statusObj.status){
+            user.sessionInviteeStatus = true
+            console.log(isOnline)
         }
-    })            
-
-    onChildChanged(threadRef, (snapshot) => {
-        const updatedMessage = snapshot.val()
-        if(isObject(updatedMessage)){
-            if(updatedMessage.hasOwnProperty('roles')){
-                user.roles = updatedMessage['roles']
-                user.messages = updatedMessage['messages']
-                roles.value = user.roles
-                messages.value = user.messages
-
-                console.log('Updated message received:', updatedMessage);
-            }
+        else{
+            user.sessionInviteeStatus = false
+            console.log(isOnline)
         }
-        // updatedMessage['roles'].forEach(role => {
-        //     user.roles.push(role)
-        // })
+    })     
+    // onChildChanged(authorSessionStatusRef, (snapshot) => {
+    //     const isOnline = snapshot.val()
+    //     if(isOnline){
+    //         user.sessionInviteeStatus = true
+    //         console.log(isOnline)
+    //     }
+    //     else{
+    //         user.sessionInviteeStatus = false
+    //         console.log(isOnline)
 
-        // updatedMessage['messages'].forEach(message => {
-        //     user.messages.push(message)
-        // })
+    //     }
+    // })     
 
-    })
-    
     async function endSession(){
         
         await user.endSession()
@@ -324,7 +321,6 @@
     }
   }
 
-  const customerObj=ref({})
 
 
 async function getPrediction(frame) {
