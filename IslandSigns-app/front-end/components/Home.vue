@@ -66,9 +66,16 @@
             style="font-weight: bold"
             class="mx-auto mb-5"
             variant="text"
+            @click="joinSessionFromCopied(),showChatComponent=!showChatComponent"
           >
           Join
           </v-btn>
+          <ChatsComponent
+              v-if="showChatComponent"
+              :theme="theme"
+              :showDialog="showChatComponent"
+              @resetInvite="resetInviteHandler()" 
+          />
           </div>
         </v-row>
       </div>
@@ -93,7 +100,7 @@
             <v-row class="justify-center">
               <v-avatar image="chat.png" size="100" class="mt-10"/>
             </v-row>
-            <v-row class="justify-center mt-10">
+            <v-row class="justify-center">
               <span
               class="text-h6 font-weight-bold"
               style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"
@@ -123,7 +130,7 @@
             <v-row class="justify-center">
               <v-avatar image="link.png" size="100" class="mt-10"/>
             </v-row>
-            <v-row class="justify-center mt-10">
+            <v-row class="justify-center">
               <span
               class="text-h6 font-weight-bold"
               style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"
@@ -153,7 +160,7 @@
             <v-row class="justify-center">
               <v-avatar image="encrypted-data.png" size="100" class="mt-10"/>
             </v-row>
-            <v-row class="justify-center mt-10">
+            <v-row class="justify-center">
               <span
               class="text-h6 font-weight-bold"
               style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"
@@ -183,7 +190,7 @@
             <v-row class="justify-center">
               <v-avatar image="tip.png" size="100" class="mt-10"/>
             </v-row>
-            <v-row class="justify-center mt-10">
+            <v-row class="justify-center">
               <span
               class="text-h6 font-weight-bold"
               style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"
@@ -221,6 +228,7 @@
   const sessionBool = ref(false)
   const sessionLoading = ref(false)
   const sessionActive = ref(false)
+  const showChatComponent = ref(false)
   const sessionCode = ref("")
   const windowCount = ref(0)
 
@@ -231,6 +239,7 @@
 
   function resetInviteHandler(){
     sessionActive.value = false
+    showChatComponent.value = false
     emits('resetInvite')
   }
 
@@ -243,6 +252,19 @@
     }
   function isEmpty(){
     return sessionCode.value === ""
+  }
+
+  async function joinSessionFromCopied(){
+    await user.getSessionCodes()
+    const codes = user.sessionCodes
+    const session = sessionCode.value
+    if(codes.hasOwnProperty(session)){
+      // console.log(codes[session]['participants']['createdBy']['name'])
+      user.chatParticipant = codes[session]['participants']['createdBy']['name']
+      user.sessionId = session
+      await user.addChatParticipant(user.fname)
+      await user.updateSessionInviteeStatus()
+    }
   }
 
 

@@ -1,6 +1,6 @@
 <template>
   <v-app :class="{'body':user.darkTheme}">
-    <v-app-bar :color="user.darkTheme ? '#202c33':''">
+    <v-app-bar :color="user.darkTheme ? 'secondaryDarkBtnColor':''">
       <v-avatar image="IslandSigns-logo.png" size="120"/>
       <v-spacer/>
       <span v-if="user.fname">{{ user.fname }}</span>
@@ -34,10 +34,12 @@
 
           </div>
         </v-list-item>
-        <v-list-item prepend-icon="mdi-cog" title="Settings" @click=""/>
+        <v-list-item prepend-icon="mdi-school" title="Learn" @click=""/>
+        <v-list-item prepend-icon="mdi-account-group" title="Friends" @click=""/>
         <v-list-item prepend-icon="mdi-help" title="Support" @click=""/>
+        <v-list-item prepend-icon="mdi-cog" title="Settings" @click=""/>
         <v-divider class="border-opacity-100"/>
-        <v-list-item prepend-icon="mdi-logout" title="Sign Out" @click="logout()"/>
+        <v-list-item class="mt-5" prepend-icon="mdi-logout" title="Sign Out" @click="logout()"/>
       </v-list>
     </v-navigation-drawer>
     <Home 
@@ -85,6 +87,7 @@ const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}`)
       arr.forEach((data) => {
         if(data.name != user.fname){
           if(data.status){
+            user.chatParticipant = data.name
             user.sessionInviteeStatus = true
 
           }
@@ -95,19 +98,6 @@ const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}`)
       })
 
     }
-    // if(statusObj.name != user.fname){
-    //     if(statusObj.status){
-    //         user.sessionInviteeStatus = true
-    //         console.log(statusObj.status)
-    //     }
-    //     else{
-    //         user.sessionInviteeStatus = false
-    //     }
-    // }
-    // else{
-    //   console.log(statusObj)
-    // }
-    // console.log(statusObj.hasOwnProperty('participants'))
   })     
   onChildChanged(sessionStatusRef, (snapshot) => {
     const statusObj = snapshot.val()
@@ -116,6 +106,7 @@ const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}`)
       arr.forEach((data) => {
         if(data.name != user.fname){
           if(data.status){
+            user.chatParticipant = data.name
             user.sessionInviteeStatus = true
 
           }
@@ -125,19 +116,6 @@ const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}`)
         }
       })
     }
-
-    // if(statusObj.name != user.fname){
-    //     if(statusObj.status){
-    //         user.sessionInviteeStatus = true
-    //         console.log(statusObj.status)
-    //     }
-    //     else{
-    //         user.sessionInviteeStatus = false
-    //     }
-    // }
-    // else{
-    //   console.log(statusObj)
-    // }
     console.log(statusObj)
   })     
 

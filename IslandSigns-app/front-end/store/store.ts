@@ -23,6 +23,7 @@ interface UserProfile{
     sessionInviteeStatus: Boolean,
     author: Boolean,
     invitee: Boolean,
+    sessionCodes:any
 }
 export const useUserProfile = defineStore('userprofiles',{
     state:():UserProfile => ({
@@ -45,7 +46,8 @@ export const useUserProfile = defineStore('userprofiles',{
         sessionStatus: false,
         sessionInviteeStatus: false,
         author: false,
-        invitee: false
+        invitee: false,
+        sessionCodes: {}
     }),
     getters:{
         getThread(state){
@@ -60,6 +62,18 @@ export const useUserProfile = defineStore('userprofiles',{
                 const data = await get(child(ref(db),`users`))
                 if(data.exists()){
                     this.users = data.val()
+                }
+
+            }
+            catch(err){
+                console.log(err)
+            }
+        },
+        async getSessionCodes(){
+            try{
+                const data = await get(child(ref(db),`sessions`))
+                if(data.exists()){
+                    this.sessionCodes = data.val()
                 }
 
             }

@@ -31,7 +31,7 @@
                             <v-btn
                                 v-bind="props"
                                 color="cancel"      
-                                variant="tonal"
+                                variant="text"
                                 icon="mdi-close"  
                             />    
                         </template>
@@ -58,9 +58,7 @@
                                 </v-card-text>
                             </v-row>
                             <v-row>
-                                <span>
-                                    ___________________________
-                                </span>
+                                <v-divider class="border-opacity-100"/>
                                 <v-card-text
                                     class="text-body-1 text-center"
                                     style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"
@@ -246,11 +244,13 @@
     async function resetInviteHandler(){
         if(user.author){
             await user.updateSessionAuthorStatus()
+            user.chatParticipant = ""
             closeDialog.value = false
             emits('resetInvite')
         }
         else if (user.invitee){
             await user.updateSessionInviteeStatus()
+            user.chatParticipant = ""
             closeDialog.value = false
             emits('resetInvite')
         }
@@ -260,32 +260,6 @@
     function isObject(variable) {
         return variable !== null && typeof variable === 'object';
     }
-    const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}/participants`)
-
-    onChildChanged(sessionStatusRef, (snapshot) => {
-        const statusObj = snapshot.val()
-        if(statusObj.name != user.fname){
-            if(statusObj.status){
-                user.sessionInviteeStatus = true
-                console.log(statusObj.status)
-            }
-            else{
-                user.sessionInviteeStatus = false
-            }
-        }
-    })     
-    // onChildChanged(authorSessionStatusRef, (snapshot) => {
-    //     const isOnline = snapshot.val()
-    //     if(isOnline){
-    //         user.sessionInviteeStatus = true
-    //         console.log(isOnline)
-    //     }
-    //     else{
-    //         user.sessionInviteeStatus = false
-    //         console.log(isOnline)
-
-    //     }
-    // })     
 
     async function endSession(){
         

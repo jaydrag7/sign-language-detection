@@ -24,9 +24,12 @@
                   ></v-btn>
                 </v-card-title>
   
-                <v-divider class="mb-4"></v-divider>
-  
+                <v-divider class="mb-4"></v-divider>  
                 <v-card-text>
+                  <div>
+                    <v-img height="200" src="friends_b.png"/>
+
+                  </div>
                   <div class="mb-4">
                     Invite someone to your chat and grow your connections.
                   </div>  
@@ -38,7 +41,7 @@
                     placeholder="username"
                     clearable
                   ></v-textarea>  
-                  <div class="mb-4 text-medium-emphasis">
+                  <div class="mb-4 text-caption">
                     Copy your session code
                   </div>  
                   <v-textarea

@@ -15,8 +15,12 @@
                 <v-divider class="mb-4"></v-divider>
                   
                 <v-card-text>
+                    <div>
+                        <v-img height="200" src="mail.png"/>
+                    </div>
+
                   <div class="mb-4 text-h6">
-                    {{ chatInviteMetaData.from }} is inviting you to chat.
+                    <span class="font-weight-bold">{{ chatInviteMetaData.from }}</span> is inviting you to chat.
                   </div>  
                 </v-card-text>
                 <v-divider class="mt-2"></v-divider>
