@@ -2,6 +2,7 @@ import { createVuetify, type ThemeDefinition } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import { MotionPlugin as motions } from '@vueuse/motion'
 
 
 
@@ -22,7 +23,7 @@ export default defineNuxtPlugin(nuxtApp => {
     };
     const vuetify = createVuetify({
         components,
-         directives,
+        directives,
 
         icons: {
             defaultSet: 'mdi',

@@ -146,8 +146,8 @@
     <v-row class="justify-center mt-16" align="center">
       <v-avatar image="sign.png" size="200" draggable="false"/>
     </v-row>
-    <v-row ref="animateLeft" class="justify-start mt-16 slide-in-left">
-      <v-card elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="primary" width="">
+    <v-row class="justify-start mt-16 slide-in-left">
+      <v-card ref="animateLeft_1" elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="primary">
         <v-card-text class="text-left text-black font-weight-bold" style="font-size:x-large;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">For those who sign</v-card-text>
       <v-card-text class="text-left text-white" style="font-size: large;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">        
         Communicate seamlessly
@@ -158,9 +158,11 @@
     <v-row class="justify-center mt-16" align="center">
       <v-avatar image="speak.png" size="200" draggable="false"/>
     </v-row>
-    <v-row class="justify-end mt-16">
-      <v-card elevation="10" variant="flat" class="rounded-ts-pill rounded-bs-pill slide-in-left" color="secondary_a">
-        <v-card-text class="text-right text-black font-weight-bold" style="font-size:x-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">For those who speak</v-card-text>
+    <v-row  class="justify-end mt-16">
+      <v-card ref="animateRight_1"  elevation="10" variant="flat" class="rounded-ts-pill rounded-bs-pill" color="secondary_a">
+        <v-card-text class="text-right text-black font-weight-bold" style="font-size:x-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
+          For those who speak
+        </v-card-text>
       <v-card-text class="text-right text-white" style="font-size: large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">        
         Connect and Engage in conversations with persons from the deaf/hard-of-hearing community.
       </v-card-text>
@@ -170,7 +172,7 @@
       <v-avatar image="artificial-intelligence.gif" size="200"/>
     </v-row>
     <v-row class="justify-start mt-10">
-      <v-card elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="secondary_b">
+      <v-card ref="animateLeft_2" elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="secondary_b">
         <v-card-text class="text-left text-black" style="font-size:large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
           Redefining Communication with <span class="text-blue-lighten-1" style="font-size: x-large;">Artificial Intelligence</span>
         </v-card-text>
@@ -233,7 +235,7 @@
       <v-avatar image="webcam.png" size="150"/>
     </v-row>
     <v-row class="justify-end mt-7">
-      <v-card elevation="10" variant="flat" class="rounded-ts-pill rounded-bs-pill" color="blue-lighten-1">
+      <v-card ref="animateRight_2" elevation="10" variant="flat" class="rounded-ts-pill rounded-bs-pill" color="blue-lighten-1">
         <v-card-text class="text-right text-white" style="font-size:x-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
           Real-time Jamaican Sign Language to Text Translations
         </v-card-text>
@@ -243,7 +245,7 @@
       <v-avatar image="microphone.png" size="150"/>
     </v-row>
     <v-row class="justify-start">
-      <v-card elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="green-lighten-1">
+      <v-card ref="animateLeft_3" elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="green-lighten-1">
         <v-card-text class="text-left text-white" style="font-size:x-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
           Automatic Speech Recognition
         </v-card-text>
@@ -253,7 +255,7 @@
       <v-avatar image="encrypted-data.png" size="150"/>
     </v-row>
     <v-row class="justify-end">
-      <v-card elevation="10" variant="flat" class="rounded-ts-pill rounded-bs-pill" color="orange-lighten-1">
+      <v-card ref="animateRight_3" elevation="10" variant="flat" class="rounded-ts-pill rounded-bs-pill" color="orange-lighten-1">
         <v-card-text class="text-right text-white" style="font-size:x-large;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
           Encrypted Text Messaging
         </v-card-text>
@@ -325,32 +327,121 @@
   
 <script setup>
   import { ref } from 'vue'
+  import { useMotion } from '@vueuse/motion';
 
   const route = useRouter()
   const drawer = ref(false)
   const theme = ref(false)
-  const animateLeft = ref(null)
+  const animateRight_1 = ref()
+  const animateRight_2 = ref()
+  const animateRight_3 = ref()
+  const animateLeft_1 = ref()
+  const animateLeft_2 = ref()
+  const animateLeft_3 = ref()
 
-  const isElementInViewport = (el) => {
-    const rect = el.getBoundingClientRect();
-    return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    )
-  }
-
-  const onScroll = () => {
-    if (animateLeft.value && isElementInViewport(animateLeft.value)) {
-      animateLeft.value.classList.add('slide-in-left');
-      window.removeEventListener('scroll', onScroll);  // Remove listener after animation triggers
+  const rightmotionInstance_1 = useMotion(animateRight_1,{
+    initial:{
+      opacity: 0,
+      y: -100
+    },
+    visible:{
+      y: 0,
+      opacity: 1,
+      transition: {
+        y: {
+          duration: 2000,
+        },
+        type: 'keyframes',
+        ease:'easeIn'
+      },
     }
-  }
-
-  onMounted(()=>{
-    window.addEventListener('scroll',onScroll)
   })
+  const rightmotionInstance_2 = useMotion(animateRight_2,{
+    initial:{
+      opacity: 0,
+      y: -100
+    },
+    visible:{
+      y: 0,
+      opacity: 1,
+      transition: {
+        y: {
+          duration: 2000,
+        },
+        type: 'keyframes',
+        ease:'easeIn'
+      },
+    }
+  })
+  const rightmotionInstance_3 = useMotion(animateRight_3,{
+    initial:{
+      opacity: 0,
+      y: -100
+    },
+    visible:{
+      y: 0,
+      opacity: 1,
+      transition: {
+        y: {
+          duration: 2000,
+        },
+        type: 'keyframes',
+        ease:'easeIn'
+      },
+    }
+  })
+  const leftmotionInstance_1 = useMotion(animateLeft_1,{
+    initial:{
+      opacity: 0,
+      y: 100
+    },
+    visible:{
+      y: 0,
+      opacity: 1,
+      transition: {
+        y: {
+          duration: 2000,
+        },
+        type: 'keyframes',
+        ease:'easeIn'
+      },
+    }
+  })
+  const leftmotionInstance_2 = useMotion(animateLeft_2,{
+    initial:{
+      opacity: 0,
+      y: 100
+    },
+    visible:{
+      y: 0,
+      opacity: 1,
+      transition: {
+        y: {
+          duration: 2000,
+        },
+        type: 'keyframes',
+        ease:'easeIn'
+      },
+    }
+  })
+  const leftmotionInstance_3 = useMotion(animateLeft_3,{
+    initial:{
+      opacity: 0,
+      y: 100
+    },
+    visible:{
+      y: 0,
+      opacity: 1,
+      transition: {
+        y: {
+          duration: 2000,
+        },
+        type: 'keyframes',
+        ease:'easeIn'
+      },
+    }
+  })
+
   
 
     // Handle register button click

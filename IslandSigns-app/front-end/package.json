@@ -25,6 +25,7 @@
     "@mdi/font": "^7.4.47",
     "@pinia/nuxt": "^0.5.1",
     "@vueuse/core": "^11.0.1",
+    "@vueuse/motion": "^2.2.3",
     "assemblyai": "^4.4.2",
     "axios": "^1.6.7",
     "base-64": "^1.0.0",

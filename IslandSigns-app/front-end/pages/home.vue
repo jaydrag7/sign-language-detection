@@ -116,7 +116,6 @@ const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}`)
         }
       })
     }
-    console.log(statusObj)
   })     
 
   onChildAdded(threadRef, (snapshot) => {
