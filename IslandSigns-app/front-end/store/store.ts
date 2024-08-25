@@ -252,13 +252,12 @@ export const useUserProfile = defineStore('userprofiles',{
                 // this.msgThread['roles'].push(role)
                 // this.msgThread['messages'].push(msg)
                 this.roles = roles
-                console.log(this.roles)
                 this.messages = msgs
                 this.msgThread = {
                     'roles': this.roles,
                     'messages':this.messages
                 }
-                updates[`/users/${this.bankName}/${this.branchID}/${this.tellerStation}/chat`]=this.msgThread
+                updates[`/sessions/${this.sessionId}/chat`]=this.msgThread
                 return await update(ref(db),updates)
             }
             catch(error){

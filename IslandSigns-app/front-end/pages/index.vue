@@ -136,19 +136,19 @@
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <v-container class="justify-center">
     <v-row class="justify-center mt-16">
       <v-card-text class="text-h4 text-center" style="font-family: Verdana;font-weight: bold;">
       <span :class="{'text-color-light':theme,'text-color-dark':!theme}">Creating Connections.</span> <span class="text-blue-lighten-1">One Sign at a Time</span>
       </v-card-text>
     </v-row>
-  </v-container>
     <v-row class="justify-center mt-16" align="center">
       <v-avatar image="sign.png" size="200" draggable="false"/>
     </v-row>
-    <v-row class="justify-start mt-16 slide-in-left">
+    <v-row class="mt-16">
       <v-card ref="animateLeft_1" elevation="10" variant="flat" class="rounded-te-pill rounded-be-pill" color="primary">
-        <v-card-text class="text-left text-black font-weight-bold" style="font-size:x-large;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">For those who sign</v-card-text>
+        <v-card-text class="text-left text-black font-weight-bold" style="font-size:x-large;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
+          For those who sign
+        </v-card-text>
       <v-card-text class="text-left text-white" style="font-size: large;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">        
         Communicate seamlessly
         with others who may not know Jamaican Sign Language.
@@ -262,7 +262,7 @@
       </v-card>
     </v-row>
   <v-footer class="mt-16" :color="theme ? 'secondaryDarkBtnColor':'primary'">
-        <v-container fluid>
+        <v-container>
           <v-row>
             <v-container>
               <v-row>
@@ -470,20 +470,6 @@
   }
   .text-color-dark{
     color: #000000;
-  }
-  @keyframes slideInFromLeft {
-    0% {
-      transform: translateX(-100%);
-      opacity: 0;
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-  .slide-in-left{
-    animation: slideInFromLeft 1s ease-out forwards;
   }
 
   .underline-link {

@@ -5,17 +5,6 @@
         scrollable
     >
         <template v-slot:default="{isActive}">
-            <!-- <v-btn
-                :style="{textTransform:'none'}"
-                @click="closeDialog=!closeDialog"
-                v-bind="props"
-                variant="flat"
-                prepend-icon="mdi-location-enter"
-                color="green-lighten-1"
-            >
-                Join
-
-            </v-btn> -->
             <v-card
                 fluid="true"
                 :color="theme ? '#0b141a':'grey-lighten-3'"
@@ -115,18 +104,18 @@
                     class="message-threads"
                 >
                 <v-row
-                    :style="{ display: 'flex', justifyContent: role === 'Customer' ? 'space-between' : 'flex-end' }"
+                    :style="{ display: 'flex', justifyContent: role === user.fname ? 'flex-end' : 'space-between' }"
                     class="mt-0"
                 >
                         <v-card 
-                            :subtitle="role === 'Customer' ? `Customer` : `Teller`" 
+                            :subtitle="role" 
                             width="200" 
-                            :color="role === 'Customer' ? 'white' : '#d1f4cc'" 
-                            :class="['rounded-xl', role === 'Customer' ? 'rounded-ts-0' : 'rounded-be-0']" 
+                            :color="role === user.fname ? '#d1f4cc' : 'white'" 
+                            :class="['rounded-xl', role === user.fname ? 'rounded-te-0' : 'rounded-ts-0']" 
                             elevation="2"                    
                         >
                             <v-card-text>
-                                {{ decodeMsg(user.messages[i]) }}
+                                {{ user.messages[i] }}
                             </v-card-text>
 
                         </v-card>
@@ -177,7 +166,7 @@
                             class="mr-1 footer rounded-xl"
                             append-inner-icon="mdi-send"
                             prepend-inner-icon="mdi-swap-vertical"
-                            @click:append-inner="sendMessage"
+                            @click:append-inner="sendMessage()"
                             @click:prepend-inner="swapRoles()"
                         />
                         <audio ref="audioPlayback"></audio>
@@ -245,12 +234,21 @@
         if(user.author){
             await user.updateSessionAuthorStatus()
             user.chatParticipant = ""
+            roles.value = []
+            messages.value = []
+            user.roles = []
+            user.messages = []
             closeDialog.value = false
             emits('resetInvite')
         }
         else if (user.invitee){
+            console.log("definitely invitee")
             await user.updateSessionInviteeStatus()
             user.chatParticipant = ""
+            roles.value = []
+            messages.value = []
+            user.roles = []
+            user.messages = []
             closeDialog.value = false
             emits('resetInvite')
         }
@@ -260,6 +258,32 @@
     function isObject(variable) {
         return variable !== null && typeof variable === 'object';
     }
+
+    const threadRef = dbRef(db, `/sessions/${user.sessionId}`)
+    onChildAdded(threadRef, (snapshot) => {
+        const newMessage = snapshot.val()
+        console.log(newMessage)
+        if(isObject(newMessage)){
+            if(newMessage.hasOwnProperty('roles')){
+                user.roles = newMessage['roles']
+                user.messages = newMessage['messages']
+                roles.value = user.roles
+                messages.value = user.messages
+            }
+        }
+    })
+    onChildChanged(threadRef, (snapshot) => {
+        const newMessage = snapshot.val()
+        if(isObject(newMessage)){
+            if(newMessage.hasOwnProperty('roles')){
+                user.roles = newMessage['roles']
+                user.messages = newMessage['messages']
+                roles.value = user.roles
+                messages.value = user.messages
+            }
+        }
+    })
+
 
     async function endSession(){
         
@@ -469,8 +493,8 @@ async function getPrediction(frame) {
     }
 
   const sendMessage = async () =>{
-    roles.value.push(role.value)
-    messages.value.push(base64.encode(encodeURI(msg.value)))
+    roles.value.push(user.fname)
+    messages.value.push(msg.value)
 
     await user.sendMessage(roles.value,messages.value)
     let arr = messages.value

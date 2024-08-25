@@ -78,7 +78,7 @@ function isObject(variable) {
 }
 
 
-const threadRef = dbRef(db, `/users/${user.email}`)
+const inviteRef = dbRef(db, `/users/${user.email}`)
 const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}`)
   onChildAdded(sessionStatusRef, (snapshot) => {
     const statusObj = snapshot.val()
@@ -118,7 +118,7 @@ const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}`)
     }
   })     
 
-  onChildAdded(threadRef, (snapshot) => {
+  onChildAdded(inviteRef, (snapshot) => {
       newInvite.value = snapshot.val()
       if(isObject(newInvite.value)){
         user.inviteMetaData = newInvite.value
@@ -127,7 +127,7 @@ const sessionStatusRef = dbRef(db, `/sessions/${user.sessionId}`)
       }
   })
   
-  onChildChanged(threadRef,(snapshot) => {
+  onChildChanged(inviteRef,(snapshot) => {
     newInvite.value = snapshot.val()
     if(isObject(newInvite.value)){
       user.inviteMetaData = newInvite.value
