@@ -101,33 +101,31 @@
                     v-if="user.roles"
                     style="justify-content: center;"
                     v-for="(role,i) in user.roles"
-                    class="message-threads"
                 >
                 <v-row
                     :style="{ display: 'flex', justifyContent: role === user.fname ? 'flex-end' : 'space-between' }"
                     class="mt-0"
                 >
-                        <v-card 
-                            :subtitle="role" 
-                            width="200" 
-                            :color="role === user.fname ? '#d1f4cc' : 'white'" 
-                            :class="['rounded-xl', role === user.fname ? 'rounded-te-0' : 'rounded-ts-0']" 
-                            elevation="2"                    
-                        >
-                            <v-card-text>
-                                {{ user.messages[i] }}
-                            </v-card-text>
+                    <v-card 
+                        :subtitle="role" 
+                        width="200" 
+                        :color="role === user.fname ? '#d1f4cc' : 'white'" 
+                        :class="['rounded-xl', role === user.fname ? 'rounded-te-0' : 'rounded-ts-0']" 
+                        elevation="2"                    
+                    >
+                        <v-card-text>
+                            {{ user.messages[i] }}
+                        </v-card-text>
 
-                        </v-card>
-                        
+                    </v-card>
 
                 </v-row>
                 </v-container>
-                <v-container
+                <div
                     :class="{'threadActive': active, 'threadNotActive': !active}"   
                     align="center"
                 >
-                    <v-row justify="end">
+                    <v-row justify="end" class="mt-7">
                         <v-card v-if="cameraEnabled" height="220" class="rounded-xl mb-2 mr-3"> 
                             <v-row>
                                 <video height="200" ref="video" autoplay muted></video>
@@ -148,50 +146,51 @@
                                 
                         </v-card>
                     </v-row>
-                    <v-card
+                </div>
+                <div>
+                <v-footer
                         :color="theme ? '#202c33':'grey-lighten-2'"
-                        class="justify-center mt-16"
-                        variant="flat"
                     >
-                    <v-row
-                        class="pt-6 pb-3 pl-7 pr-7"
-                    >
-            
-                        <v-textarea
-                            v-model="msg"
-                            rows="1"
-                            auto-grow
-                            :label="label"
-                            variant="solo"
-                            class="mr-1 footer rounded-xl"
-                            append-inner-icon="mdi-send"
-                            prepend-inner-icon="mdi-swap-vertical"
-                            @click:append-inner="sendMessage()"
-                            @click:prepend-inner="swapRoles()"
-                        />
-                        <audio ref="audioPlayback"></audio>
-                        <v-btn @click="microphoneEnabled ? recordAudio():closeMicrophone()" icon variant="text" :color="microphoneEnabled ? '': 'red-lighten-1'">
-                            <v-icon :icon="microphoneEnabled ? 'mdi-microphone':'mdi-microphone-off'"/>
-                            <v-tooltip
-                                activator="parent"
-                                location="top"
-                            >Record Audio</v-tooltip>
-
-                        </v-btn>
-                        <v-btn 
-                            @click="cameraEnabled=!cameraEnabled,openCamera()" 
-                            icon
-                            variant="text"
+                        <v-row
+                            class="pt-6 pb-3 pl-7 pr-7"
                         >
-                            <v-icon icon="mdi-video"/>
-                            <v-tooltip
-                                activator="parent"
-                                location="top"
-                            >Record JSL</v-tooltip>
-                        </v-btn>
-                    </v-row>
-                    </v-card>
-                </v-container>
+                
+                            <v-textarea
+                                v-model="msg"
+                                rows="1"
+                                auto-grow
+                                placeholder="Type a message"
+                                variant="solo"
+                                class="mr-1 footer rounded-xl"
+                                append-inner-icon="mdi-send"
+                                @click:append-inner="sendMessage()"
+                            />
+                            <audio ref="audioPlayback"></audio>
+                            <v-btn @click="microphoneEnabled ? recordAudio():closeMicrophone()" icon variant="text" :color="microphoneEnabled ? '': 'red-lighten-1'">
+                                <v-icon :icon="microphoneEnabled ? 'mdi-microphone':'mdi-microphone-off'"/>
+                                <v-tooltip
+                                    activator="parent"
+                                    location="top"
+                                >Record Audio</v-tooltip>
+
+                            </v-btn>
+                            <v-btn 
+                                @click="cameraEnabled=!cameraEnabled,openCamera()" 
+                                icon
+                                variant="text"
+                            >
+                                <v-icon icon="mdi-video"/>
+                                <v-tooltip
+                                    activator="parent"
+                                    location="top"
+                                >Record JSL</v-tooltip>
+                            </v-btn>
+                        </v-row>
+                    </v-footer>
+
+
+            </div>
+
             </v-card>
         </template>
     </v-dialog>
@@ -285,11 +284,11 @@
     })
 
 
-    async function endSession(){
+    // async function endSession(){
         
-        await user.endSession()
-        return await user.removeChatLog()
-    }
+    //     await user.endSession()
+    //     return await user.removeChatLog()
+    // }
 
 
     async function openCamera() {
@@ -299,7 +298,7 @@
           video:{facingMode:'environment'},
           audio:false
         })
-        const liveFeed = video.value
+        const liveFeed =video.value
         liveFeed.srcObject = stream.value
         //Make sure the video is loaded before starting to capture frames
         await new Promise((resolve) => {

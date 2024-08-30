@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@types/base-64": "^1.0.2",
     "css-loader": "^7.0.0",
     "eslint": "^8.56.0",
     "eslint-plugin-vue": "^9.21.1",

@@ -15,8 +15,8 @@
     />
 
 </template>
-<script setup>
-    import ChatsComponent from '~/components/ChatsComponent'
+<script setup lang="ts">
+    import ChatsComponent from '~/components/ChatsComponent.vue'
     import { useUserProfile } from '~/store/store'
     import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
     import { db } from "@/utils/firebase"

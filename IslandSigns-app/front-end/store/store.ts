@@ -3,19 +3,15 @@ import { defineStore } from "pinia";
 import {get,child,ref,update, onValue, onChildAdded} from "firebase/database";
 
 interface UserProfile{
-    bankName: String,
-    branchID: Number,
-    tellerStation:Number,
-    passcode: String,
     msgThread:any,
     roles:String[],
     messages:String[],
     sessionActive: Boolean,
     darkTheme: any,
-    users:any,
-    fname: any,
+    users:object,
+    fname: String,
     lname: any,
-    email: any,
+    email: String,
     sessionId: String,
     inviteMetaData: any,
     chatParticipant: String,
@@ -27,10 +23,6 @@ interface UserProfile{
 }
 export const useUserProfile = defineStore('userprofiles',{
     state:():UserProfile => ({
-        bankName: "",
-        branchID: 0,
-        tellerStation:0,
-        passcode: "",
         msgThread:{},
         roles:[],
         messages:[],
@@ -116,10 +108,16 @@ export const useUserProfile = defineStore('userprofiles',{
         async createNewGoogleClient(data:any){
             try{
                 const updates: any={}
+                const {username} = metaData()
+                const {email} = metaData()
+                const {userTheme} = colorTheme()
                 this.fname = data.fname
+                username.value = this.fname
                 this.lname = data.lname
                 this.email = data.email
+                email.value = this.email
                 this.darkTheme = false
+                userTheme.value = false
                 updates[`/users/`+`${data.email}`] = {
                     fname: data.fname,
                     lname: data.lname,
@@ -138,9 +136,15 @@ export const useUserProfile = defineStore('userprofiles',{
         async createNewEmPassClient(data:any){
             try{
                 const updates: any={}
+                const {username} = metaData()
+                const {email} = metaData()
+                const {userTheme} = colorTheme()
                 this.fname = data.fname
+                username.value = this.fname
                 this.email = data.email
+                email.value = this.email
                 this.darkTheme = false
+                userTheme.value = false
                 updates[`/users/`+`${data.email}`] = {
                     fname: data.fname,
                     darkTheme: false,
@@ -175,9 +179,15 @@ export const useUserProfile = defineStore('userprofiles',{
                 const clientMetaData = await get(child(ref(db),`users/${data.email}/`))
                 if(clientMetaData.exists()){
                     const dataArr = Object.values(clientMetaData.val())
+                    const {username} = metaData()
+                    const {email} = metaData()
+                    const {userTheme} = colorTheme()
                     this.darkTheme = dataArr[0]
+                    userTheme.value = this.darkTheme
                     this.fname = dataArr[1]
+                    username.value = this.fname
                     this.email = data.email
+                    email.value = this.email
                     this.lname = dataArr[3]
                     // console.log(dataArr)
                     const updates: any={}
@@ -197,9 +207,15 @@ export const useUserProfile = defineStore('userprofiles',{
                 const clientMetaData = await get(child(ref(db),`users/${data.email}/`))
                 if(clientMetaData.exists()){
                     const dataArr = Object.values(clientMetaData.val())
+                    const {username} = metaData()
+                    const {email} = metaData()
+                    const {userTheme} = colorTheme()
                     this.darkTheme = dataArr[0]
+                    userTheme.value = this.darkTheme
                     this.fname = dataArr[1]
+                    username.value = this.fname
                     this.email = data.email
+                    email.value = this.email
                     // console.log(dataArr)
                     const updates: any={}
                     updates[`users/${data.email}/isLoggedIn`] = true
@@ -214,38 +230,6 @@ export const useUserProfile = defineStore('userprofiles',{
 
         },
 
-        async signIn(bankName: String,branchID: Number,tellerStation:Number,passcode: String){
-            try{
-                const data=await get(child(ref(db),`users/${bankName}/${branchID}/${tellerStation}`))
-                if(data.exists()){
-                    const pass=Object.values(data.val())
-                    console.log(pass)
-                    if(pass[0]==passcode){
-                        this.bankName = bankName
-                        this.branchID = branchID
-                        this.tellerStation = tellerStation
-                        this.passcode = passcode
-                        this.darkTheme = pass[2]
-                        return "Password match"
-                    
-                    }
-                    else{
-                        return "Invalid user credentials"
-                    }
-                   
-                }
-                else{
-                    return "User is not registered"
-                }
-
-                // const updates: any={}
-                // updates[`/users/${bankName}/${branchID}/${tellerStation}/${passcode}`]=this.msgThread
-
-            }
-            catch(error){
-                console.log(error)
-            }
-        },
         async sendMessage(roles:any,msgs:any){
             try{
                 const updates: any={}
@@ -265,46 +249,26 @@ export const useUserProfile = defineStore('userprofiles',{
             }
 
         },
-        async getChatActivity(){
-            try{
-                const threadRef = ref(db)
-                const data = await get(child(threadRef,`/users/${this.bankName}/${this.branchID}/${this.tellerStation}/`))
-                if(data.exists()){
-                    let nodes: any={}    
-                    nodes = data.val()
-                    if(nodes['isActive']){
-                        this.sessionActive = true
-                    }
+        // async getChatActivity(){
+        //     try{
+        //         const threadRef = ref(db)
+        //         const data = await get(child(threadRef,`/users/${this.bankName}/${this.branchID}/${this.tellerStation}/`))
+        //         if(data.exists()){
+        //             let nodes: any={}    
+        //             nodes = data.val()
+        //             if(nodes['isActive']){
+        //                 this.sessionActive = true
+        //             }
 
 
-                }
+        //         }
 
 
-            }
-            catch(error){
-                console.error(error)
-            }
-        },
-
-        async register(data: object){
-            try{
-                const updates:any={}
-                updates[`users/${data.bankName}/${ data.bankBranch}/${data.tellerStationNumber}/`]={
-                    bankTellerPasscode: data.passcode,
-                   darkTheme: false,
-                    chatActivity:{
-                        isActive: false
-                    }
-                }
-                return await update(ref(db),updates)
-
-            }
-            catch(error){
-                console.error(error)
-            }
-                
-        },
-
+        //     }
+        //     catch(error){
+        //         console.error(error)
+        //     }
+        // },
         async createSession(id:String){
             try{
                 const updates: any={} 
@@ -325,6 +289,8 @@ export const useUserProfile = defineStore('userprofiles',{
             }
         },
 
+        /* The above code appears to be a comment block in TypeScript. It is documenting a
+        function called `updateSessionAuthorStatus`. The comment block uses the ` */
         async updateSessionAuthorStatus(){
             try{
                 const updates: any={}
@@ -339,6 +305,10 @@ export const useUserProfile = defineStore('userprofiles',{
                 console.error(error)
             }
         },
+        /* The above code appears to be a comment block in TypeScript. It is documenting a
+        function called `updateSessionInviteeStatus`. The function seems to be related to
+        managing the status of an invitee in a session. However, the actual implementation of
+        the function is not provided in the comment block. */
         async updateSessionInviteeStatus(){
             try{
                 const participant = await get(child(ref(db),`sessions/${this.sessionId}/participants/createdBy/name`))
@@ -356,23 +326,25 @@ export const useUserProfile = defineStore('userprofiles',{
             }
         },
 
-        async endSession(){
-            try{
-                const updates: any={}
-                updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chatActivity`]={
-                    isActive: false
-                }
-                return await update(ref(db),updates)
+        // async endSession(){
+        //     try{
+        //         const updates: any={}
+        //         updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chatActivity`]={
+        //             isActive: false
+        //         }
+        //         return await update(ref(db),updates)
 
-            }
-            catch(error){
-                console.error(error)
-            }
-        },
+        //     }
+        //     catch(error){
+        //         console.error(error)
+        //     }
+        // },
         async changeTheme(theme: boolean){
             try{
                 const updates: any={}
+                const {userTheme} = colorTheme()
                 this.darkTheme = theme
+                userTheme.value = this.darkTheme
                 updates[`users/${this.email}/darkTheme`]=theme
                 return await update(ref(db),updates)
 
@@ -381,19 +353,19 @@ export const useUserProfile = defineStore('userprofiles',{
                 console.error(error)
             }
         },
-        async removeChatLog(){
-            try{
-                const updates: any={}
-                this.roles = []
-                this.messages = []
-                updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chat/`]=null
-                return await update(ref(db),updates)
+        // async removeChatLog(){
+        //     try{
+        //         const updates: any={}
+        //         this.roles = []
+        //         this.messages = []
+        //         updates[`users/${this.bankName}/${this.branchID}/${this.tellerStation}/chat/`]=null
+        //         return await update(ref(db),updates)
 
-            }
-            catch(error){
-                console.error(error)
-            }
-        },
+        //     }
+        //     catch(error){
+        //         console.error(error)
+        //     }
+        // },
         async declineChatInvite(){
             try{
                 const updates: any={}

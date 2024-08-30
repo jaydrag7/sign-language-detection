@@ -1,6 +1,6 @@
 <template>
-  <v-app :class="{'light-theme':!theme,'dark-theme':theme}">
-    <v-app-bar :color="theme ? 'secondaryDarkBtnColor':''" app flat>
+  <v-app :class="{'light-theme':!landingTheme,'dark-theme':landingTheme}">
+    <v-app-bar :color="landingTheme ? 'secondaryDarkBtnColor':''" app flat>
       <a v-if="!$vuetify.display.mobile" href="/" class="mt-2">
         <v-avatar image="IslandSigns.png" size="300" class="mt-16"/>
       </a>
@@ -61,10 +61,10 @@
 
       <v-btn
         icon="mdi-theme-light-dark"
-        @click="theme=!theme"
+        @click="setTheme()"
         class="mr-2"
       />
-      <v-app-bar-nav-icon v-if="$vuetify.display.mobile" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon v-if="$vuetify.display.mobile" variant="text" @click.stop="changeLandingNavDrawerState(currRouteLocation.params.landingNavDrawer)"></v-app-bar-nav-icon>
 
 
       <!-- <v-btn
@@ -81,7 +81,7 @@
       <v-btn
         v-if="!$vuetify.display.mobile" 
         variant="flat"
-        @click="goToRegister" 
+        @click="goToRegister()" 
         color='primary'
         style="text-transform:none;"
       >
@@ -90,7 +90,7 @@
     </v-app-bar>
     <v-navigation-drawer
       v-if="$vuetify.display.mobile"
-        v-model="drawer"
+        v-model="landingNavDrawer"
         :location="$vuetify.display.mobile ? 'top' : undefined"
         temporary
       >
@@ -126,7 +126,7 @@
           <v-list-item>
             <v-btn
               variant="flat"
-              @click="goToRegister" 
+              @click="goToRegister()" 
               color="blue-lighten-1"
               style="text-transform:none;width: 90%;"
               size="x-large"
@@ -138,7 +138,7 @@
       </v-navigation-drawer>
     <v-row class="justify-center mt-16">
       <v-card-text class="text-h4 text-center" style="font-family: Verdana;font-weight: bold;">
-      <span :class="{'text-color-light':theme,'text-color-dark':!theme}">Creating Connections.</span> <span class="text-blue-lighten-1">One Sign at a Time</span>
+      <span :class="{'text-color-light':landingTheme,'text-color-dark':!landingTheme}">Creating Connections.</span> <span class="text-blue-lighten-1">One Sign at a Time</span>
       </v-card-text>
     </v-row>
     <v-row class="justify-center mt-16" align="center">
@@ -188,7 +188,7 @@
     <v-row class="justify-center" no-gutters>      
       <div class="pa-5">
         <v-card class="mt-16" variant="text" style="width: 300px;">
-          <v-sheet class="mt-2" :color="theme ? 'primaryDarkBgColor':'bckgrnd'">
+          <v-sheet class="mt-2" :color="landingTheme ? 'primaryDarkBgColor':'bckgrnd'">
             <v-img src="jamaica.png" height="80"/>
           </v-sheet>
         <v-sheet color="green-lighten-1" class="mt-5">
@@ -200,7 +200,7 @@
       </div>
       <div class="pa-5">
           <v-card class="mt-16" variant="text" style="width: 300px;">
-            <v-sheet class="mt-2" :color="theme ? 'primaryDarkBgColor':'bckgrnd'">
+            <v-sheet class="mt-2" :color="landingTheme ? 'primaryDarkBgColor':'bckgrnd'">
               <v-img src="unite.png" height="80"/>
             </v-sheet>
           <v-sheet color="blue-lighten-1" class="mt-5">
@@ -212,7 +212,7 @@
       </div>
       <div class="pa-5">
         <v-card class="mt-16" variant="text" style="width: 300px;">
-          <v-sheet class="mt-2" :color="theme ? 'primaryDarkBgColor':'bckgrnd'">
+          <v-sheet class="mt-2" :color="landingTheme ? 'primaryDarkBgColor':'bckgrnd'">
             <v-img src="communication.png" height="80"/>
           </v-sheet>
         <v-sheet color="orange-lighten-1" class="mt-5">
@@ -261,7 +261,7 @@
         </v-card-text>
       </v-card>
     </v-row>
-  <v-footer class="mt-16" :color="theme ? 'secondaryDarkBtnColor':'primary'">
+  <v-footer class="mt-16" :color="landingTheme ? 'secondaryDarkBtnColor':'primary'">
         <v-container>
           <v-row>
             <v-container>
@@ -325,13 +325,14 @@
 
 </template>
   
-<script setup>
+<script setup lang="ts">
   import { ref } from 'vue'
   import { useMotion } from '@vueuse/motion';
-
-  const route = useRouter()
-  const drawer = ref(false)
-  const theme = ref(false)
+  
+  const {landingTheme,setTheme} = colorTheme()
+  const routerInstance = useRouter()
+  const currRouteLocation : any=useRoute()
+  const {landingNavDrawer,changeLandingNavDrawerState} = navStates()
   const animateRight_1 = ref()
   const animateRight_2 = ref()
   const animateRight_3 = ref()
@@ -441,19 +442,10 @@
       },
     }
   })
-
-  
-
     // Handle register button click
     const goToRegister = () => {
-    // Implement your register logic here
-    route.push( '/register' )
+    routerInstance.push( '/login' )
   };
-  const goToSignIn = () => {
-    // Implement your register logic here
-    route.push( '/login' )
-  };
-
 
 </script>
 

@@ -213,12 +213,12 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import {useUserProfile} from '~/store/store'
-  import ChatsComponent from '~/components/ChatsComponent'
-  import InviteCard from '~/components/InviteCard'
-  import JoinChatBtn from '~/components/JoinChatBtn'
-  import InviteBtn from '~/components/InviteBtn'
+  import ChatsComponent from '~/components/ChatsComponent.vue'
+  import InviteCard from '~/components/InviteCard.vue'
+  import JoinChatBtn from '~/components/JoinChatBtn.vue'
+  import InviteBtn from '~/components/InviteBtn.vue'
   import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
   import { db } from "@/utils/firebase"
 
@@ -247,7 +247,7 @@
   //   user.getChatActivity()
   // })
 
-  function isObject(variable) {
+  function isObject(variable : object) {
         return variable !== null && typeof variable === 'object';
     }
   function isEmpty(){
@@ -294,16 +294,23 @@
       console.error(err)
     }finally {
       if (sessionActive.value){
-      session.value = "Session created successfully"
+        setTimeout(() => (
+          sessionLoading.value = false,
+          sessionBool.value = true,
+          session.value = "Session created successfully"
+          ), 100)
+
 
       }
       else{
-        session.value = "Oops! We are having problems creating a session. Try again in a bit."
+        setTimeout(() => (
+          sessionLoading.value = false,
+          sessionBool.value = true,
+          session.value = "Oops! We are having problems creating a session. Try again in a bit."
+          ), 100)
 
       }
-
-      setTimeout(() => (sessionLoading.value = false,sessionBool.value = true), 1000)
-      }    
+    }    
   }
 
   function sessionText() {
