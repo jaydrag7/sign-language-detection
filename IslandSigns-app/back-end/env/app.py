@@ -5,7 +5,8 @@ from ultralytics import YOLO
 import base64
 from PIL import Image
 from io import BytesIO
-
+from openai import OpenAI
+import tempfile
 
 # instantiate the app
 app = Flask(__name__)
@@ -14,7 +15,28 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-customModel = YOLO("best.pt")
+phrases_model = YOLO("phrases.pt")
+greetings_model = YOLO("greetings2.pt")
+alphabet_model = YOLO("alphabet.pt")
+numbers_model = YOLO("numbers.pt")
+client = OpenAI(api_key='')
+
+@app.route('/audio',methods=['POST'])
+def transcribe_audio():
+    if request.method == 'POST':
+        try:
+            audio_blob = request.files['audio'].read()
+            audio_file_path = 'audio.wav'
+            with open(audio_file_path, 'wb') as audio_file:
+                audio_file.write(audio_blob)
+            audio_file = open("audio.wav","rb")
+            transcript = client.audio.transcriptions.create(
+                model="whisper-1",
+                file=audio_file
+            )
+            return jsonify(transcript.text)
+        except Exception as e:
+            return jsonify({'error':str(e)})
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -25,69 +47,69 @@ def predict():
             binary_data = base64.b64decode(base64_frame)
             image = Image.open(BytesIO(binary_data))
             image.save('decoded_image.png')
-            output = customModel('decoded_image.png')
             arr =[]
             conf_scores = []
-            for detection in output[0]: # Loop over each detection in the first image of the batch
-
-                class_index = detection.boxes # Get the class index of the detection
-                class_name = detection.names  # Get the name of the detection
-                
+            alphabet_output = alphabet_model('decoded_image.png')
+            for detection in alphabet_output[0]: 
+                class_index = detection.boxes 
+                class_name = detection.names  
+            
                 tensor_idx = class_index.cls
                 conf_score = class_index.conf
-                if conf_score>=0.45:
+                arr.append(class_name[ tensor_idx.item()])
+
+            if len(arr) != 0:
+                result={
+                    'predictions':arr
+                }
+                return jsonify(result)
+            # else:
+            #     greetings_output = greetings_model('decoded_image.png')
+            #     for detection in greetings_output[0]: 
+            #         class_index = detection.boxes 
+            #         class_name = detection.names  
+                
+            #         tensor_idx = class_index.cls
+            #         conf_score = class_index.conf
+            #         arr.append(class_name[ tensor_idx.item()])
+            #     if len(arr) != 0:
+            #         result={
+            #             'predictions':arr
+            #         }
+            #         return jsonify(result)
+            else:
+                phrases_output = phrases_model('decoded_image.png')
+                for detection in phrases_output[0]: # Loop over each detection in the first image of the batch
+
+                    class_index = detection.boxes # Get the class index of the detection
+                    class_name = detection.names  # Get the name of the detection
+                    
+                    tensor_idx = class_index.cls
+                    conf_score = class_index.conf
                     arr.append(class_name[ tensor_idx.item()])
                     # conf_scores.append(type(conf_score))
-                    # return jsonify(arr)
-                
-            result={
-                'predictions':arr
-            }
-            return jsonify(result)
+                if len(arr) != 0:
+                    result={
+                        'predictions':arr
+                    }
+                    return jsonify(result)
+                else:
+                        # numbers_output = numbers_model('decoded_image.png')
+                        # for detection in numbers_output[0]: 
+                        #     class_index = detection.boxes 
+                        #     class_name = detection.names  
+                        
+                        #     tensor_idx = class_index.cls
+                        #     conf_score = class_index.conf
+                        #     arr.append(class_name[ tensor_idx.item()])
+
+                    result={
+                        'predictions':arr
+                    }
+                    return jsonify(result)
         except Exception as e:
             return jsonify({'error':str(e)})
     else:
         return jsonify({'error': 'Method not allowed'})
-    # customModel = YOLO("CustomModel.pt")
-    # class_indxs = []
-    # classes_detected= []
-    # webcam = cv2.VideoCapture(0)
-
-    # # Loop through the video frames
-    # while webcam.isOpened():
-    #     # Read a frame from the video
-    #     success, frame = webcam.read()
-
-    #     if success:
-    #         # Run YOLOv8 inference on the frame
-    #         results3 = customModel(frame)
-    #         for detection in results3[0]: # Loop over each detection in the first image of the batch
-    #             class_index = detection.boxes # Get the class index of the detection
-    #             class_name = detection.names  # Get the name of the detection
-                
-    #             conf_score = class_index.conf
-    #             if conf_score.item() > 0.6:
-    #                 tensor_idx = class_index.cls
-    #                 class_indxs.append(tensor_idx)
-    #                 classes_detected.append(class_name[ tensor_idx.item()])
-
-    #         # Visualize the results on the frame
-    #         annotated_frame = results3[0].plot()
-
-    #         # Display the annotated frame
-    #         cv2.imshow("YOLOv8 Custom Inference", annotated_frame)
-
-    #         # Break the loop if 'q' is pressed
-    #         if cv2.waitKey(1) & 0xFF == ord("q"):
-    #             break
-    #     else:
-    #         # Break the loop if the end of the video is reached
-    #         break
-
-    # # Release the video capture object and close the display window
-    # webcam.release()
-    # cv2.destroyAllWindows()
-    # return jsonify(classes_detected)
-
 if __name__ == '__main__':
     app.run(debug=True)

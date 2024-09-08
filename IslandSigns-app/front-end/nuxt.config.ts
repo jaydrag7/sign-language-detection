@@ -1,7 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  // devtools: { enabled: true },
+  devtools: { enabled: true },
+
   ssr:true,
+
   css: [
     "vuetify/lib/styles/main.sass", '@mdi/font/css/materialdesignicons.min.css'
   ],
@@ -12,5 +14,7 @@ export default defineNuxtConfig({
 
   modules: [
     '@pinia/nuxt'
-  ]
+  ],
+
+  compatibilityDate: "2024-08-19"
 })

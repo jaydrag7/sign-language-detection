@@ -1,32 +1,16 @@
 <template>
-    <v-row
-        style="justify-content: center;"
-        class="pa-0 mt-5"
+    <v-dialog
+        v-model="closeDialog"
+        fullscreen
+        scrollable
     >
-        <v-dialog
-            v-model="closeDialog"
-            fullscreen
-            scrollable
-        >
-            <template v-slot:activator="{props}">
-                <v-btn
-                    :style="{textTransform:'none'}"
-                    @click="closeDialog=!closeDialog,user.getMessageThread()"
-                    v-bind="props"
-                    vatiant="text"
-                    append-icon="mdi-location-enter"
-                    color="green-lighten-1"
-                >
-                    Join
-
-                </v-btn>
-            </template>
+        <template v-slot:default="{isActive}">
             <v-card
                 fluid="true"
-                color="grey-lighten-4"
+                :color="theme ? '#0b141a':'grey-lighten-3'"
             >
                 <v-toolbar
-                    color="white"
+                    :color="theme ? '#202c33':'white'"
                 >
                     <v-dialog
                         v-model="closeWarningDialog"
@@ -34,16 +18,14 @@
                     >
                         <template v-slot:activator="{props}">
                             <v-btn
-                                :style="{textTransform:'none'}"
                                 v-bind="props"
-                                append-icon="mdi-close"
-                                color="red-lighten-1"      
-                                variant="tonal"      
-                            >
-                                End Session
-                            </v-btn>
+                                color="cancel"      
+                                variant="text"
+                                icon="mdi-close"  
+                            />    
                         </template>
                         <v-card
+                            :color="theme ? '#202c33':''"
                             class="warning-card rounded-xl"
                             width="250"
                         >
@@ -55,7 +37,8 @@
                                 <v-img
                                     src="caution.png"
                                     height="30"
-                                    class="mt-2"
+                                    class="mt-2 ml-2"
+                                    draggable="false"
                                 />
                                 <v-card-text
                                     class="text-h4 text-red"
@@ -64,6 +47,7 @@
                                 </v-card-text>
                             </v-row>
                             <v-row>
+                                <v-divider class="border-opacity-100"/>
                                 <v-card-text
                                     class="text-body-1 text-center"
                                     style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"
@@ -79,7 +63,7 @@
                                     class="mr-5"
                                     variant="outlined"
                                     rounded
-                                    @click="closeDialog=false;closeWarningDialog=false"
+                                    @click="closeWarningDialog=false,isActive.value = false,resetInviteHandler()"
                                 >
                                     Yes
                                 </v-btn>
@@ -98,79 +82,92 @@
                         </v-card>
 
                     </v-dialog>
-                    <v-img
-                        src="IslandSigns-logo.png"
-                    />
+                    <v-chip
+                        v-if="user.sessionStatus"
+                        :text="user.fname"
+                        :color="user.sessionStatus ? 'secondary_a':'cancel'"
+                        class="ml-2"
+                    />    
+                    <v-chip
+                        v-if="user.chatParticipant"
+                        :text="user.chatParticipant"
+                        :color="user.sessionInviteeStatus ? 'secondary_a':'cancel'"
+                        class="ml-2"
+                    />    
+                    <v-spacer/>
+                    <v-avatar image="IslandSigns-logo.png" size="120"/>
                 </v-toolbar>
                 <v-container
                     v-if="user.roles"
                     style="justify-content: center;"
                     v-for="(role,i) in user.roles"
-                    class="message-threads"
-
                 >
                 <v-row
-                    :style="{ display: 'flex', justifyContent: role === 'Customer' ? 'space-between' : 'flex-end' }"
+                    :style="{ display: 'flex', justifyContent: role === user.fname ? 'flex-end' : 'space-between' }"
                     class="mt-0"
                 >
-                        <v-card 
-                            :subtitle="role === 'Customer' ? 'Customer' : 'Teller'" 
-                            width="150" 
-                            :color="role === 'Customer' ? 'white' : '#d1f4cc'" 
-                            :class="['rounded-xl', role === 'Customer' ? 'rounded-ts-0' : 'rounded-be-0']" 
-                                                 
-                        >
-                            <v-card-text>
-                                {{ user.messages[i] }}
-                            </v-card-text>
+                    <v-card 
+                        :subtitle="role" 
+                        width="200" 
+                        :color="role === user.fname ? '#d1f4cc' : 'white'" 
+                        :class="['rounded-xl', role === user.fname ? 'rounded-te-0' : 'rounded-ts-0']" 
+                        elevation="2"                    
+                    >
+                        <v-card-text>
+                            {{ user.messages[i] }}
+                        </v-card-text>
 
-                        </v-card>
-                        
+                    </v-card>
 
                 </v-row>
                 </v-container>
-                <v-row 
-                    justify-lg="center"
+                <div
+                    :class="{'threadActive': active, 'threadNotActive': !active}"   
+                    align="center"
                 >
-                    <v-container
-                        class="mt-10" :class="{'threadActive': active, 'threadNotActive': !active}"                    
+                    <v-row justify="end" class="mt-7">
+                        <v-card v-if="cameraEnabled" height="220" class="rounded-xl mb-2 mr-3"> 
+                            <v-row>
+                                <video height="200" ref="video" autoplay muted></video>
+                                <canvas ref="screenshot" v-show="false"></canvas>
+                            </v-row>
+                            <v-row justify="center">
+                                <v-btn
+                                    @click="cameraEnabled=false,closeCamera()"
+                                    append-icon="mdi-close"
+                                    variant='tonal'
+                                    color='red'
+                                    width="250"
+                                >
+                                    Close
+                                </v-btn>
+                            </v-row>
+                    
+                                
+                        </v-card>
+                    </v-row>
+                </div>
+                <div>
+                <v-footer
+                        :color="theme ? '#202c33':'grey-lighten-2'"
                     >
-                        <v-row justify="end">
-                            <v-card v-if="cameraEnabled" height="220" class="rounded-xl mb-2"> 
-                                <v-row>
-                                    <video height="200" ref="video" autoplay muted></video>
-                                    <canvas ref="screenshot" v-show="false"></canvas>
-                                </v-row>
-                                <v-row justify="center">
-                                    <v-btn
-                                        @click="cameraEnabled=false,closeCamera()"
-                                        append-icon="mdi-close"
-                                        variant='tonal'
-                                        color='red'
-                                        width="250"
-                                    >
-                                        Close
-                                    </v-btn>
-                                </v-row>
-                        
-                                   
-                            </v-card>
-                        </v-row>
-                        <v-row class="ml-3">
-                           <v-textarea
+                        <v-row
+                            class="pt-6 pb-3 pl-7 pr-7"
+                        >
+                
+                            <v-textarea
                                 v-model="msg"
                                 rows="1"
                                 auto-grow
-                                :label="label"
+                                placeholder="Type a message"
                                 variant="solo"
-                                class="mr-1 footer"
+                                class="mr-1 footer rounded-xl"
                                 append-inner-icon="mdi-send"
-                                prepend-inner-icon="mdi-swap-vertical"
                                 @click:append-inner="sendMessage()"
-                                @click:prepend-inner="swapRoles()"
                             />
-                            <v-btn icon variant="text">
-                                <v-icon icon="mdi-microphone"/>
+                            <audio ref="audioPlayback"></audio>
+                            <v-btn @click="microphoneEnabled ? recordAudio():closeMicrophone()" icon variant="text" :color="microphoneEnabled ? '': 'red-lighten-1'">
+                                <v-icon :icon="microphoneEnabled ? 'mdi-microphone':'mdi-microphone-off'"/>
                                 <v-tooltip
                                     activator="parent"
                                     location="top"
@@ -189,16 +186,14 @@
                                 >Record JSL</v-tooltip>
                             </v-btn>
                         </v-row>
+                    </v-footer>
 
 
-                    </v-container>
+            </div>
 
-                    
-                </v-row>
-                
             </v-card>
-        </v-dialog>
-    </v-row>
+        </template>
+    </v-dialog>
 </template>
 <script setup>
     import axios from 'axios'
@@ -206,12 +201,19 @@
     import { ref, onMounted } from 'vue'
     import { db } from "@/utils/firebase";
     import { onChildAdded, ref as dbRef, onChildChanged } from 'firebase/database'
+    import base64 from 'base-64'
 
+    const props = defineProps({
+        theme: Boolean,
+        showDialog: Boolean
+    })
+    const emits = defineEmits(['resetInvite'])
 
     const user = useUserProfile()    
-    const closeDialog = ref(false)
+    const closeDialog = ref(props.showDialog)
     const closeWarningDialog = ref(false)
     const stream = ref(null)
+    const audioStream = ref(null)
     const screenshot = ref(null)
     const cameraEnabled = ref(false)
     const video = ref(null)
@@ -219,38 +221,74 @@
     const msg = ref('')
     const role = ref('Teller')
     const label = ref('Send message as Teller')
-    const msgObj = ref({
-        'roles': [],
-        'messages': []
-    })
+    const msgObj = ref({})
+    const roles = ref(new Array())
+    const messages = ref(new Array())
     const active = ref(false)
+    const audioChunks = ref([])
+    const audioPlayback = ref(null)
+    const microphoneEnabled = ref(true)
 
-    const threadRef = dbRef(db, '/users/')
+    async function resetInviteHandler(){
+        if(user.author){
+            await user.updateSessionAuthorStatus()
+            user.chatParticipant = ""
+            roles.value = []
+            messages.value = []
+            user.roles = []
+            user.messages = []
+            closeDialog.value = false
+            emits('resetInvite')
+        }
+        else if (user.invitee){
+            console.log("definitely invitee")
+            await user.updateSessionInviteeStatus()
+            user.chatParticipant = ""
+            roles.value = []
+            messages.value = []
+            user.roles = []
+            user.messages = []
+            closeDialog.value = false
+            emits('resetInvite')
+        }
+    }
+
+
+    function isObject(variable) {
+        return variable !== null && typeof variable === 'object';
+    }
+
+    const threadRef = dbRef(db, `/sessions/${user.sessionId}`)
     onChildAdded(threadRef, (snapshot) => {
         const newMessage = snapshot.val()
-         user.roles = newMessage['roles']
-         user.messages = newMessage['messages']
-
-        console.log('New message received:', user.messages);
-    })            
-
+        console.log(newMessage)
+        if(isObject(newMessage)){
+            if(newMessage.hasOwnProperty('roles')){
+                user.roles = newMessage['roles']
+                user.messages = newMessage['messages']
+                roles.value = user.roles
+                messages.value = user.messages
+            }
+        }
+    })
     onChildChanged(threadRef, (snapshot) => {
-        const updatedMessage = snapshot.val()
-        user.roles = updatedMessage['roles']
-        user.messages = updatedMessage['messages']
+        const newMessage = snapshot.val()
+        if(isObject(newMessage)){
+            if(newMessage.hasOwnProperty('roles')){
+                user.roles = newMessage['roles']
+                user.messages = newMessage['messages']
+                roles.value = user.roles
+                messages.value = user.messages
+            }
+        }
+    })
 
 
-        // updatedMessage['roles'].forEach(role => {
-        //     user.roles.push(role)
-        // })
-
-        // updatedMessage['messages'].forEach(message => {
-        //     user.messages.push(message)
-        // })
-
-        console.log('Updated message received:', updatedMessage);
-    })          
-
+    // async function endSession(){
+        
+    //     await user.endSession()
+    //     return await user.removeChatLog()
+    // }
 
 
     async function openCamera() {
@@ -260,7 +298,7 @@
           video:{facingMode:'environment'},
           audio:false
         })
-        const liveFeed = video.value
+        const liveFeed =video.value
         liveFeed.srcObject = stream.value
         //Make sure the video is loaded before starting to capture frames
         await new Promise((resolve) => {
@@ -288,37 +326,51 @@
     }
   }
 
-  const customerObj=ref({})
 
-  async function getPrediction(frame) {
-    const path = 'http://127.0.0.1:5000/predict'
-    if(cameraEnabled.value){
-        await axios.post(path,{frame})
 
-        .then((res) => {
-            if(res.data['predictions'].length !=0){
-                let custMsg = []
-                role.value = 'Teller'
-                swapRoles()
-                custMsg = res.data['predictions']
-                msg.value = custMsg[0]
-                console.log(res.data)
+async function getPrediction(frame) {
+  const path = 'http://127.0.0.1:5000/predict';
+  if (cameraEnabled.value) {
+    try {
+      const res = await axios.post(path, { frame });
+      if (res.data['predictions'].length !== 0) {
+        let custMsg = [];
+        let st = "";
+        role.value = 'Teller';
+        swapRoles();
+        custMsg = res.data['predictions'];
+        st = msg.value + " " + custMsg[0];
+        console.log(st)
 
-            }
-        })
-        .catch((error) => {
+        // const openai = new OpenAI({
+        //   apiKey: "",
+        //   dangerouslyAllowBrowser: true,
+        // });
 
-          console.error(error);
-        })
+        // const completion = await openai.chat.completions.create({
+        //   messages: [
+        //     { "role": "system", "content": "You are a helpful transcriber that transcribes incoherent words or sentences to coherent ones. If you are given a word or phrase that does not make sense or you need more clarification on the word or phrase, just return back the original message." },
+        //     { "role": "user", "content": st }
+        //   ],
+        //   model: "gpt-3.5-turbo",
+        // });
 
-        
+        // console.log(completion.choices[0].message.content);
+
+        msg.value = st;
+        console.log(res.data);
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
+}
+
 
 
   async function captureAndSendFrames(feed,streamWidth,streamHeight){
     const canvas = screenshot.value
-    const context = canvas.getContext('2d')
+    const context = canvas.getContext('2d',{ willReadFrequently: true })
     const fps = 30
 
     //Set canvas dimensions
@@ -353,9 +405,60 @@
 
     await captureFrame()
 
-
-
   }
+  const audioRecorder = ref(null)
+
+  async function recordAudio(){
+    audioStream.value = await navigator.mediaDevices.getUserMedia({audio:true})
+    audioRecorder.value = new MediaRecorder(audioStream.value)
+    console.log(audioRecorder.value)
+    audioRecorder.value.ondataavailable = event => {
+        audioChunks.value.push(event.data)
+        console.log(audioChunks.value)
+    }
+    audioRecorder.value.onstop = () =>{
+        const audioBlob = new Blob(audioChunks.value,{type:'audio/wav'})
+        const audioUrl = URL.createObjectURL(audioBlob)
+        audioPlayback.value.src = audioUrl
+        console.log(audioPlayback.value)
+        audioChunks.value = []
+        sendAudioForTranscription(audioBlob)
+
+    }
+    microphoneEnabled.value = false
+    audioRecorder.value.start()
+
+    }
+
+    function closeMicrophone(){
+        microphoneEnabled.value = true
+        console.log(audioRecorder.value)
+        audioRecorder.value.stop()
+
+
+    }
+
+    async function sendAudioForTranscription(audioBlob){
+        console.log(audioBlob)
+        const formData = new FormData()
+        formData.append('audio',audioBlob,'audio.wav')
+        const path = 'http://127.0.0.1:5000/audio';
+        try{
+            const res = await axios.post(path, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+            })
+            msg.value = msg.value + res.data
+            console.log(res.data)
+        }
+        catch(error){
+            console.error(error)
+        }
+
+
+    }
+
 
   function swapRoles(){
     switch(role.value){
@@ -372,23 +475,43 @@
 
   }
 
-  async function sendMessage(){
-    // let roleArr = msgObj.value['roles']
-    // let messageArr = msgObj.value['messages']
-    // roleArr.push(role.value)
-    // messageArr.push(msg.value)
-    // msgObj.value['roles'] = roleArr
-    // msgObj.value['messages'] = messageArr
-    await user.sendMessage(role.value,msg.value)
-    let arr = user.msgThread['messages']
+//   onMounted(async()=>{
+//     await user.getMessageThread()
+//     roles.value = user.roles
+//     messages.value = user.messages
+//     console.log(roles.value)
+//   })
+
+    function calculateTime(){
+        const currentTime = new Date()
+        const hours = currentTime.getHours()
+        const minutes = currentTime.getMinutes()
+        const time = `${hours}:${minutes}`
+        return time
+        // return time
+    }
+
+  const sendMessage = async () =>{
+    roles.value.push(user.fname)
+    messages.value.push(msg.value)
+
+    await user.sendMessage(roles.value,messages.value)
+    let arr = messages.value
     if(arr.length >= 5){
         active.value = true
 
-
     }
+    msg.value = ""
+  }
+
+  function decodeMsg(msg){
+    return base64.decode(decodeURI(msg))
   }
 </script>
 <style>
+    .footer{
+        width:40%;
+    }
     .footer{
         width:40%;
     }
@@ -397,16 +520,15 @@
         height: auto;
         margin:0 auto
     }
-    .threadNotActive{
-        position:fixed;
-        bottom: 0;
-        width: 100%;
-    }
+
     .threadActive{
         position:relative;
         bottom: 0;
         width: 100%;
     }
-
-
+    .threadNotActive{
+        position:fixed;
+        bottom: 0;
+        width: 100%;
+    }
 </style>
